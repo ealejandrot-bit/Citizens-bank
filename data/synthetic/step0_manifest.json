@@ -1,0 +1,40 @@
+{
+  "step": 0,
+  "master_seed": 20260928,
+  "params_sha256": "3e301946031bb14ef1a509537478805905c05e87d03f044574bd7bd7aa86e500",
+  "streams": [
+    "latent.factors",
+    "latent.idiosyncratic",
+    "pop.advisory",
+    "pop.age",
+    "pop.business",
+    "pop.credit",
+    "pop.deposit_only",
+    "pop.deposit_share",
+    "pop.dividend",
+    "pop.payroll",
+    "pop.pension",
+    "pop.relationship_value",
+    "pop.tenure",
+    "pop.trust",
+    "target.exclusion",
+    "target.hard",
+    "target.soft",
+    "target.soft_loss"
+  ],
+  "intercepts": {
+    "hard": -3.727222351734336,
+    "soft": -2.619278796446538
+  },
+  "outputs": {
+    "step0_households.csv": {
+      "rows": 20000,
+      "sha256": "36e69820931f90c7b00d4d4c8f81db271a1bd6c725b420580ca6baee69d26bed"
+    },
+    "step0_truth.csv": {
+      "rows": 20000,
+      "sha256": "4f8285916341b38d23c088fcea8587767491f2a3a5ab1c464add74a5f676cd9c"
+    }
+  },
+  "checks_passed": true
+}

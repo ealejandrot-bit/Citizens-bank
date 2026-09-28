@@ -1,0 +1,94 @@
+# Parámetros de la base sintética Client Pulse.
+# Cada supuesto lleva su origen: [Excel] hoja del Excel, [Deck] slide del deck,
+# [Supuesto] valor nuestro pendiente de validar con Citizens (ver docs/decisiones.md).
+
+master_seed: 20260928          # Única semilla del proyecto; todo deriva de aquí.
+n_households: 20000            # [Supuesto] Tamaño suficiente para IV/WoE y ML estable.
+snapshot_date: "2025-12-31"    # [Excel · Base definitions] t = corte mensual.
+
+# ---------------------------------------------------------------------------
+# Paso 0 · Población de hogares
+# ---------------------------------------------------------------------------
+population:
+  # Valor total de la relación (AUM + depósitos) ~ LogNormal.
+  # Mediana $4M, sigma 1.2 -> media ≈ $8.2M, cola pesada (UHNW ≈ 4-5%).
+  relationship_value_median: 4_000_000     # [Supuesto]
+  relationship_value_sigma: 1.2            # [Supuesto]
+  relationship_value_min: 1_000_000        # [Supuesto] piso de Private Bank.
+  uhnw_threshold: 30_000_000               # [Deck · slide 69] "UHNW (above $30M)".
+
+  # Hogares sin cuentas de inversión (solo depósitos): variables de
+  # inversión quedan NULL, no cero [Excel · Base definitions "Null vs. zero"].
+  share_deposit_only: 0.15                 # [Supuesto]
+  # Proporción de depósitos en hogares con inversión ~ Beta(a, b) (media ≈ 0.29).
+  deposit_share_beta: [2.0, 5.0]           # [Supuesto]
+
+  # Edad del titular principal ~ Normal truncada.
+  age_mean: 61                             # [Supuesto]
+  age_sd: 12                               # [Supuesto]
+  age_bounds: [28, 95]
+
+  # Antigüedad con el banco (años) ~ Gamma(shape, scale), media = shape*scale.
+  tenure_gamma: [2.0, 4.5]                 # [Supuesto] media 9 años.
+  tenure_max_years: 50                     # [Supuesto] tope de cola.
+  # Meses de historia disponible para la base: min(tenure, 24m) [Deck · slide 20].
+  history_months_cap: 24
+
+  # Entidades vinculadas [Excel · Base definitions "Aggregation level"].
+  # Probabilidad base y aumento para UHNW.
+  p_linked_business: 0.25                  # [Supuesto]
+  p_linked_business_uhnw: 0.55             # [Supuesto]
+  p_trust: 0.30                            # [Supuesto]
+  p_trust_uhnw: 0.70                       # [Supuesto]
+  # Cuentas advisory (con benchmark asignado) entre hogares con inversión.
+  p_advisory_given_investments: 0.70       # [Supuesto]
+  # Crédito con Citizens (hipoteca / línea) = "credit anchor" [Deck · slide 26].
+  p_credit_anchor: 0.35                    # [Supuesto]
+
+  # Perfil de ingresos recurrentes (determina a quién aplican las variables
+  # salary_/pension_/business_payroll_stopped_flag).
+  p_payroll_if_working: 0.80               # [Supuesto] trabajan: edad < retirement_age.
+  p_payroll_if_retired: 0.10               # [Supuesto]
+  p_pension_if_retired: 0.85               # [Supuesto]
+  p_pension_if_working: 0.05               # [Supuesto]
+  p_dividend_stream_given_investments: 0.55  # [Supuesto]
+  retirement_age: 65                       # [Supuesto]
+
+# ---------------------------------------------------------------------------
+# Paso 0 · Estructura latente de riesgo (tres trayectorias del deck)
+# ---------------------------------------------------------------------------
+# [Deck · slide 24] Trayectorias: outflow-led, silent drift, service-triggered.
+# Cada hogar tiene tres factores latentes N(0,1) correlacionados. Las variables
+# de los pasos siguientes se generan desde estos factores + ruido propio; el
+# target también. Nunca se generan variables a partir del target (evita fuga).
+latent:
+  factors: [outflow, neglect, service]
+  correlation:                             # [Supuesto] correlación moderada
+    - [1.00, 0.35, 0.25]
+    - [0.35, 1.00, 0.30]
+    - [0.25, 0.30, 1.00]
+  # Peso de cada factor en el índice de riesgo.
+  risk_weights: {outflow: 0.60, neglect: 0.45, service: 0.35}   # [Supuesto]
+  # Desplazamientos estructurales (en unidades del índice de riesgo).
+  tenure_effect_per_log_year: -0.15        # [Supuesto] más antigüedad -> menos riesgo.
+  credit_anchor_effect: -0.20              # [Supuesto] [Deck · slide 26]
+  uhnw_effect: 0.10                        # [Supuesto] ligero, para que AUM churn ≠ logo churn.
+  # Riesgo idiosincrático no observable: limita el AUC alcanzable (score realista).
+  idiosyncratic_sd: 0.60                   # [Supuesto]
+
+# ---------------------------------------------------------------------------
+# Paso 0 · Target
+# ---------------------------------------------------------------------------
+target:
+  # [Deck · slide 17] Ejemplo: 3% logo churn por trimestre; score medio 8% a 6m.
+  hard_churn_6m_rate: 0.06                 # [Supuesto anclado al deck]
+  hard_churn_slope: 1.6                    # [Supuesto] pendiente logística sobre el índice.
+  # [Deck · slide 16/23] Soft churn = caída de AUM > umbral en 3m, sin salida total.
+  soft_churn_threshold: 0.20               # [Deck] "AUM drop >20%" (a validar).
+  soft_churn_3m_rate: 0.09                 # [Supuesto] sobre hogares elegibles; hard y soft son excluyentes.
+  soft_churn_slope: 1.2                    # [Supuesto]
+  # Fracción de la relación perdida en soft churn ~ Uniforme.
+  soft_churn_loss_range: [0.20, 0.60]
+  # Exclusiones (no cuentan como churn) [Deck · slide 59]: muerte, reubicación
+  # gestionada por Legacy. Se marcan y su target queda NULL.
+  exclusion_rate: 0.006                    # [Supuesto]
