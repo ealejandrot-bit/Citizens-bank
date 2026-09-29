@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **6** · G0–G1 cerrados ("usa defaults", 2026-09-29) · G2 abierto, esperando respuesta.
-- Tests: 21 / 21 PASS (pasos 00–06).
+- Último paso completado: **9** · G0–G2 cerrados ("usa defaults", 2026-09-29) · G3 abierto, esperando respuesta.
+- Tests: 29 / 29 PASS (pasos 00–09).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -25,6 +25,10 @@ usuario · `[DEF-default]` default aplicado.
 | Candidato principal | EBM monotónico sin interacciones (aditivo); XGBoost segundo candidato hasta el paso 9 | [DEF-default] G1-1 |
 | Variables | 12 sin compuestos (D2.2) | [DEF-default] G1-2 |
 | Umbral de reemplazo | se sigue hasta validar, con foco en uso conjunto (paso 10) | [DEF-default] G1-3 |
+| Overrides ML | cambio de banquero y queja escalada → Alto; transferencia a competidor fuera (D6.2) | [DEF-default] G2-1 |
+| Cola de RV y UHNW | sin ajuste; monitoreo (como G3-2/G3-3 de M1) | [DEF-default] G2-2 |
+| XGBoost | segundo candidato solo como comparación hasta el paso 9 | [DEF-default] G2-3 |
+| Tramos ML | cortes propios H-3 + vista a igual % que M1 | [DEF-default] G2-4 |
 
 ## Decisiones
 - **D0.1 · Herencia por copia.** 16 archivos de `churn_scorecard/` copiados a `data/inherited/` con sha256 idéntico al
@@ -66,6 +70,18 @@ usuario · `[DEF-default]` default aplicado.
 - **D6.3 · Lookup compacto y redondeo.** 6,730 bins del EBM → 323 filas uniendo bins con los mismos puntos; el
   redondeo a enteros mueve el score hasta 3.6 puntos y la probabilidad hasta 1.4 pp [DATA].
 
+- **D7.1 · Robustez.** Orden de importancias estable en 25 folds (las 3 primeras siempre en el mismo puesto); quitar
+  `client_reply_rate` baja la PR-AUC CV de 0.3644 a 0.3602 [DATA]. Por subgrupo el EBM rinde como el M1; clientes con
+  1–3 años y con historia < 24 meses quedan subestimados (16.1% real vs 14.3% estimado; 16.4% vs 14.1%) [DATA].
+- **D8.1 · Equidad (diagnóstico).** Las 12 variables predicen el tercil de edad con AUC 0.633 (proxy débil; lectura
+  < 0.60 / 0.60–0.70 / > 0.70 [DEF-default]); marcado Crítico+Alto proporcional al churn por tercil (ratio 1.80–1.92;
+  dispersión 1.07 vs 1.09 del M1) [DATA].
+- **D9.1 · Validación y H-2.** En val: EBM Gini 0.406 / PR-AUC 0.343 vs M1 0.390 / 0.328; ΔGini +0.016 (IC95 −0.000 a
+  +0.030) y ΔPR-AUC +0.015 (IC95 −0.001 a +0.030) [DATA]. EBM cumple 6 de 8 criterios H-2: falla ΔGini ≥ 0.05 y ΔPR-AUC
+  ≥ 0.03 ⟹ no reemplaza al M1; paso 10 evalúa uso conjunto (I-7). XGBoost falla 4 (incluye caída dev→val 12.7% vs 12.1%
+  y signo 99.96%). EBM en Crítico sobrestima en val (61.3% esperado vs 53.3% observado, fuera de Wilson 90%); resto de
+  tramos dentro [DATA]. Top 1% de EBM: precisión 75.9% vs 63.8% del M1 [DATA].
+
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
   sub-representado; L6 sin dimensión digital ni eventos de vida; L7 causalidad no identificable.
@@ -77,5 +93,8 @@ usuario · `[DEF-default]` default aplicado.
 ## G1 · respuesta del usuario (2026-09-29)
 - "usa defaults" → G1-1 a G1-3 [DEF-default].
 
+## G2 · respuesta del usuario (2026-09-29)
+- "usa defaults" → G2-1 a G2-4 [DEF-default].
+
 ## Preguntas abiertas
-- G2-1 a G2-4 en `reports/gate_2.md`.
+- G3-1 a G3-3 en `reports/gate_3.md`.
