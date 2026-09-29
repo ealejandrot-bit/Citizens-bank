@@ -4,7 +4,7 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **3** · G1 abierto, esperando respuesta · G0 cerrado ("usa defaults", 2026-09-29) · bloque cerrado: pasos 1–3 (G1).
+- Último paso completado: **3** · G0–G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 4–6 (G2).
 - Tests: 11 / 11 PASS (pasos 00–03).
 
 ## Parámetros vigentes
@@ -22,6 +22,9 @@ usuario · `[DEF-default]` default aplicado.
 | Proxy de edad | prueba diagnóstica en el paso 8 | [DEF-default] I-8 |
 | Escala | S₀ = 600 @ 20:1, PDO = 40 (Factor 57.71, Offset 427.12) | [DEF] heredado de M1 |
 | SEED | 42 | [DEF] |
+| Candidato principal | EBM monotónico sin interacciones (aditivo); XGBoost segundo candidato hasta el paso 9 | [DEF-default] G1-1 |
+| Variables | 12 sin compuestos (D2.2) | [DEF-default] G1-2 |
+| Umbral de reemplazo | se sigue hasta validar, con foco en uso conjunto (paso 10) | [DEF-default] G1-3 |
 
 ## Decisiones
 - **D0.1 · Herencia por copia.** 16 archivos de `churn_scorecard/` copiados a `data/inherited/` con sha256 idéntico al
@@ -56,5 +59,8 @@ usuario · `[DEF-default]` default aplicado.
 - "usa defaults, sólo no borres los modelos anteriores que los vamos a usar para comparar" → I-1 a I-8 [DEF-default];
   protección de modelos anteriores [DEF] (D0.2).
 
+## G1 · respuesta del usuario (2026-09-29)
+- "usa defaults" → G1-1 a G1-3 [DEF-default].
+
 ## Preguntas abiertas
-- G1-1 a G1-3 en `reports/gate_1.md`.
+- Ninguna. Las de G2 se abrirán al cerrar el paso 6.
