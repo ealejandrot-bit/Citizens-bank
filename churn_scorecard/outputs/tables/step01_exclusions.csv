@@ -1,0 +1,5 @@
+paso,hogares,salen,eventos B,eventos A (hard),RV $B
+total archivo,20000,0,2740,1200,207.63879573185997
+− churn_excluded (I-4),19877,123,2740,1200,206.27368540551
+− tenure_years < 1 (I-8),19473,404,2674,1168,202.70780059533
+− indeterminados B (soft con pérdida < 0.25),19261,212,2674,1168,200.55024051872

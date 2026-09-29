@@ -1,0 +1,8 @@
+variable,household_id,segment,valor,relationship_value,hard_churn_6m,soft_churn_3m
+relationship_value,HH008291,UHNW,903973258.11,903973258.11,0.0,1.0
+relationship_value,HH016047,UHNW,726678649.86,726678649.86,0.0,0.0
+transfer_to_competitor_bank_amount_90d,HH004766,UHNW,585607875.46,272199276.12,0.0,1.0
+transfer_to_competitor_bank_amount_90d,HH000541,UHNW,472017112.18,87511974.89,0.0,0.0
+transfer_to_competitor_bank_amount_90d,HH016272,UHNW,305051906.68,88956095.11,0.0,0.0
+transfer_to_competitor_bank_amount_90d,HH014461,HNW,203937333.51,6675140.67,0.0,0.0
+transfer_to_competitor_bank_amount_90d,HH014519,HNW,178435778.02,24880517.43,0.0,1.0

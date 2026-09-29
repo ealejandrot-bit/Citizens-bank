@@ -1,0 +1,63 @@
+columna,tipo,unidad,% missing [DATA],% missing elegibles [DATA],missing estructural,gatillo,rango [DATA],significado de negocio,bloque,dirección esperada,uso
+household_id,str,id,0.0,0.0,no,,20000 valores,identificador del hogar,estructural,,prohibido
+snapshot_date,str,fecha,0.0,0.0,no,,1 valores,fecha de corte T0 (única),estructural,,prohibido
+segment,str,categoría,0.0,0.0,no,,2 valores,HNW / UHNW (UHNW si RV ≥ $30M),estructural,?,predictor
+relationship_value,float64,USD,0.0,0.0,no,,1e+06 – 9.04e+08,"valor de la relación con el banco (= AUM + depósitos, G0-a)",patrimonial,?,predictor
+deposit_balance,float64,USD,0.0,0.0,no,,1358 – 4.199e+08,saldo en depósitos,patrimonial,?,predictor
+aum,float64,USD,14.35,14.32,sí,has_investments,1.134e+05 – 7.73e+08,"activos bajo gestión (inversión, custodia, trust)",patrimonial,?,predictor
+has_investments,bool,bool,0.0,0.0,no,,2 valores,tiene cuentas de inversión,producto,−,predictor
+has_advisory,bool,bool,0.0,0.0,no,,2 valores,tiene advisory con benchmark,producto,−,predictor
+has_linked_business,bool,bool,0.0,0.0,no,,2 valores,tiene negocio vinculado,producto,−,predictor
+has_trust,bool,bool,0.0,0.0,no,,2 valores,tiene trust,producto,−,predictor
+has_credit_anchor,bool,bool,0.0,0.0,no,,2 valores,tiene hipoteca / línea con el banco,producto,−,predictor
+has_payroll_stream,bool,bool,0.0,0.0,no,,2 valores,recibe nómina en el banco,producto,−,predictor
+has_pension_stream,bool,bool,0.0,0.0,no,,2 valores,recibe pensión en el banco,producto,−,predictor
+has_dividend_stream,bool,bool,0.0,0.0,no,,2 valores,recibe dividendos en el banco,producto,−,predictor
+age_primary,int64,años,0.0,0.0,no,,28 – 94,edad del titular (revisión de fair lending si se usa),estructural,?,predictor
+tenure_years,float64,años,0.0,0.0,no,,0.01 – 50,antigüedad con el banco,relación,−,predictor
+history_months,int64,meses,0.0,0.0,no,,0 – 24,historia transaccional disponible (tope 24),estructural,?,predictor
+recurring_income_monthly,float64,USD/mes,0.0,0.0,no,,0 – 2e+06,ingreso recurrente mensual,patrimonial,?,predictor
+aum_outflow_pct_90d,float64,fracción,14.49,14.46,sí,has_investments,0 – 7.684,salida neta de AUM 90d ÷ AUM promedio,transaccional,+,predictor
+deposit_balance_change_pct_90d,float64,fracción,0.55,0.55,no,,-0.9755 – 1.839,cambio de depósitos 3m vs 3m previos,transaccional,−,predictor
+salary_deposit_stopped_flag,float64,0/1,47.3,47.29,sí,has_payroll_stream,0 – 1,la nómina dejó de llegar,transaccional,+,predictor
+recurring_deposit_stopped_flag,float64,0/1,7.46,7.46,no,,0 – 1,algún flujo recurrente relevante dejó de llegar,transaccional,+,predictor
+recurring_deposit_change_pct,float64,fracción,7.4,7.39,no,,-1 – 3.561,cambio del ingreso recurrente vs su promedio,transaccional,−,predictor
+net_deposit_flow_pct_90d,float64,fracción,0.29,0.29,no,,-6.942 – 1.71,flujo neto de depósitos 90d ÷ saldo promedio,transaccional,−,predictor
+external_transfer_pct_of_balance_60d,float64,fracción,0.08,0.08,no,,0 – 30.22,transferencias externas 60d ÷ saldo promedio,transaccional,+,predictor
+new_external_destinations_90d,float64,conteo,3.48,3.5,no,,0 – 3,destinos externos nuevos 90d,transaccional,+,predictor
+investment_redemption_pct,float64,fracción,14.49,14.46,sí,has_investments,0 – 1.669,redenciones netas 90d ÷ AUM promedio,transaccional,+,predictor
+products_closed_180d,float64,conteo,0.53,0.53,no,,0 – 6,productos cerrados 180d,producto,+,predictor
+banker_change_6m_flag,float64,0/1,0.53,0.53,no,,0 – 1,cambió el banquero principal 6m,relación,+,predictor
+contact_gap_ratio,float64,ratio,0.0,0.0,no,,0 – 12.17,días sin contacto ÷ cadencia acordada,relación,+,predictor
+client_reply_rate,float64,fracción,47.99,47.98,no,,0 – 1,contactos respondidos ≤ 7d ÷ contactos 90d (NaN si < 3 contactos),relación,−,predictor
+complaint_escalated_flag,int64,0/1,0.0,0.0,no,,0 – 1,queja escalada 12m,servicio,+,predictor
+complaint_age_days,int64,días,0.0,0.0,no,,0 – 364,antigüedad de la queja abierta más vieja,servicio,+,predictor
+multi_signal_flag,int64,0/1,0.0,0.0,no,,0 – 1,compuesto del proveedor: ≥ 3 grupos en alerta,compuesto,+,auxiliar
+aum_vs_baseline_pct,float64,fracción,15.0,14.98,sí,has_investments,-0.9449 – 0.3508,AUM ex-mercado vs media 6m,patrimonial,−,predictor
+deposit_balance_vs_6m_avg_pct,float64,fracción,0.79,0.79,no,,-0.9967 – 4.532,depósitos del último mes vs media 6m,transaccional,−,predictor
+pension_deposit_stopped_flag,float64,0/1,65.74,65.73,sí,has_pension_stream,0 – 1,la pensión dejó de llegar,transaccional,+,predictor
+business_payroll_stopped_flag,float64,0/1,73.89,73.89,sí,has_linked_business,0 – 1,la nómina del negocio no corrió,transaccional,+,predictor
+transfer_to_competitor_pct_90d,float64,fracción,0.16,0.16,no,,0 – 18.58,enviado a bancos competidores 90d ÷ saldo promedio,transaccional,+,predictor
+external_transfer_acceleration,float64,fracción,0.16,0.16,no,,-30.71 – 22.6,aceleración de transferencias externas (3 × 30d),transaccional,+,predictor
+net_external_flow_pct_90d,float64,fracción,0.16,0.16,no,,-6.291 – 3.977,flujo externo neto 90d ÷ saldo promedio,transaccional,−,predictor
+external_destination_concentration,float64,fracción (HHI),0.16,0.16,no,,0.171 – 1,concentración de destinos externos,transaccional,+,predictor
+outflow_vs_baseline_pct,float64,fracción,0.76,0.77,no,,-1 – 6391,salidas del último mes vs promedio 6m,transaccional,+,predictor
+fixed_income_maturity_not_reinvested,float64,fracción,73.91,73.93,no,,0 – 1,principal vencido no reinvertido ÷ vencido,transaccional,+,predictor
+cash_pct_of_portfolio_chg,float64,fracción (pp),15.0,14.98,sí,has_investments,-0.05478 – 0.8129,cambio del % en cash del portafolio vs 6m,transaccional,+,predictor
+return_vs_benchmark,float64,fracción (pp),41.0,41.01,sí,has_advisory,-0.159 – 0.1557,rendimiento 12m − benchmark,economía,−,predictor
+accounts_closed_90d,float64,conteo,0.16,0.16,no,,0 – 12,cuentas cerradas 90d,producto,+,predictor
+share_of_wallet,float64,fracción,0.0,0.0,no,,7.702e-05 – 1,"RV ÷ patrimonio total estimado (denominador sin definir, I-5)",patrimonial,−,predictor
+share_of_wallet_change,float64,fracción (pp),0.76,0.77,no,,-0.9726 – 0.8945,cambio de SOW 6m,patrimonial,−,predictor
+trustee_change_flag,float64,0/1,68.13,68.2,sí,has_trust,0 – 1,cambio de trustee 12m,producto,+,predictor
+repeat_complaint_flag,int64,0/1,0.0,0.0,no,,0 – 1,queja repetida o reabierta 12m,servicio,+,predictor
+positions_liquidated_pct,float64,fracción,14.59,14.56,sí,has_investments,0 – 0.4267,posiciones vendidas sin reemplazo 90d,transaccional,+,predictor
+meetings_cancelled_by_client,float64,conteo,60.72,60.71,no,,0 – 9,reuniones canceladas por el cliente 6m,relación,+,predictor
+relationship_dissatisfaction_flag,float64,0/1,70.45,70.42,no,,0 – 1,insatisfacción detectada y confirmada (piloto),servicio,+,predictor
+bureau_new_mortgage_elsewhere,float64,0/1,5.04,5.05,no,,0 – 1,hipoteca / HELOC nueva con otro acreedor 6m (buró),producto,+,predictor
+multi_signal_count,int64,conteo,0.0,0.0,no,,0 – 7,compuesto del proveedor: grupos en alerta (0–7),compuesto,+,auxiliar
+aum_outflow_90d,float64,USD,14.49,14.46,sí,has_investments,0 – 4.637e+08,salida neta de AUM 90d,transaccional,+,predictor
+transfer_to_competitor_bank_amount_90d,float64,USD,0.16,0.16,no,,0 – 5.856e+08,monto enviado a competidores 90d,transaccional,+,predictor
+churn_excluded,bool,bool,0.0,0.0,no,,2 valores,"excluido del target (motivo desconocido, I-4)",resultado,,prohibido
+hard_churn_6m,float64,0/1,0.62,0.0,no,,0 – 1,salida total en 6m,resultado,,prohibido
+soft_churn_3m,float64,0/1,0.62,0.0,no,,0 – 1,contracción > 20% en 3m sin salida,resultado,,prohibido
+value_lost_6m,float64,USD,0.62,0.0,no,,0 – 6.607e+08,valor perdido en 6m (post-T0),resultado,,auxiliar (solo churn por valor y calibración; nunca predictor)

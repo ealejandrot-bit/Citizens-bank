@@ -1,0 +1,17 @@
+control,n [DATA],nota
+household_id duplicados,0,
+filas duplicadas (sin id),0,
+"saldos negativos (RV, depósitos, AUM)",0,
+"montos negativos (salidas, transferencias, valor perdido)",0,
+"fracciones acotadas fuera de [0, 1]",0,
+cambios % < −100%,0,
+conteos negativos o no enteros,0,
+edad fuera de 18–110,0,
+tenure_years < 0,0,
+history_months fuera de 0–24,0,
+history_months > tenure·12 + 1,0,
+segment ≠ (RV ≥ $30M),0,
+has_investments = False con aum no nulo,0,
+has_investments = True con aum nulo,0,
+|RV − (AUM + depósitos)| > $0.01,0,identidad al centavo (G0-a)
+value_lost_6m > RV,0,
