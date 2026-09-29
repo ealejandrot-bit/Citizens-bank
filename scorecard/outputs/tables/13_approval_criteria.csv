@@ -1,12 +1,14 @@
 modelo,criterio,umbral,observado,cumple
-A,C1 · supera a multi_signal_count y multi_signal_flag en AUC y captura decil top (IC sin traslape) [GATE],sí,no,NO
+A,"C1 · supera a multi_signal_count y multi_signal_flag en AUC y captura decil top (IC95 de la Δ pareada excluye 0) [GATE, D13.4]",sí,"multi_signal_count AUC: [0.015, 0.064]; multi_signal_count captura eventos decil top: [0.021, 0.087]; multi_signal_flag AUC: [0.058, 0.108]; multi_signal_flag captura eventos decil top: [0.134, 0.207]",sí
+A,"C1b · criterio original del brief: IC marginales sin traslape (informativo, D13.4)",sí,no (traslapan vs multi_signal_count),NO
 A,C2 · AUC holdout: límite inferior IC95 > 0.65,> 0.65,0.696,sí
 A,C3 · KS ≥ 0.25,≥ 0.25,0.329,sí
 A,C4 · captura de eventos en decil top ≥ 30% (3× azar),≥ 30%,37.7%,sí
 A,C5 · captura de valor (RV) en decil top ≥ 25%,≥ 25%,35.8%,sí
 A,C6 · tasa por decil monótona (Spearman decil vs tasa ≤ −0.90),≤ −0.90,-0.915,sí
 A,"C7 · UHNW: AUC ≥ 0.60 (informativo, 24 eventos)",≥ 0.60,"0.716 [0.626, 0.821]",sí
-A-lite,C1 · supera a multi_signal_count y multi_signal_flag en AUC y captura decil top (IC sin traslape) [GATE],sí,no,NO
+A-lite,"C1 · supera a multi_signal_count y multi_signal_flag en AUC y captura decil top (IC95 de la Δ pareada excluye 0) [GATE, D13.4]",sí,"multi_signal_count AUC: [0.000, 0.053]; multi_signal_count captura eventos decil top: [0.014, 0.078]; multi_signal_flag AUC: [0.043, 0.094]; multi_signal_flag captura eventos decil top: [0.123, 0.200]",sí
+A-lite,"C1b · criterio original del brief: IC marginales sin traslape (informativo, D13.4)",sí,no (traslapan vs multi_signal_count),NO
 A-lite,C2 · AUC holdout: límite inferior IC95 > 0.65,> 0.65,0.680,sí
 A-lite,C3 · KS ≥ 0.25,≥ 0.25,0.305,sí
 A-lite,C4 · captura de eventos en decil top ≥ 30% (3× azar),≥ 30%,37.3%,sí

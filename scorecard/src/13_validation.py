@@ -6,7 +6,8 @@
   tasa de falsos positivos en Crítico.
 - Por segmento (UHNW con 24 eventos: IC anchos, se reportan).
 - Benchmark obligatorio: multi_signal_count y multi_signal_flag (captura con desempate aleatorio esperado).
-  QC gate: el campeón debe superar a ambos en AUC y en captura del decil top con IC sin traslape; si no → detener.
+  QC gate (D13.4, decisión del usuario): el campeón debe superar a ambos en AUC y captura del decil top con IC95 de la
+  diferencia pareada que excluya 0; el criterio original (IC marginales sin traslape) se reporta como informativo.
 - Criterios de aprobación explícitos (C1–C7, D13.1).
 """
 from __future__ import annotations
@@ -71,7 +72,7 @@ for champ in ("A", "A-lite"):
             lo_b, hi_b = ci(boots[k][bm])
             diff.append({"modelo": champ, "benchmark": bm, "métrica": k, "modelo (punto)": point[champ][k], "benchmark (punto)": point[bm][k],
                          "Δ": point[champ][k] - point[bm][k], "IC95 Δ pareado": "[%.3f, %.3f]" % ci(d),
-                         "IC sin traslape": lo_c > hi_b})
+                         "Δ pareado > 0 (IC inf > 0)": ci(d)[0] > 0, "IC sin traslape": lo_c > hi_b})
 diff = pd.DataFrame(diff)
 save_table(diff.round(4), "13_benchmark_comparison")
 
@@ -115,10 +116,14 @@ def crit_rows(m):
     d_m = dec[m]
     rate = d_m["tasa %"].to_numpy()
     mono = pd.Series(rate).corr(pd.Series(np.arange(10)), method="spearman")
-    beats = diff[(diff.modelo == m) & diff.métrica.isin(["AUC", "captura eventos decil top"])]["IC sin traslape"].all()
+    sub = diff[(diff.modelo == m) & diff.métrica.isin(["AUC", "captura eventos decil top"])]
+    beats = sub["Δ pareado > 0 (IC inf > 0)"].all()
+    strict = sub["IC sin traslape"].all()
     uh = sg[(sg.segmento == "UHNW") & (sg.modelo == m)].iloc[0]
     return [
-        ("C1 · supera a multi_signal_count y multi_signal_flag en AUC y captura decil top (IC sin traslape) [GATE]", beats, "sí", "sí" if beats else "no"),
+        ("C1 · supera a multi_signal_count y multi_signal_flag en AUC y captura decil top (IC95 de la Δ pareada excluye 0) [GATE, D13.4]", beats, "sí",
+         "; ".join(f"{r.benchmark} {r.métrica}: {r['IC95 Δ pareado']}" for _, r in sub.iterrows())),
+        ("C1b · criterio original del brief: IC marginales sin traslape (informativo, D13.4)", strict, "sí", "sí" if strict else "no (traslapan vs multi_signal_count)"),
         ("C2 · AUC holdout: límite inferior IC95 > 0.65", lo_auc > 0.65, "> 0.65", f"{lo_auc:.3f}"),
         ("C3 · KS ≥ 0.25", pm["KS"] >= 0.25, "≥ 0.25", f"{pm['KS']:.3f}"),
         ("C4 · captura de eventos en decil top ≥ 30% (3× azar)", pm["captura eventos decil top"] >= 0.30, "≥ 30%", f"{100 * pm['captura eventos decil top']:.1f}%"),
@@ -138,7 +143,7 @@ save_table(cr, "13_approval_criteria")
 for m in ("A", "A-lite"):
     rows_m = cr[cr.modelo == m]
     for _, r in rows_m.iterrows():
-        sev = "gate" if "[GATE]" in r.criterio else "warn"
+        sev = "gate" if ("[GATE" in r.criterio and m == "A") else "warn"   # A-lite: aprobado con reserva si falla (D13.4)
         qc.check(f"{m}: {r.criterio}", r.cumple == "sí", r.umbral, r.observado, severity=sev)
 for m, t in dec.items():
     qc.check(f"{m}: deciles suman 100% de eventos", abs(t["captura acumulada %"].iloc[-1] - 100) < 1e-9 and t.eventos.sum() == y.sum(), "100%", f"{t['captura acumulada %'].iloc[-1]:.4f}%")

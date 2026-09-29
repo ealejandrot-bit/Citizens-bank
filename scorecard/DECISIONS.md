@@ -286,3 +286,11 @@ calcula como máx(TPR − FPR) sobre umbrales únicos.
 eventos): AUC 0.764 [0.747, 0.779] vs 0.698 [0.678, 0.716], sin traslape. A-lite vs count en holdout: ΔAUC +0.029
 [0.000, +0.053] (en el límite), Δcaptura +4.7 pp [+1.4, +7.8]. C2–C7 se cumplen en ambos modelos.
 Por la regla del brief el pipeline se detiene hasta que el usuario decida el criterio.
+**D13.4 · Criterio C1 cambiado por decisión del usuario (2026-09-29, opción 1).** C1 (gate) = el IC95 de la
+**diferencia pareada** (mismas réplicas bootstrap sobre los mismos hogares) excluye 0 en AUC y en captura del decil top,
+frente a `multi_signal_count` y `multi_signal_flag`. Motivo: el traslape de IC marginales no implica ausencia de
+diferencia; con dos modelos evaluados sobre los mismos hogares la prueba correcta es pareada. El criterio original
+(C1b) se sigue reportando como informativo y no se cumple frente a `multi_signal_count`.
+Resultado: **A aprobado** (ΔAUC vs count [+0.015, +0.064]; Δcaptura [+2.1, +8.7] pp). **A-lite aprobado con reserva**:
+ΔAUC vs count [+0.0005, +0.053] (en el 2.2% de las réplicas no supera al conteo); se mantiene como versión ejecutiva,
+no como la que ordena la operación. Mensaje para dirección: la mejora sobre `multi_signal_count` es real pero moderada.

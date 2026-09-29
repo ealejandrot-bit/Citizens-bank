@@ -21,6 +21,7 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 10. [Selección de variables](#10-selección-de-variables)
 11. [Estimación: campeón, versión ejecutiva y challenger](#11-estimación-campeón-versión-ejecutiva-y-challenger)
 12. [Escalamiento, tramos y salida por hogar](#12-escalamiento-tramos-y-salida-por-hogar)
+13. [Validación](#13-validación)
 
 ---
 
@@ -1020,3 +1021,118 @@ Lectura:
 **Decisiones y alternativas descartadas** · D12.1–D12.6
 - Puntos enteros; tramos con OOF y regla de máximo margen (descartada "más Estable"); overrides medidos; `segment`
   fuera de reason codes; etiquetas legibles; Alto con capacidad 10% (descartado Alto sin capacidad).
+
+---
+
+## 13. Validación
+
+**Objetivo**
+- Medir en el holdout, que no se usó para nada, si el scorecard ordena bien el riesgo, cuánto valor captura, cómo
+  se comporta en UHNW y si aporta sobre las reglas que ya existen.
+
+**Por qué**
+- Un modelo que no le gana a `multi_signal_count` no justifica su costo de gobierno. Es la prueba decisiva.
+
+**Método**
+- Holdout: 5,964 hogares, 360 eventos. Bootstrap 500 pareado y estratificado por evento: IC 95% de AUC, PR-AUC, KS
+  (máx. TPR − FPR sobre umbrales únicos, D13.2), Gini y captura del decil top (con desempate aleatorio esperado para
+  benchmarks discretos).
+- Decisivas: captura de eventos, de valor (RV de churners) y de `value_lost_6m` en el decil top; falsos positivos
+  en Crítico.
+- Por segmento, con IC (UHNW: 24 eventos).
+- Benchmarks: `multi_signal_count` (0–7) y `multi_signal_flag` (≥ 3 grupos).
+- Criterios C1–C7 (D13.1); C1 con diferencia pareada por decisión del usuario (D13.4).
+
+**Código** · `src/13_validation.py`, `src/metrics.py`
+
+**Salida** · `outputs/tables/13_holdout_metrics.csv`, `13_benchmark_comparison.csv`, `13_deciles_{a,alite}.csv`,
+`13_false_positives.csv`, `13_by_segment.csv`, `13_approval_criteria.csv`
+
+Discriminación y captura en holdout [DATA-SINT]:
+
+| Modelo | AUC [IC 95%] | PR-AUC | KS | Gini | Captura eventos decil top | Captura valor decil top |
+|:--|:--|--:|--:|--:|:--|:--|
+| **A** | 0.725 [0.696, 0.757] | 0.218 | 0.329 | 0.450 | 37.7% [33.0, 42.2] | 35.8% [27.2, 45.2] |
+| **A-lite** | 0.712 [0.680, 0.741] | 0.180 | 0.305 | 0.424 | 37.3% [32.8, 41.4] | 37.5% [28.7, 46.5] |
+| `multi_signal_count` | 0.683 [0.653, 0.715] | 0.173 | 0.281 | 0.367 | 32.6% [28.7, 36.7] | 31.4% [23.6, 39.5] |
+| `multi_signal_flag` | 0.641 [0.612, 0.670] | 0.094 | 0.281 | 0.281 | 20.8% [18.7, 23.1] | 21.6% [17.5, 25.6] |
+
+Diferencias pareadas frente a los benchmarks [DATA-SINT]:
+
+| Modelo | vs | ΔAUC [IC 95%] | Δcaptura eventos decil top [IC 95%] | Δcaptura valor decil top [IC 95%] |
+|:--|:--|:--|:--|:--|
+| A | `multi_signal_count` | +0.041 [+0.015, +0.064] | +5.1 pp [+2.1, +8.7] | +4.4 pp [−0.3, +9.8] |
+| A | `multi_signal_flag` | +0.084 [+0.058, +0.108] | +16.9 pp [+13.4, +20.7] | +14.2 pp [+7.5, +21.1] |
+| A-lite | `multi_signal_count` | +0.029 [+0.0005, +0.053] | +4.7 pp [+1.4, +7.8] | +6.1 pp [+0.5, +11.9] |
+| A-lite | `multi_signal_flag` | +0.071 [+0.043, +0.094] | +16.4 pp [+12.3, +20.0] | +15.9 pp [+8.8, +22.8] |
+
+![Curvas de ganancias](outputs/figures/13_gains.png)
+
+Deciles A [DATA-SINT] (holdout; D1 = mayor riesgo):
+
+| Decil | Hogares | Eventos | Tasa % | Lift | Captura acumulada % | Captura de valor acumulada % |
+|:--|--:|--:|--:|--:|--:|--:|
+| D1 | 596 | 136 | 22.8 | 3.78 | 37.8 | 35.9 |
+| D2 | 596 | 46 | 7.7 | 1.28 | 50.6 | 52.5 |
+| D3 | 597 | 30 | 5.0 | 0.83 | 58.9 | 63.1 |
+| D4 | 596 | 37 | 6.2 | 1.03 | 69.2 | 71.1 |
+| D5 | 597 | 32 | 5.4 | 0.89 | 78.1 | 78.9 |
+| D6 | 596 | 14 | 2.3 | 0.39 | 81.9 | 86.1 |
+| D7 | 596 | 24 | 4.0 | 0.67 | 88.6 | 92.0 |
+| D8 | 597 | 22 | 3.7 | 0.61 | 94.7 | 96.0 |
+| D9 | 596 | 6 | 1.0 | 0.17 | 96.4 | 97.2 |
+| D10 | 597 | 13 | 2.2 | 0.36 | 100.0 | 100.0 |
+
+![Tasa por decil](outputs/figures/13_deciles.png)
+
+Falsos positivos [DATA-SINT] (holdout):
+
+| Modelo | Tramo | Hogares | Churners | Precisión % | Falsos positivos % | % de no churners alertados | RV alertado sin churn $M |
+|:--|:--|--:|--:|--:|--:|--:|--:|
+| A | Crítico | 235 | 80 | 34.0 | 66.0 | 2.8 | 2,078 |
+| A | Alto | 606 | 69 | 11.4 | 88.6 | 9.6 | 6,393 |
+| A-lite | Crítico | 225 | 75 | 33.3 | 66.7 | 2.7 | 2,108 |
+| A-lite | Alto | 609 | 75 | 12.3 | 87.7 | 9.5 | 6,139 |
+
+Por segmento [DATA-SINT] (holdout):
+
+| Segmento | Modelo | Hogares | Eventos | AUC [IC 95%] | KS | Captura decil top [IC 95%] |
+|:--|:--|--:|--:|:--|--:|:--|
+| HNW | A | 5,635 | 336 | 0.725 [0.696, 0.754] | 0.326 | 39.0% [34.2, 43.7] |
+| HNW | A-lite | 5,635 | 336 | 0.711 [0.684, 0.740] | 0.303 | 37.2% [32.0, 42.0] |
+| HNW | `multi_signal_count` | 5,635 | 336 | 0.685 [0.652, 0.715] | 0.296 | 33.2% [28.7, 37.9] |
+| UHNW | A | 329 | 24 | 0.716 [0.626, 0.821] | 0.386 | 29.2% [12.5, 45.8] |
+| UHNW | A-lite | 329 | 24 | 0.711 [0.603, 0.818] | 0.365 | 25.0% [10.2, 45.8] |
+| UHNW | `multi_signal_count` | 329 | 24 | 0.653 [0.541, 0.768] | 0.292 | 20.8% [8.0, 37.7] |
+
+Criterios de aprobación [DATA-SINT]:
+
+| Criterio | A | A-lite |
+|:--|:--|:--|
+| C1 · supera a ambos benchmarks en AUC y captura decil top (IC de Δ pareada excluye 0) [GATE] | ✅ | ✅ (con reserva: IC inferior +0.0005) |
+| C1b · IC marginales sin traslape (criterio original, informativo) | ❌ vs count | ❌ vs count |
+| C2 · AUC IC inferior > 0.65 | ✅ 0.696 | ✅ 0.680 |
+| C3 · KS ≥ 0.25 | ✅ 0.329 | ✅ 0.305 |
+| C4 · captura de eventos decil top ≥ 30% | ✅ 37.7% | ✅ 37.3% |
+| C5 · captura de valor decil top ≥ 25% | ✅ 35.8% | ✅ 37.5% |
+| C6 · tasa por decil monótona (ρ ≤ −0.90) | ✅ −0.915 | ✅ −0.952 |
+| C7 · AUC UHNW ≥ 0.60 (informativo) | ✅ 0.716 | ✅ 0.711 |
+
+Lectura:
+- **A aprobado; A-lite aprobado con reserva** (D13.4). La mejora sobre `multi_signal_count` es real pero moderada
+  (+4 puntos de AUC, +5 pp de captura); sobre `multi_signal_flag` es grande (+17 pp de captura).
+- **Valor**: frente al conteo, la ganancia en captura de valor no es significativa para A (IC incluye 0). Los churners
+  grandes que el conteo ya detecta también los detecta el modelo; la ventaja del modelo está en el volumen de hogares.
+- **Decil top**: 22.8% de churn (3.8× la base), con 38% de los eventos y 36% del valor perdido. La curva deja de ser
+  estrictamente monótona entre D3 y D5 (5.0% / 6.2% / 5.4%): en la zona media el modelo casi no separa.
+- **UHNW**: AUC 0.72 con IC [0.63, 0.82]; con 24 eventos no hay precisión para afirmar más que "funciona similar a HNW".
+- **Falsos positivos**: 2 de cada 3 hogares en Crítico no se van en 6 meses. Es el costo de la alerta; con ~230
+  hogares en holdout (~700 en cartera) es manejable con SLA de 5 días.
+
+**QC** · 17 PASS · 2 WARN · 0 FAIL
+- Holdout 5,964 / 360; deciles suman 100% de eventos; C1–C7 cumplidos por A (gate) y A-lite. WARN: C1b (criterio
+  original) no se cumple frente a `multi_signal_count` en ninguno de los dos.
+
+**Decisiones y alternativas descartadas** · D13.1–D13.4
+- KS sobre umbrales únicos; C1 con diferencia pareada (decisión del usuario). Descartado detener el pipeline por el
+  traslape de IC marginales.
