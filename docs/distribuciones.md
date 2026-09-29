@@ -1,6 +1,6 @@
 # Distribuciones por variable
 
-Estado: **Paso 0 y Paso 1 construidos y validados** (variables 1, 2, 17, 18). El resto es una
+Estado: **Pasos 0, 1 y 2 construidos y validados** (variables 1–6, 17–20). El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
@@ -80,7 +80,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 17 | aum_vs_baseline_pct | Derivada de la serie de AUM ex-mercado; log-ratio t(6) | O | ≤ −20%: ≈ 8% | sin inversiones o < 6m de historia |
 | 18 | deposit_balance_vs_6m_avg_pct | Derivada de la misma serie que #2 (ρ esperado ≈ 0.7 con #2) | O | ≤ −30%: ≈ 8% | saldo base < $10k |
 
-### Paso 2 · Recurring deposits & flows
+### Paso 2 · Recurring deposits & flows — CONSTRUIDO sobre transacciones simuladas (ver decisiones D-14 a D-16 y docs/reports/step2_report.md; los flags ya no se sortean con Bernoulli, salen del algoritmo de detección)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|

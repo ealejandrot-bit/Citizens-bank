@@ -164,6 +164,58 @@ Paso 0 en t y simulados hacia atrás, así ningún valor del Paso 0 cambia. Comp
   alerta más que la caída neta ex-mercado (#17) ante el mismo episodio. Por eso las tasas objetivo
   son rangos.
 
+## Paso 2 · Recurring deposits & flows (variables 3, 4, 5, 6, 19, 20)
+
+**D-14 · Dos motores de señal: propensión y factor.**
+Con el factor de salida de dinero solo, ni el 3% más riesgoso pasa de 28% de churn, así que
+ninguna variable generada desde él alcanza IV "Very high" (0.30–0.50). El Excel define "Very high"
+como precursor directo de la salida ("the client is already moving money"). Por eso:
+- **Motor "propensión":** el evento se genera desde el índice de riesgo total del Paso 0.
+  Caso del Paso 2: la mudanza del banco principal, P = logit⁻¹(−7.6 + 4.2 · risk_index), ≈ 5% de
+  hogares, que corta nómina (85%), pensión (45%), dividendos (30%) y distribuciones (40%).
+  Estas variables se correlacionan con ε por diseño (ρ ≈ 0.13–0.15), no por fuga del target:
+  dependen de la propensión, no del sorteo Bernoulli del churn.
+- **Motor "factor":** redirección parcial del ingreso (z_outflow) y traslado de la nómina del
+  negocio (z_outflow). Estas sí deben ser independientes de ε, y lo son (|ρ| < 0.01).
+- El AUC combinado de los Pasos 1 y 2 es 0.65, todavía lejos del techo de 0.85.
+
+**D-15 · Detección del Excel corrida sobre transacciones simuladas.**
+Cada crédito recurrente se simula con su fecha durante 18 meses (≈ 520 mil transacciones), sobre un
+calendario real de EE. UU.: días hábiles y feriados federales, nómina catorcenal en viernes,
+quincenal el 15 y fin de mes, pensión en un día fijo por hogar, dividendos y distribuciones
+trimestrales. Hay pagos corridos (3%) y omitidos (1% por año). Montos netos: nómina 62% del bruto,
+pensión 85%. Encima se corre el algoritmo del Excel: ≥ 3 ocurrencias, CV de intervalos < 0.25,
+max(45d, 1.5 × intervalo), reemplazo de nómina ≥ 50%, flujos ≥ 10% del ingreso, 60 días para la
+nómina del negocio, y exclusiones de retiro, licencia, muerte y venta del negocio reportados.
+Resultados del detector:
+- 0% de falsos positivos en hogares sin eventos; 98% de recall en nóminas mudadas hace > 60 días.
+- El 99% de los cambios de empleo con reemplazo ≥ 50% no se marca.
+- Excluir el bono (> 2× la mediana del originador) importa: t = 31-dic, así que el bono de
+  diciembre cae en la ventana de 30 días de #5. Sin la regla, el "aumento de ingreso recurrente"
+  mediano de esos 2,411 hogares sería +396%; con la regla es −1%.
+- Ruido que se marca igual que en la vida real: retiros no reportados, cambios de empleo con
+  sueldo < 50% del anterior, licencias no reportadas, y mudanzas de menos de 45 días que todavía
+  no se ven.
+
+**D-16 · IV de flags de subpoblación: condicional y con varianza de muestreo.**
+Los flags de nómina, pensión y negocio se calibran con IV entre los hogares donde aplican. Con
+~100–300 eventos, el IV varía ±0.08 entre semillas. Por eso se exige que la semilla de producción y
+la mediana entre 20 semillas caigan en la banda, y se reporta p10–p90. La semilla de producción
+queda del lado bajo (nómina 0.32 vs mediana 0.39).
+
+| Variable | Fuerza Excel | Motor | Alerta | IV (semilla / mediana 20 semillas) | Lift |
+|---|---|---|---|---|---|
+| salary_deposit_stopped_flag | Very high | propensión | 3.6% | 0.32 / 0.39 | 5.7× |
+| recurring_deposit_stopped_flag | High | propensión | 4.2% | 0.22 / 0.25 | 4.3× |
+| recurring_deposit_change_pct | High | mixto | 10.7% | 0.17 / 0.16 | 2.7× |
+| net_deposit_flow_pct_90d | High | factor (serie Paso 1) | 18.1% | 0.16 / 0.20 | 2.4× |
+| pension_deposit_stopped_flag | High | propensión | 2.0% | 0.22 / 0.27 | 5.8× |
+| business_payroll_stopped_flag | High | factor | 5.6% | 0.16 / 0.19 | 3.3× |
+
+- `net_deposit_flow` es por construcción el cambio de saldo de la serie del Paso 1 (créditos −
+  débitos). Con el umbral del Excel (≤ −15%) alerta al 18%. Dividido por el saldo promedio puede
+  ser < −100%.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

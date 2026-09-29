@@ -6,6 +6,7 @@ conversión de moneda).
 """
 
 USD = "USD"
+USD_SIGNED = "USD±"  # monto en USD que puede ser negativo (p. ej. flujos netos)
 
 COLUMNS: dict[str, tuple[str, str]] = {
     "household_id": ("id", "Identificador del hogar"),
@@ -51,4 +52,19 @@ STEP1_COLUMNS: dict[str, tuple[str, str]] = {
     "deposit_balance_change_pct_180d": ("fracción", "#2 · media 6m ÷ 6m previos − 1"),
     "aum_vs_baseline_pct": ("fracción", "#17 · AUM ex-mercado t ÷ media meses −6..−1 − 1 (alerta ≤ −20%)"),
     "deposit_balance_vs_6m_avg_pct": ("fracción", "#18 · depósitos último mes ÷ media meses −6..−1 − 1 (alerta ≤ −30%)"),
+}
+
+# Paso 2 · Recurring deposits & flows (variables 3, 4, 5, 6, 19, 20 del Excel)
+STEP2_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "salary_deposit_stopped_flag": ("0/1", "#3 · nómina detectada que dejó de llegar (45d); NULL sin patrón de nómina"),
+    "pension_deposit_stopped_flag": ("0/1", "#19 · pensión detectada que dejó de llegar; NULL sin patrón de pensión"),
+    "recurring_deposit_stopped_flag": ("0/1", "#4 · algún flujo recurrente ≥ 10% del ingreso dejó de llegar"),
+    "recurring_deposit_stopped_type": ("categoría", "#4 · tipo del flujo detenido (explica la alerta)"),
+    "recurring_deposit_change_pct": ("fracción", "#5 · recurrente últimos 30d ÷ promedio mensual meses −7..−1 − 1"),
+    "net_deposit_flow_30d": (USD_SIGNED, "#6 · entradas − salidas de depósitos, último mes"),
+    "net_deposit_flow_pct_30d": ("fracción", "#6 · net_deposit_flow_30d ÷ saldo promedio"),
+    "net_deposit_flow_90d": (USD_SIGNED, "#6 · entradas − salidas de depósitos, últimos 3 meses"),
+    "net_deposit_flow_pct_90d": ("fracción", "#6 · net_deposit_flow_90d ÷ saldo promedio (alerta ≤ −15%)"),
+    "business_payroll_stopped_flag": ("0/1", "#20 · la nómina del negocio no corrió en 60d; NULL sin negocio / patrón"),
 }

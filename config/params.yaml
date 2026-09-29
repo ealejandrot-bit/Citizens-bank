@@ -193,3 +193,76 @@ step1:
     deposit_balance_change_pct_90d: {alert: "<= -0.25", rate: [0.06, 0.14], iv: [0.10, 0.30]}
     aum_vs_baseline_pct:            {alert: "<= -0.20", rate: [0.05, 0.12], iv: [0.10, 0.30]}
     deposit_balance_vs_6m_avg_pct:  {alert: "<= -0.30", rate: [0.05, 0.14], iv: [0.10, 0.30]}
+
+# ---------------------------------------------------------------------------
+# Paso 2 · Recurring deposits & flows (variables 3, 4, 5, 6, 19, 20)
+# ---------------------------------------------------------------------------
+# Se simula cada depósito recurrente con su fecha (calendario real, días hábiles)
+# en los 18 meses previos a t, y encima se corre el algoritmo de detección del
+# Excel. Ningún flag se sortea directamente.
+step2:
+  history_days: 548                        # 18 meses de transacciones.
+  net_pay_ratio_salary: 0.62               # [Supuesto] neto / bruto (impuestos PB + 401k).
+  net_pay_ratio_pension: 0.85              # [Supuesto]
+  amount_noise_sd: 0.01                    # [Supuesto] variación del monto por pago.
+  dividend_amount_noise_sd: 0.10           # [Supuesto]
+  business_distribution_amount_noise_sd: 0.35  # [Supuesto] distribuciones irregulares.
+  late_payment_p: 0.03                     # [Supuesto] pago corrido 1–3 días hábiles.
+  missed_payment_p_per_year: 0.01          # [Supuesto] un pago que no llega.
+  bonus_months: [2, 3, 12]                 # [Supuesto] mes del bono (feb, mar, dic).
+  business_payroll_frequency: {biweekly: 0.60, semimonthly: 0.40}   # [Supuesto]
+
+  # SEÑAL "Very high" · mudanza del banco principal (decisiones D-14). Es un precursor
+  # directo de la salida, así que depende de la propensión total a irse (índice de
+  # riesgo del Paso 0), no de un solo factor: P = logit⁻¹(a + b · risk_index).
+  move_intercept: -7.6                     # [Calibrado] ≈ 5% de hogares
+  move_slope: 4.2                          # [Calibrado] IV de la nómina detenida ≈ 0.32 (satura: el churn es Bernoulli)
+  move_window_days: 180
+  p_stop_given_move: {payroll: 0.85, pension: 0.45, dividend: 0.30, business_distribution: 0.40}
+  # SEÑAL "High" · redirección parcial del ingreso (sigue llegando una parte):
+  # P = logit⁻¹(a + b · z_outflow); el monto cae a factor × monto desde la fecha.
+  partial_intercept: -3.8                  # [Calibrado]
+  partial_slope: 1.5                       # [Calibrado]
+  partial_factor_range: [0.20, 0.60]
+  # SEÑAL · el negocio vinculado mueve su operación (nómina del negocio) a otro banco.
+  business_move_intercept: -5.0            # [Calibrado]
+  business_move_slope: 3.0                 # [Calibrado]
+
+  # RUIDO y EXCLUSIONES (independientes del riesgo).
+  job_change_p_12m: 0.05                   # [Supuesto]
+  job_change_ratio_sigma: 0.35             # [Supuesto] nuevo sueldo / anterior ~ LogNormal(0, σ)
+  job_change_gap_days: [0, 45]
+  retirement_p_12m: 0.10                   # [Supuesto] titulares de 60 a 67 años con nómina
+  retirement_age_range: [60, 67]
+  retirement_reported_p: 0.80              # [Supuesto] si se reporta → exclusión
+  leave_p_12m: 0.01                        # [Supuesto] licencia (60–120 días sin nómina)
+  leave_reported_p: 0.70
+  death_reported_p: 0.80                   # hogares excluidos del target (Paso 0)
+  business_sale_p_12m: 0.015               # [Supuesto] venta del negocio → exclusión
+
+  # Algoritmo de detección [Excel · Detailed logic + Parameters].
+  detection:
+    min_occurrences: 3
+    cv_max: 0.25
+    payroll_lookback_days: 180             # ≥ 3 en 6 meses (nómina)
+    recurring_lookback_days: 365           # ≥ 3 en 12 meses (otros flujos)
+    stop_days_min: 45
+    stop_interval_multiple: 1.5
+    min_stream_weight: 0.10
+    replacement_min_ratio: 0.50
+    bonus_multiple: 2.0                    # crédito > 2× la mediana del originador = bono (se excluye)
+    business_stop_days: 60
+
+  # IV: los flags que solo existen en una subpoblación (nómina, pensión, negocio) se
+  # calibran con IV condicional (entre hogares donde aplica); el resto sobre todos.
+  # Motor de cada variable (D-14): "propensión" = índice de riesgo total (precursor
+  # directo de salida); "factor" = z_outflow. Solo las de motor "factor" deben ser
+  # independientes del riesgo no observable ε.
+  targets:
+    salary_deposit_stopped_flag:    {alert: "= 1",      rate: [0.02, 0.08], iv: [0.30, 0.50], strength: Very high, iv_base: applicable, driver: propensity}
+    recurring_deposit_stopped_flag: {alert: "= 1",      rate: [0.03, 0.10], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: propensity}
+    recurring_deposit_change_pct:   {alert: "<= -0.40", rate: [0.03, 0.12], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    # Sale de la serie de depósitos del Paso 1 (ya validada): el umbral del Excel alerta ≈ 18%.
+    net_deposit_flow_pct_90d:       {alert: "<= -0.15", rate: [0.10, 0.22], iv: [0.10, 0.30], strength: High, iv_base: all, driver: factor}
+    pension_deposit_stopped_flag:   {alert: "= 1",      rate: [0.01, 0.06], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: propensity}
+    business_payroll_stopped_flag:  {alert: "= 1",      rate: [0.02, 0.08], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: factor}

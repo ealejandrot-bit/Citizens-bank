@@ -45,7 +45,9 @@ STEP_BY_GROUP = {
 }
 
 # Variables ya construidas y validadas (se actualiza al cerrar cada paso).
-BUILT = {"aum_outflow", "deposit_balance_change_pct", "aum_vs_baseline_pct", "deposit_balance_vs_6m_avg_pct"}
+BUILT = {"aum_outflow", "deposit_balance_change_pct", "aum_vs_baseline_pct", "deposit_balance_vs_6m_avg_pct",
+         "salary_deposit_stopped_flag", "recurring_deposit_stopped_flag", "recurring_deposit_change_pct",
+         "net_deposit_flow", "pension_deposit_stopped_flag", "business_payroll_stopped_flag"}
 
 COLS = {
     "#": "id", "Priority": "priority", "Group": "group", "Variable": "variable",
