@@ -17,6 +17,16 @@ Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
 | share UHNW en [2%, 10%] | OK | 5.515% |
 | antigüedad < edad adulta | OK |  |
 | history_months ≤ tope | OK |  |
+| salary_base_annual NULL ⇔ sin flujo | OK |  |
+| pension_monthly NULL ⇔ sin flujo | OK |  |
+| dividend_annual NULL ⇔ sin flujo | OK |  |
+| business_distribution_annual NULL ⇔ sin flujo | OK |  |
+| sueldo ≥ piso PB | OK | min = 150,008 |
+| mediana sueldo base en [$300k, $500k] | OK | 379,203 |
+| corr(log sueldo, log patrimonio) en [0.30, 0.60] | OK | 0.372 |
+| pensión ≥ piso | OK |  |
+| ingreso recurrente > 0 ⇔ algún flujo | OK |  |
+| frecuencias de pago ≈ config | OK | máx desvío 0.006 |
 | target NULL ⇔ excluido | OK |  |
 | hard y soft excluyentes | OK |  |
 | tasa hard churn 6m | OK | 6.037% vs 6.0% (±0.51%) |
@@ -49,7 +59,29 @@ Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
 | has_payroll_stream       |  0.5386 |
 | has_pension_stream       |  0.3401 |
 | has_dividend_stream      |  0.4642 |
-| has_any_recurring_stream |  0.9092 |
+| has_any_recurring_stream |  0.9326 |
+
+## Ingresos (usd)
+
+|                              |       count |         mean |          std |          min |           5% |          25% |          50% |            75% |            95% |             max |
+|:-----------------------------|------------:|-------------:|-------------:|-------------:|-------------:|-------------:|-------------:|---------------:|---------------:|----------------:|
+| salary_base_annual           | 10,772.0000 | 440,425.3937 | 242,565.2422 | 150,008.4200 | 182,854.3425 | 271,005.3550 | 379,203.0200 |   541,003.2700 |   912,131.9375 |  2,645,329.4300 |
+| bonus_annual                 | 10,772.0000 | 218,427.5747 | 192,529.8023 |     133.8900 |  26,671.5070 |  87,761.8575 | 166,704.7350 |   289,575.5300 |   590,795.2095 |  2,334,626.9300 |
+| pension_monthly              |  6,801.0000 |  10,512.0412 |   5,440.8625 |   2,523.1500 |   4,226.1100 |   6,673.0300 |   9,275.7800 |    13,042.9700 |    20,807.2800 |     53,462.4600 |
+| dividend_annual              |  9,284.0000 | 135,942.6418 | 306,319.4218 |     682.2400 |  11,082.3950 |  28,752.4750 |  60,951.7050 |   137,122.2750 |   478,712.8180 | 15,839,450.8700 |
+| business_distribution_annual |  5,287.0000 | 852,224.2910 | 984,022.9558 |  27,106.3400 | 134,447.3260 | 315,166.4500 | 567,076.2400 | 1,015,861.6550 | 2,462,868.4400 | 21,847,768.2500 |
+| recurring_income_monthly     | 20,000.0000 |  47,374.8848 |  63,409.4147 |       0.0000 |       0.0000 |  13,416.6550 |  30,628.6150 |    58,242.2925 |   149,424.4855 |  2,194,450.0500 |
+
+## Mediana de ingresos por segmento (usd)
+
+|                              |          HNW |           UHNW |
+|:-----------------------------|-------------:|---------------:|
+| salary_base_annual           | 369,461.7600 |   584,781.7650 |
+| bonus_annual                 | 163,047.4900 |   256,894.0350 |
+| pension_monthly              |   9,149.4200 |    12,154.1650 |
+| dividend_annual              |  56,254.3750 |   597,196.2750 |
+| business_distribution_annual | 520,075.7700 | 1,312,196.6600 |
+| recurring_income_monthly     |  29,200.5100 |   108,164.8600 |
 
 ## Churn por segmento
 

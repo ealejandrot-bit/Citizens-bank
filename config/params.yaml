@@ -55,6 +55,37 @@ population:
   retirement_age: 65                       # [Supuesto]
 
 # ---------------------------------------------------------------------------
+# Paso 0 · Montos de ingreso (Private Banking: ingresos altos)
+# ---------------------------------------------------------------------------
+# Todos los montos crecen con el patrimonio: ln(monto) = ln(mediana) +
+# ρ·σ·lv + σ·√(1−ρ²)·ε, con lv = log-valor de la relación estandarizado.
+# Así ρ ≈ correlación entre log-ingreso y log-patrimonio. Los pisos se aplican
+# remuestreando ε (no recortando, para no apilar masa en el piso).
+income:
+  # Sueldo base anual de quienes reciben nómina en Citizens.
+  salary_base_median: 350_000              # [Supuesto] profesionales / ejecutivos PB.
+  salary_sigma: 0.55                       # [Supuesto] p5 ≈ $150k, p95 ≈ $850k antes del ajuste por patrimonio.
+  salary_wealth_corr: 0.45                 # [Supuesto]
+  salary_min: 150_000                      # [Supuesto] piso de nómina PB.
+  # Bono anual como % del sueldo base = bonus_max × Beta(a, b) (media ≈ 50%).
+  # Llega en un solo pago al año: rompe la regularidad de la nómina y la
+  # detección de flujos recurrentes debe tratarlo aparte (Paso 2).
+  bonus_share_beta: [1.5, 3.0]             # [Supuesto]
+  bonus_share_max: 1.5                     # [Supuesto]
+  pay_frequency: {biweekly: 0.40, semimonthly: 0.45, monthly: 0.15}   # [Supuesto]
+  # Pensión mensual: Social Security (máx ≈ $5k) + pensión privada / anualidad.
+  pension_monthly_median: 9_000            # [Supuesto]
+  pension_sigma: 0.50                      # [Supuesto]
+  pension_wealth_corr: 0.30                # [Supuesto]
+  pension_monthly_min: 2_500               # [Supuesto]
+  # Dividendos = AUM × rendimiento ~ Beta (media 2%), pagos trimestrales.
+  dividend_yield_beta: [4.0, 196.0]        # [Supuesto]
+  # Distribuciones anuales del negocio vinculado al dueño (trimestrales, irregulares).
+  business_distribution_median: 500_000    # [Supuesto]
+  business_distribution_sigma: 0.90        # [Supuesto]
+  business_distribution_wealth_corr: 0.50  # [Supuesto]
+
+# ---------------------------------------------------------------------------
 # Paso 0 · Estructura latente de riesgo (tres trayectorias del deck)
 # ---------------------------------------------------------------------------
 # [Deck · slide 24] Trayectorias: outflow-led, silent drift, service-triggered.

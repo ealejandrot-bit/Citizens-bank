@@ -1,8 +1,14 @@
 {
   "step": 0,
   "master_seed": 20260928,
-  "params_sha256": "3e301946031bb14ef1a509537478805905c05e87d03f044574bd7bd7aa86e500",
+  "params_sha256": "d3800f336c9a40e7912c20ad5b495e65e46e6add6030a6a1b01962db74fa781f",
   "streams": [
+    "income.bonus",
+    "income.business",
+    "income.dividend_yield",
+    "income.pay_frequency",
+    "income.pension",
+    "income.salary",
     "latent.factors",
     "latent.idiosyncratic",
     "pop.advisory",
@@ -29,7 +35,7 @@
   "outputs": {
     "step0_households.csv": {
       "rows": 20000,
-      "sha256": "36e69820931f90c7b00d4d4c8f81db271a1bd6c725b420580ca6baee69d26bed"
+      "sha256": "da40c4d85b4730d7f9596f090126f0a60b24cfcb8f09b6b888585fb9854e3324"
     },
     "step0_truth.csv": {
       "rows": 20000,

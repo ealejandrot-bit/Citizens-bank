@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy import optimize, special, stats
 
+from .income import build_income
 from .seeds import SeedManager
 
 
@@ -134,7 +135,8 @@ def build_population(cfg: dict, seeds: SeedManager) -> tuple[pd.DataFrame, pd.Da
         "has_payroll_stream": has_payroll,
         "has_pension_stream": has_pension,
         "has_dividend_stream": has_dividend,
-        "has_any_recurring_stream": has_payroll | has_pension | has_dividend,
+        # Las distribuciones del negocio vinculado también son un flujo recurrente (trimestral).
+        "has_any_recurring_stream": has_payroll | has_pension | has_dividend | has_business,
         "age_primary": age,
         "tenure_years": tenure_years.round(2),
         "history_months": history_months,
@@ -143,6 +145,11 @@ def build_population(cfg: dict, seeds: SeedManager) -> tuple[pd.DataFrame, pd.Da
         "soft_churn_3m": label(soft),
         "value_lost_6m": np.where(excluded, np.nan, value_lost.round(2)),
     })
+
+    # Montos de ingreso: se insertan antes de las etiquetas para que el target quede al final.
+    income = build_income(base, cfg, seeds)
+    labels = ["churn_excluded", "hard_churn_6m", "soft_churn_3m", "value_lost_6m"]
+    base = pd.concat([base.drop(columns=labels), income, base[labels]], axis=1)
 
     truth = pd.DataFrame({"household_id": hh_id})
     for j, f in enumerate(names):

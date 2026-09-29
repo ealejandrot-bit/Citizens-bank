@@ -49,6 +49,13 @@ igual que en la realidad.
 | has_payroll_stream | Bernoulli según edad | activo (< 65) 0.80 · retirado 0.10 |
 | has_pension_stream | Bernoulli según edad | retirado 0.85 · activo 0.05 |
 | has_dividend_stream | Bernoulli condicionada a tener inversiones | 0.55 |
+| salary_base_annual | LogNormal ligada al patrimonio (ρ = 0.45), piso $150k por remuestreo | mediana $350k, σ = 0.55 → resultado: mediana $379k, p95 $912k |
+| bonus_annual | sueldo base × 1.5 · Beta(1.5, 3) | media ≈ 50% del base; un pago al año |
+| pay_frequency | Categórica | quincenal 45% · catorcenal 40% · mensual 15% |
+| pension_monthly | LogNormal ligada al patrimonio (ρ = 0.30), piso $2.5k | mediana $9k (Social Security + pensión privada) |
+| dividend_annual | AUM × rendimiento ~ Beta(4, 196) | rendimiento medio 2%, pagos trimestrales |
+| business_distribution_annual | LogNormal ligada al patrimonio (ρ = 0.50) | mediana $500k |
+| recurring_income_monthly | Suma: sueldo/12 + pensión + dividendos/12 + negocio/12 (sin bono) | resultado: mediana $31k (HNW $29k · UHNW $108k) |
 | z_outflow, z_neglect, z_service | Normal multivariada | media 0, ρ = 0.35 / 0.25 / 0.30 |
 | eps_idiosyncratic | Normal | σ = 0.6 (riesgo no observable) |
 | churn_excluded | Bernoulli | 0.006 |
@@ -141,6 +148,18 @@ hogares elegibles que cruza el umbral del Excel.
 | 37 | bureau_new_mortgage_elsewhere | Bernoulli-logit, tasa base ≈ 3%; más probable sin crédito ancla | O | = 1: ≈ 3% | sin aprobación legal (ver pregunta 2) |
 
 ---
+
+## Umbrales del Excel que parecen bajos para Private Banking
+
+Con sueldos de ~$380k más bono e ingresos recurrentes de ~$31k al mes, algunos pisos
+del Excel (hoja Parameters) dejarían pasar gasto normal como señal. Propuesta:
+
+| Parámetro (Excel) | Valor Excel | Propuesta PB | Motivo |
+|---|---|---|---|
+| Outflow baseline floor | $1,000 / mes | $10,000 / mes | Colegiaturas, impuestos y pagos grandes son habituales |
+| Monto mínimo por destino nuevo | $10,000 | $50,000 | Pagar a un contratista o una colegiatura no es "moverse" |
+| Saldo mínimo para % | $10,000 | $10,000 (sin cambio) | Solo evita divisiones por casi cero |
+| Detección de nómina (CV de intervalos < 0.25) | — | Excluir el bono anual antes de medir regularidad | Si no, el bono rompe el patrón y genera falsos "nómina detenida" |
 
 ## Decisiones abiertas
 

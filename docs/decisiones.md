@@ -60,6 +60,15 @@ El Paso 0 genera un corte t = 2025-12-31. El panel mensual (necesario para valid
 out-of-time, slide 20) se agrega cuando existan las variables, reutilizando los
 latentes con evolución temporal. **[Validar]** si lo quieres desde ya.
 
+**D-08 · Ingresos de Private Banking.**
+Los montos de ingreso (sueldo base, bono, pensión, dividendos, distribuciones del negocio)
+son LogNormales ligadas al log-patrimonio, con pisos PB (sueldo ≥ $150k) aplicados por
+remuestreo. Dependen del patrimonio pero no de los factores de riesgo: el nivel de ingreso es
+estructura, no señal. Resultado: sueldo base mediano $379k (UHNW $585k), bono mediano $167k,
+ingreso recurrente mensual mediano $31k (UHNW $108k). Todo esto está por validar.
+Agregarlos no cambió ninguna columna previa (flujos de semilla nuevos, D-01). La excepción
+es `has_any_recurring_stream`, que ahora incluye las distribuciones del negocio (+469 hogares).
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

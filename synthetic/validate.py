@@ -44,6 +44,24 @@ def check_step0(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict) -> list[tupl
     add("antigüedad < edad adulta", (base["tenure_years"] <= base["age_primary"] - 18 + 1e-9).all(), "")
     add("history_months ≤ tope", base["history_months"].max() <= p["history_months_cap"], "")
 
+    # Ingresos (Private Banking: ingresos altos)
+    inc = cfg["income"]
+    for col, flag in [("salary_base_annual", "has_payroll_stream"), ("pension_monthly", "has_pension_stream"),
+                      ("dividend_annual", "has_dividend_stream"),
+                      ("business_distribution_annual", "has_linked_business")]:
+        add(f"{col} NULL ⇔ sin flujo", (base[col].isna() == ~base[flag]).all(), "")
+    sal = base["salary_base_annual"].dropna()
+    add("sueldo ≥ piso PB", (sal >= inc["salary_min"]).all(), f"min = {sal.min():,.0f}")
+    add("mediana sueldo base en [$300k, $500k]", 300_000 <= sal.median() <= 500_000, f"{sal.median():,.0f}")
+    rho = np.corrcoef(np.log(sal), np.log(base.loc[sal.index, "relationship_value"]))[0, 1]
+    add("corr(log sueldo, log patrimonio) en [0.30, 0.60]", 0.30 <= rho <= 0.60, f"{rho:.3f}")
+    add("pensión ≥ piso", (base["pension_monthly"].dropna() >= inc["pension_monthly_min"]).all(), "")
+    rim = base["recurring_income_monthly"]
+    add("ingreso recurrente > 0 ⇔ algún flujo", ((rim > 0) == base["has_any_recurring_stream"]).all(), "")
+    freq = base["pay_frequency"].dropna().value_counts(normalize=True)
+    dev_f = max(abs(freq.get(k, 0) - v) for k, v in inc["pay_frequency"].items())
+    add("frecuencias de pago ≈ config", dev_f < 0.02, f"máx desvío {dev_f:.3f}")
+
     # Target
     eligible = ~base["churn_excluded"]
     add("target NULL ⇔ excluido", (base["hard_churn_6m"].isna() == base["churn_excluded"]).all(), "")
@@ -84,6 +102,10 @@ def summarize_step0(base: pd.DataFrame, truth: pd.DataFrame) -> dict[str, pd.Dat
     num = base[["relationship_value", "deposit_balance", "aum", "age_primary", "tenure_years",
                 "history_months"]].describe(percentiles=[.05, .25, .5, .75, .95]).T
     flags = base[[c for c in base if c.startswith("has_")]].mean().to_frame("share")
+    inc_cols = ["salary_base_annual", "bonus_annual", "pension_monthly", "dividend_annual",
+                "business_distribution_annual", "recurring_income_monthly"]
+    income = base[inc_cols].describe(percentiles=[.05, .25, .5, .75, .95]).T
+    income_seg = base.groupby("segment")[inc_cols].median().T
 
     by_seg = el.groupby("segment").agg(households=("hard", "size"), hard_churn=("hard", "mean"),
                                        soft_churn=("soft", "mean"))
@@ -98,6 +120,7 @@ def summarize_step0(base: pd.DataFrame, truth: pd.DataFrame) -> dict[str, pd.Dat
     by_decile.index.name = "decil_riesgo_latente"
     drivers = tr.groupby("primary_driver").size().to_frame("households")
     drivers["hard_churn"] = el.groupby(tr["primary_driver"].to_numpy())["hard"].mean()
-    return {"numéricas": num, "flags": flags, "churn por segmento": by_seg,
+    return {"numéricas": num, "flags": flags, "ingresos (USD)": income,
+            "mediana de ingresos por segmento (USD)": income_seg, "churn por segmento": by_seg,
             "logo vs AUM churn": churn, "churn por decil de riesgo latente": by_decile,
             "trayectoria principal": drivers}
