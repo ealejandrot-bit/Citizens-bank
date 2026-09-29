@@ -110,7 +110,8 @@ def objective(trial):
 
 study = optuna.create_study(direction="maximize", sampler=optuna.samplers.TPESampler(seed=SEED),
                             pruner=optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=5))
-study.optimize(objective, n_trials=N_TRIALS)
+study.optimize(objective, n_trials=N_TRIALS,
+               callbacks=[lambda st, t: print(f"trial {t.number + 1}/{N_TRIALS} mejor PR-AUC {st.best_value:.4f}", flush=True) if (t.number + 1) % 10 == 0 else None])
 trials = study.trials_dataframe()
 save_table(trials, "step11B_optuna_trials")
 BEST = study.best_params
@@ -138,6 +139,7 @@ def mk_xgb(seed):
     return f
 
 
+print("optuna listo", flush=True)
 cv_x, oof = cv_eval(mk_xgb(SEED), X, keep_oof=True)
 save_table(cv_x, "step11B_cv_folds_xgb")
 pd.DataFrame({"household_id": list(oof), "p_challenger_oof_r1": list(oof.values())}).to_parquet(PROC / "step11B_oof.parquet", index=False)
@@ -284,6 +286,7 @@ def top3(ph):
 
 base = top3(phr)
 has_reason = phr.max(axis=1) > 0
+print("bootstrap reason codes", flush=True)
 a1, a3, sgn = [], [], []
 for b in range(200):
     i = rng.choice(len(X), len(X), replace=True)
