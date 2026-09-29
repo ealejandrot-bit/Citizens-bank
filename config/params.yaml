@@ -446,3 +446,42 @@ step5:
     share_of_wallet:         {alert: "<= 0.30",  rate: [0.10, 0.40], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
     share_of_wallet_change:  {alert: "<= -0.10", rate: [0.03, 0.20], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
     trustee_change_flag:     {alert: "= 1",      rate: [0.01, 0.08], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+
+# ---------------------------------------------------------------------------
+# Paso 6 · Banker (variables 11, 12, 13, 35)
+# ---------------------------------------------------------------------------
+step6:
+  book_size: {HNW: 60, UHNW: 25}
+  # Las carteras se arman por calidad (índice de riesgo + ruido): hay libros mejores y peores.
+  book_sort_noise: 0.5                      # [Calibrado]
+  # Salida del banker (decisión por banker): P = logit⁻¹(a + b · riesgo medio del libro estandarizado).
+  departure_intercept: -3.2                 # [Calibrado] ≈ 10% de bankers en 6 meses
+  departure_slope: 2.0                      # [Calibrado]
+  client_request_intercept: -4.2            # cambio pedido por el cliente (z_service)
+  client_request_slope: 0.9
+  rebalance_p_6m: 0.03                      # ruido: rebalanceo de carteras
+  temporary_coverage_p_6m: 0.05             # excluida (< 30 días)
+  cadence_days: {HNW: 90, UHNW: 30}         # [Excel · Parameters]
+  # Contacto: tasa de contactos del banker ∝ (1 / cadencia) · diligencia · exp(−β · z_neglect).
+  banker_diligence_sigma: 0.30
+  contact_neglect_loading: 0.80             # [Calibrado]
+  outreach_per_cadence: 2.5                 # contactos del banker por período de cadencia
+  channel_mix: {call: 0.45, email: 0.30, message: 0.25}
+  call_minutes_median: 12
+  call_minutes_sigma: 0.8
+  mass_mailings_per_90d: 2                  # excluidos
+  reply_intercept: 0.9                      # P(respuesta ≤ 7 días) = logit⁻¹(a − b · z_neglect)
+  reply_neglect_slope: 1.1                  # [Calibrado]
+  reply_after_move_factor: 0.4              # quien se está mudando deja de contestar
+  welcome_call_p: 0.70                      # tras un cambio de banker, dentro de 14 días
+  meetings_per_6m: {HNW: 2, UHNW: 6}
+  cancel_intercept: -2.2                    # P(cancelada por el cliente) = logit⁻¹(a + b · z_neglect)
+  cancel_neglect_slope: 0.8                 # [Calibrado]
+  cancel_after_move_add: 1.5
+  cancelled_by_captured_p: 0.40             # solo 40% de los bankers registra "cancelado por"
+  iv_tolerance: 0.03
+  targets:
+    banker_change_6m_flag:         {alert: "= 1",    rate: [0.05, 0.20], iv: [0.30, 0.50], strength: Very high, iv_base: all, driver: mixed}
+    contact_gap_ratio:             {alert: "> 2.0",  rate: [0.02, 0.25], iv: [0.10, 0.30], strength: High, iv_base: all, driver: factor}
+    client_reply_rate:             {alert: "< 0.5",  rate: [0.05, 0.35], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+    meetings_cancelled_by_client:  {alert: ">= 2",   rate: [0.03, 0.20], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}

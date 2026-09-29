@@ -1,6 +1,6 @@
 # Distribuciones por variable
 
-Estado: **Pasos 0 a 5 construidos y validados** (variables 1–10, 17–32, 34). El resto es una
+Estado: **Pasos 0 a 6 construidos y validados** (variables 1–13, 17–32, 34, 35). El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
@@ -123,7 +123,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 31 | share_of_wallet_change | Normal(−β·O, 4pp) con colas t(6) | O | ≤ −10pp: ≈ 6% | — |
 | 32 | trustee_change_flag | Bernoulli-logit, tasa base ≈ 2%; incluye sucesiones por muerte | O + S | = 1: ≈ 2% | sin trust |
 
-### Paso 6 · Banker
+### Paso 6 · Banker — CONSTRUIDO (ver decisiones D-21 y docs/reports/step6_report.md; lo de abajo era la propuesta original)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|

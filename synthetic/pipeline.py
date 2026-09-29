@@ -13,6 +13,7 @@ from .seeds import SeedManager
 from .transfers import build_step3
 from .investments import build_step4
 from .relationship import build_step5
+from .banker import build_step6
 
 
 def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
@@ -30,4 +31,6 @@ def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
         out["f4"], out["sim4"] = build_step4(out["base"], out["truth"], cfg, seeds, out["exit"], out["sim1"], out["sim3"])
     if upto >= 5:
         out["f5"], out["sim5"] = build_step5(out["base"], out["truth"], cfg, seeds, out["exit"], out["sim1"])
+    if upto >= 6:
+        out["f6"], out["sim6"] = build_step6(out["base"], out["truth"], cfg, seeds, out["exit"])
     return out

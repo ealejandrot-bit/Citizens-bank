@@ -112,3 +112,15 @@ STEP5_COLUMNS: dict[str, tuple[str, str]] = {
     "share_of_wallet_change": ("fracción", "#31 · SOW hoy − SOW hace 6 meses (−0.10 = −10 pp)"),
     "trustee_change_flag": ("0/1", "#32 · Citizens deja de ser trustee o entra uno externo en 12m; NULL sin trust"),
 }
+
+# Paso 6 · Banker (variables 11, 12, 13, 35 del Excel)
+STEP6_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "banker_change_6m_flag": ("0/1", "#11 · cambió el banker principal en 6m (sin cobertura temporal < 30d)"),
+    "banker_change_reason": ("categoría", "#11 · banker_departure / client_request / book_rebalancing"),
+    "days_since_meaningful_contact": ("días", "#12 · días desde el último contacto significativo (365 = sin contacto en 12m)"),
+    "contact_gap_ratio": ("ratio", "#12 · días sin contacto significativo ÷ cadencia acordada (UHNW 30d, HNW 90d) (alerta > 2)"),
+    "client_reply_rate": ("fracción", "#13 · contactos del banker respondidos en ≤ 7d ÷ contactos, 90d; NULL si < 3"),
+    "meetings_cancelled_by_client": ("entero", "#35 · reuniones canceladas por el cliente en 6m; NULL si el banker no registra el campo"),
+    "meetings_cancelled_pct": ("fracción", "#35 · ÷ reuniones agendadas"),
+}

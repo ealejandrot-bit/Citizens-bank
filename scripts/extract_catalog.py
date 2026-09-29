@@ -52,7 +52,8 @@ BUILT = {"aum_outflow", "deposit_balance_change_pct", "aum_vs_baseline_pct", "de
          "external_transfer_acceleration", "net_external_flow", "external_destination_concentration",
          "outflow_vs_baseline_pct", "investment_redemption_pct", "fixed_income_maturity_not_reinvested",
          "cash_pct_of_portfolio_chg", "return_vs_benchmark", "positions_liquidated_pct",
-         "products_closed", "accounts_closed", "share_of_wallet", "share_of_wallet_change", "trustee_change_flag"}
+         "products_closed", "accounts_closed", "share_of_wallet", "share_of_wallet_change", "trustee_change_flag",
+         "banker_change_6m_flag", "contact_gap_ratio", "client_reply_rate", "meetings_cancelled_by_client"}
 
 COLS = {
     "#": "id", "Priority": "priority", "Group": "group", "Variable": "variable",

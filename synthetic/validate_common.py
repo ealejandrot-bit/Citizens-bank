@@ -14,7 +14,7 @@ from .validate_step1 import _fit_logit
 def simple_alert(f: pd.DataFrame, var: str, rule: str) -> pd.Series:
     x = f[var].astype(float)
     op, th = rule.split()
-    return {">": x > float(th), ">=": x >= float(th), "<=": x <= float(th), "=": x == float(th)}[op]
+    return {">": x > float(th), ">=": x >= float(th), "<": x < float(th), "<=": x <= float(th), "=": x == float(th)}[op]
 
 
 def calibration(f, base, targets, alert_fn=simple_alert) -> pd.DataFrame:

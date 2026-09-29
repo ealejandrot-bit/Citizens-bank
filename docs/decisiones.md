@@ -370,6 +370,36 @@ recupera −κ, y ε no entra.
 
 El AUC combinado de 27 variables es 0.696; el techo sigue en 0.851.
 
+## Paso 6 · Banker (variables 11, 12, 13, 35)
+
+**D-21 · La salida del banker se decide por banker, según la calidad de su libro.**
+- **Carteras:** libros de ~60 hogares HNW y ~25 UHNW, de un solo segmento, armados por calidad
+  (índice de riesgo + ruido). En 6 meses sale ~10% de los bankers (38 en esta semilla), y con más
+  probabilidad los de libros deteriorados. Cuando un banker sale, cambia todo su libro. La relación
+  con el churn tiene sentido: los libros peores pierden banker, y es a esos clientes a los que un
+  cambio más les pesa (Cerulli / 55ip).
+- **Otros cambios:** pedido del cliente (z_service) y rebalanceo (ruido). La cobertura temporal
+  (< 30 días) queda excluida, y el motivo se guarda.
+- **Variación entre semillas:** como deciden solo ~38 bankers, el IV de #11 varía bastante entre
+  semillas (p10–p90 0.25–0.40, mediana 0.32). Es el efecto real de que la decisión sea agrupada.
+- **Bitácora de 12 meses (~300 mil interacciones):** contactos del banker a una tasa que depende de
+  la cadencia (UHNW 30d, HNW 90d), la diligencia del banker y z_neglect. El contacto significativo
+  sigue la regla del Excel: reunión, llamada ≥ 5 min, o mensaje con respuesta del cliente en ≤ 7 días.
+  Los envíos masivos quedan excluidos. Quien se está mudando contesta menos y cancela más. Tras un
+  cambio de banker, el 70% recibe llamada de bienvenida; entre quienes cambiaron, la brecha mediana
+  es 0.29 con bienvenida y 0.44 sin ella.
+- **"Cancelado por" (#35, factibilidad Low):** solo lo registra el 40% de los bankers; en el resto
+  la variable es NULL, que es la situación real del Excel.
+
+| Variable | Excel | Alerta | IV mediano (p10–p90) | Lift |
+|---|---|---|---|---|
+| banker_change_6m_flag | Very high | 14.9% | 0.32 (0.25–0.40) | 4.1× |
+| contact_gap_ratio | High | 3.7% (> 2× cadencia) | 0.16 (0.13–0.20) | 2.0× |
+| client_reply_rate | High | 25.5% (< 50%) | 0.24 (0.17–0.30) | 1.9× |
+| meetings_cancelled_by_client | High | 5.3% (≥ 2) | 0.16 (0.11–0.21) | 2.1× |
+
+El AUC combinado de 31 variables es 0.757; el techo sigue en 0.851.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |
