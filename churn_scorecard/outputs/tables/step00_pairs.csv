@@ -1,0 +1,11 @@
+var A,var B,|ρ| ficha,|ρ| observado [DATA],coincide (±0.015)
+aum_outflow_pct_90d,aum_outflow_90d,0.98,0.979,True
+relationship_value,aum,0.97,0.966,True
+net_deposit_flow_pct_90d,deposit_balance_vs_6m_avg_pct,0.91,0.906,True
+deposit_balance_change_pct_90d,deposit_balance_vs_6m_avg_pct,0.88,0.882,True
+transfer_to_competitor_pct_90d,transfer_to_competitor_bank_amount_90d,0.82,0.815,True
+deposit_balance_change_pct_90d,net_deposit_flow_pct_90d,0.8,0.803,True
+aum_outflow_pct_90d,aum_vs_baseline_pct,0.77,0.769,True
+salary_deposit_stopped_flag,recurring_deposit_stopped_flag,0.76,0.764,True
+multi_signal_flag,multi_signal_count,0.76,0.761,True
+net_deposit_flow_pct_90d,net_external_flow_pct_90d,0.76,0.757,True

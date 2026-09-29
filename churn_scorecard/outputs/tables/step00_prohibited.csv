@@ -1,0 +1,9 @@
+columna,motivo
+hard_churn_6m,resultado post-T0
+soft_churn_3m,resultado post-T0
+value_lost_6m,resultado post-T0
+churn_excluded,resultado post-T0
+household_id,identificador / fecha de corte
+snapshot_date,identificador / fecha de corte
+multi_signal_flag,compuesto del proveedor sin regla documentada: solo challenger / análisis (I-3)
+multi_signal_count,compuesto del proveedor sin regla documentada: solo challenger / análisis (I-3)

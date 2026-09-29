@@ -1,0 +1,21 @@
+hecho,esperado (ficha),observado [DATA],coincide,nota
+Hoja / filas / columnas,"client_pulse_synthetic / 20,000 / 62","client_pulse_synthetic / 20,000 / 62",True,
+household_id único,sí,"20,000 únicos",True,
+Un solo snapshot,2025-12-31,2025-12-31,True,
+Segmento,"HNW 18,897 · UHNW 1,103","HNW 18,897 · UHNW 1,103",True,
+churn_excluded,123; targets NaN; history 13–24; tenure ≥ 1.14,123; targets NaN = True; history 13–24; tenure ≥ 1.14,True,
+Elegibles,"19,877","19,877",True,
+hard_churn_6m,"1,200 = 6.04%; pérdida = 1.000","1,200 = 6.04%; pérdida 1.000–1.000",True,
+soft_churn_3m,"1,756 = 8.83%; pérdida 0.20–0.60, mediana 0.40; disjunto","1,756 = 8.83%; pérdida 0.2003–0.5994, mediana 0.3978; solapes 0",True,
+value_lost_6m > 0 ⟺ hard ∪ soft,"2,956","2,956; ⟺ True",True,
+Churn por valor (elegibles),6.46% bruto; 10.32% económico,6.46%; 10.32%,True,
+Tamaño (elegibles),"ΣRV 206.27 B; ΣAUM 135.09 B (17,030); top 5% 37.4%; top 1% 18.1%; mediana 4.84 M; p5 1.27; p95 31.8","ΣRV 206.27 B; ΣAUM 135.09 B (17,030); top 5% 37.4%; top 1% 18.1%; mediana 4.84 M; p5 1.27; p95 31.8",True,"la ficha usa elegibles (19,877), no las 20,000 filas"
+relationship_value ≠ aum + deposit_balance ('RV es medida propia'),Verdadero,RV = aum (0 si NaN) + deposit_balance con |dif| máx $0.01; igualdad exacta de flotantes en 33.2% por redondeo a centavos,False,DISCREPANCIA D0.2: RV sí es la suma (al centavo); solo difiere por redondeo de flotantes
+Missing estructural has_investments,"faltan ⟺ has_investments = False (2,847)","2,847 elegibles sin inversiones",True,
+Missing no estructural,48.0 / 60.7 / 70.4 / 73.9 %,48.0 / 60.7 / 70.4 / 73.9 %,True,
+Antigüedad / historia (elegibles),"tenure < 1: 404; history < 24: 1,417","404; 1,417",True,
+Compuestos,flag ≡ count ≥ 3; ρ = 0.59 con suma de flags; tasa hard 2.8% (0) → 44.8% (7),≡ True; ρ Pearson = 0.59 (10 binarias visibles; Spearman 0.47); 2.8% → 44.8%,True,ρ = Pearson con las 9 *_flag + bureau (D0.3)
+"Señal univariada (AUC vs hard, missing → mediana)","máx ≤ 0.70: count 0.69, banker 0.64, SOW 0.64",multi_signal_count 0.693; multi_signal_flag 0.648; banker_change_6m_flag 0.641; share_of_wallet 0.636,True,"la ficha no lista multi_signal_flag (0.648), segundo en el ranking"
+Gradiente por tamaño,tasa hard por decil de RV 5.2%–7.1%,5.2%–7.1%,True,
+Pares redundantes |Spearman| > 0.75,10 pares (ver step00_pairs.csv),10 de 10 coinciden (±0.015),True,
+Valores imposibles,ninguno,"saldos < 0: 0; share_of_wallet ∉ (0, 1]: 0; tenure < 0: 0",True,

@@ -1,0 +1,5 @@
+opción,definición,eventos,base,indeterminados,comentario,tasa %
+A,hard_churn_6m = pérdida total a 6M,1200,19877,0,"cierre total, no fuga parcial; horizonte 6M",6.037128339286613
+B,hard ∪ (soft con value_lost/RV ≥ 0.25) = pérdida ≥ 25% en 6M,2740,19661,216,"definición económica (θ = 25%); soft 0.20–0.25 fuera de entrenamiento, dentro de scoring; mezcla 3M/6M",13.936218910533544
+C,hard ∪ soft,2956,19877,0,θ implícito = 20%,14.871459475776023
+D,soft sólo,1756,19877,0,solo fuga parcial a 3M,8.83433113648941

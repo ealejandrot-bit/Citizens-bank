@@ -1,0 +1,13 @@
+variable,gatillo,elegibles sin gatillo,NaN sin gatillo,valor sin gatillo (excepción),NaN con gatillo (excepción),% excepciones
+aum,has_investments,2847,2847,0,0,0.0
+aum_outflow_90d,has_investments,2847,2847,0,27,0.13583538763394878
+aum_outflow_pct_90d,has_investments,2847,2847,0,27,0.13583538763394878
+investment_redemption_pct,has_investments,2847,2847,0,27,0.13583538763394878
+positions_liquidated_pct,has_investments,2847,2847,0,48,0.24148513357146448
+cash_pct_of_portfolio_chg,has_investments,2847,2847,0,131,0.6590531770387885
+aum_vs_baseline_pct,has_investments,2847,2847,0,131,0.6590531770387885
+pension_deposit_stopped_flag,has_pension_stream,13116,12982,134,83,1.0917140413543291
+business_payroll_stopped_flag,has_linked_business,14623,14623,0,64,0.321980178095286
+salary_deposit_stopped_flag,has_payroll_stream,9169,9169,0,230,1.1571162650299343
+trustee_change_flag,has_trust,13556,13556,0,0,0.0
+return_vs_benchmark,has_advisory,7900,7900,0,251,1.2627660109674497
