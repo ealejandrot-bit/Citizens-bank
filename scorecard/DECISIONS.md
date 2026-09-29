@@ -188,3 +188,49 @@ Costo: se pierde la señal de missing en variables con poco "sin dato" (p. ej. `
 mismas restricciones (monotonía, 30 eventos, tamaño). `positions_liquidated_pct` pasa de IV 0 a 0.146.
 - Riesgo: leve optimismo del IV por elegir el máximo de 3; se controla con la estabilidad entre folds y con la
   validación en holdout (paso 13).
+
+## 2026-09-29 · Paso 10
+
+**D10.1 · Embudo:** IV ≥ 0.02 (38) → exclusión regulatoria (37) → clustering jerárquico promedio sobre 1 − |Spearman|
+de los WoE, corte |ρ| > 0.6, representante = mayor IV (30) → VIF < 5 sobre WoE (30; ninguna > 5 tras el clustering)
+→ LASSO L1 en la CV 5×5, C por regla 1-SE (C = 0.1) → regla de cierre (12 señales + `segment`).
+**D10.2 · Revisión regulatoria (DM.2).**
+- `bureau_new_mortgage_elsewhere` (IV 0.125): sin base legal documentada de propósito permisible (FCRA §604); su bin
+  "sin dato" (712 hogares sin propósito permisible / sin aprobación, tasa 7.3%) tendría WoE −0.204, es decir, la falta
+  de permiso daría puntos de riesgo (proxy indebido); ΔAUC CV por incluirla −0.0005. **Fuera del campeón**, se
+  reporta como modelo de sensibilidad (paso 11).
+- `age_primary` (IV 0.003): fuera por evidencia y por criterio de fair lending. Proxy de edad: |ρ| máx entre los WoE
+  finales y la edad = 0.043 (sin proxy).
+**D10.3 · Regla de cierre revisada (transparencia).** La regla inicial (orden por frecuencia L1 y luego IV) se fijó
+antes de ver resultados, pero en C_1SE 13 variables empataron en 100% de frecuencia y el tope de 12 dejó fuera toda la
+dimensión "deterioro de saldos" (incl. `deposit_balance_vs_6m_avg_pct`, IV 0.349), contra el requisito de diversidad
+del brief. Se revisó a "diversidad primero": la de mayor IV de cada dimensión de señal / nivel, luego relleno por IV,
+≤ 3 por dimensión. AUC CV: v1 0.7717 vs v2 0.7710 (dentro de 1 sd = 0.016). Ambas se reportan.
+- Nota: las AUC de este paso usan WoE de todo desarrollo (optimistas ~0.008; ver D11.1).
+
+## 2026-09-29 · Paso 11
+
+**D11.1 · CV anidada.** Con WoE ajustado en todo desarrollo, la CV ve las etiquetas del fold de prueba: AUC 0.772
+(optimista) vs **0.764 con bins re-ajustados dentro de cada fold**. Las OOF para calibrar (DM.1) salen de la versión
+anidada. Descartado: usar las OOF optimistas (sesgarían Platt hacia probabilidades más extremas).
+**D11.2 · Interacción UHNW × top-3** (cambio de banquero, transferencias externas, productos cerrados): ΔAUC −0.0007,
+mejora en 12% de los folds, β de interacción no significativos (p ≥ 0.60) → no se incluye.
+**D11.3 · Eliminación hacia atrás p > 0.05** (sin tocar forzadas): salen `deposit_balance_vs_6m_avg_pct` (p = 0.56, su
+información ya la cubren SOW y transferencias externas) y `transfer_to_competitor_bank_amount_90d` (p = 0.09). AUC
+anidado 0.7629 → 0.7637: no se pierde nada. Consecuencia: "deterioro de saldos" queda sin variable propia; se acepta
+porque la evidencia condicional dice que no aporta, y la diversidad del brief sigue en 8 dimensiones de señal.
+**D11.4 · Dos versiones del scorecard (pedido del usuario: explicable a la alta dirección).**
+- Regla A-lite fijada antes de ver resultados: forward selection con CV anidada sobre las variables de A (`segment`
+  forzada); el modelo más chico con AUC anidado ≥ AUC(A) − 0.01. Resultado: 4 señales (cambio de banquero, tasa de
+  respuesta al banquero, transferencias externas, share of wallet) + `segment`.
+- Regla de campeón: A-lite solo si además en holdout el IC pareado de Δ incluye 0 o la brecha ≤ 0.01. Resultado:
+  brecha holdout 0.012, IC [−0.024, −0.001] → **A campeón operativo; A-lite versión ejecutiva**. Por pedido del
+  usuario, ambas se escalan, validan y calibran en los pasos 12–15.
+**D11.5 · Campeón vs challenger.** LightGBM monótono (53 variables crudas, 107 árboles) no supera a A: ΔAUC holdout
+−0.002 [−0.012, +0.008], ΔPR-AUC +0.006 [−0.009, +0.019]; la regla exige +0.03 / +0.05 sin traslape. A campeón; costo
+de explicabilidad de B: sin tabla de puntos, drivers solo vía SHAP.
+**D11.6 · `segment` forzada con β inestable.** β = 2.06 (MLE) vs 1.33 (L2): su WoE es ≈ ±0.02 (IV 0.003), así que la
+contribución al logit es chica (0.10) aunque β sea grande. Se mantiene por diseño (calibración por segmento).
+**D11.7 · Hallazgo: holdout más difícil que la CV.** AUC holdout 0.725 vs 0.764 anidado; B muestra la misma brecha
+(0.722 vs 0.758), así que no es sobreajuste específico de A sino variación de muestra (360 eventos; IC ±0.03). Se
+revisa con PSI desarrollo vs holdout en el paso 15. Pendiente de calibración en holdout 0.84 → se corrige en el paso 14.

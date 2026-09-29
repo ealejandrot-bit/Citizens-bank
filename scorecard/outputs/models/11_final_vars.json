@@ -1,0 +1,79 @@
+{
+  "final": [
+    "banker_change_6m_flag",
+    "external_transfer_pct_of_balance_60d",
+    "products_closed_180d",
+    "share_of_wallet",
+    "recurring_deposit_change_pct",
+    "investment_redemption_pct",
+    "repeat_complaint_flag",
+    "return_vs_benchmark",
+    "client_reply_rate",
+    "contact_gap_ratio",
+    "segment"
+  ],
+  "lite": [
+    "segment",
+    "banker_change_6m_flag",
+    "client_reply_rate",
+    "external_transfer_pct_of_balance_60d",
+    "share_of_wallet"
+  ],
+  "champion": "A",
+  "champion_vars": [
+    "banker_change_6m_flag",
+    "external_transfer_pct_of_balance_60d",
+    "products_closed_180d",
+    "share_of_wallet",
+    "recurring_deposit_change_pct",
+    "investment_redemption_pct",
+    "repeat_complaint_flag",
+    "return_vs_benchmark",
+    "client_reply_rate",
+    "contact_gap_ratio",
+    "segment"
+  ],
+  "forced": [
+    "segment"
+  ],
+  "sensitivity": [
+    "banker_change_6m_flag",
+    "external_transfer_pct_of_balance_60d",
+    "products_closed_180d",
+    "share_of_wallet",
+    "recurring_deposit_change_pct",
+    "investment_redemption_pct",
+    "repeat_complaint_flag",
+    "return_vs_benchmark",
+    "client_reply_rate",
+    "contact_gap_ratio",
+    "segment",
+    "bureau_new_mortgage_elsewhere"
+  ],
+  "models": {
+    "A": [
+      "banker_change_6m_flag",
+      "external_transfer_pct_of_balance_60d",
+      "products_closed_180d",
+      "share_of_wallet",
+      "recurring_deposit_change_pct",
+      "investment_redemption_pct",
+      "repeat_complaint_flag",
+      "return_vs_benchmark",
+      "client_reply_rate",
+      "contact_gap_ratio",
+      "segment"
+    ],
+    "A-lite": [
+      "segment",
+      "banker_change_6m_flag",
+      "client_reply_rate",
+      "external_transfer_pct_of_balance_60d",
+      "share_of_wallet"
+    ]
+  },
+  "roles": {
+    "A": "campeón operativo (ranking y tramos)",
+    "A-lite": "versión ejecutiva (comunicación); se valida en paralelo"
+  }
+}

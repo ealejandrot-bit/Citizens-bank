@@ -1,0 +1,38 @@
+variable,cluster_var,IV,% missing,dimensión,representante,|ρ| máx con representante
+client_reply_rate,1,0.3051,47.8401,relación con banquero,True,1.0
+contact_gap_ratio,2,0.1694,0.0,relación con banquero,True,1.0
+repeat_complaint_flag,3,0.1411,0.0,fricción de servicio,True,1.0
+complaint_escalated_flag,4,0.1367,0.0,fricción de servicio,True,1.0
+complaint_age_days,5,0.1215,0.0,fricción de servicio,True,1.0
+return_vs_benchmark,6,0.0865,41.2133,rendimiento,True,1.0
+recurring_deposit_change_pct,7,0.2223,7.396,ingresos recurrentes,True,1.0
+recurring_deposit_stopped_flag,8,0.2032,7.4678,ingresos recurrentes,True,1.0
+salary_deposit_stopped_flag,9,0.1556,47.2436,ingresos recurrentes,True,1.0
+investment_redemption_pct,10,0.1483,14.49,salida de activos,True,1.0
+positions_liquidated_pct,10,0.1456,14.5835,salida de activos,False,0.7042
+cash_pct_of_portfolio_chg,10,0.1171,15.0219,salida de activos,False,0.6259
+aum_vs_baseline_pct,11,0.3414,15.0219,salida de activos,True,1.0
+aum_outflow_pct_90d,11,0.2657,14.49,salida de activos,False,0.8639
+aum_outflow_90d,11,0.2249,14.49,salida de activos,False,0.7609
+aum_outflow_to_rv_90d,12,0.267,0.1222,salida de activos,True,1.0
+deposit_balance_vs_6m_avg_pct,13,0.3494,0.7763,deterioro de saldos,True,1.0
+deposit_balance_change_pct_90d,13,0.3136,0.5534,deterioro de saldos,False,0.7706
+net_deposit_flow_pct_90d,13,0.2847,0.2444,deterioro de saldos,False,0.8175
+share_of_wallet_change,13,0.2474,0.7547,pérdida de productos,False,0.6525
+net_external_flow_pct_90d,14,0.3674,0.1366,externalización/competencia,True,1.0
+share_of_wallet,15,0.2863,0.0,nivel patrimonial,True,1.0
+products_closed_180d,16,0.3941,0.5391,pérdida de productos,True,1.0
+accounts_closed_90d,17,0.2235,0.1366,pérdida de productos,True,1.0
+new_external_destinations_90d,18,0.257,3.4141,externalización/competencia,True,1.0
+external_transfer_acceleration,19,0.2412,0.1366,externalización/competencia,True,1.0
+outflow_vs_baseline_pct,20,0.1066,0.7547,externalización/competencia,True,1.0
+transfer_to_competitor_pct_90d,21,0.4657,0.1366,externalización/competencia,True,1.0
+transfer_to_competitor_bank_amount_90d,22,0.389,0.1366,externalización/competencia,True,1.0
+external_transfer_pct_of_balance_60d,23,0.4242,0.0719,externalización/competencia,True,1.0
+banker_change_6m_flag,24,0.4792,0.5391,relación con banquero,True,1.0
+external_destination_concentration,25,0.0696,0.1366,externalización/competencia,True,1.0
+fixed_income_maturity_not_reinvested,26,0.0406,73.8015,salida de activos,True,1.0
+meetings_cancelled_by_client,27,0.0554,60.8424,relación con banquero,True,1.0
+trustee_change_flag,28,0.0473,68.6193,pérdida de productos,True,1.0
+business_payroll_stopped_flag,29,0.0306,73.7871,ingresos recurrentes,True,1.0
+tenure_years,30,0.0337,0.0,estructura,True,1.0

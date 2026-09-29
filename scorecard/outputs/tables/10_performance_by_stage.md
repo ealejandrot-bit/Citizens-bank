@@ -1,0 +1,8 @@
+| conjunto                                     |   variables |   AUC CV 5×5 |     sd |
+|:---------------------------------------------|------------:|-------------:|-------:|
+| 38 con IV ≥ 0.02 (incl. buró)                |          38 |       0.7704 | 0.0172 |
+| tras clustering                              |          30 |       0.7731 | 0.0161 |
+| tras VIF                                     |          30 |       0.7731 | 0.0161 |
+| cierre v1: orden por frecuencia (descartada) |          13 |       0.7717 | 0.0156 |
+| final (campeón, cierre v2)                   |          13 |       0.771  | 0.0161 |
+| final + buró (sensibilidad)                  |          14 |       0.7705 | 0.0163 |

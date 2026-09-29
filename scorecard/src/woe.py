@@ -134,3 +134,35 @@ def fit_binning(name: str, x: pd.Series, reason: pd.Series | None, y: np.ndarray
     t = vb.table(x, reason, y)
     vb.woe = dict(zip(t.bin, t.WoE))
     return vb
+
+
+def woe_frame(df: pd.DataFrame, binnings: dict, cols: list[str]) -> pd.DataFrame:
+    """Matriz WoE (una columna por variable) con los bins ajustados en desarrollo."""
+    out = {}
+    for c in cols:
+        r = df[f"{c}__miss"] if f"{c}__miss" in df else None
+        out[c] = binnings[c].transform(df[c], r)
+    return pd.DataFrame(out, index=df.index)
+
+
+def load_sample(out_dir, tables_dir, sample: str | None = "desarrollo") -> pd.DataFrame:
+    """Matriz de features + cluster + muestra/folds; filtra por muestra si se indica."""
+    X = pd.read_pickle(out_dir / "data" / "05_features.pkl").merge(pd.read_csv(out_dir / "data" / "07_clusters.csv"), on="household_id")
+    split = pd.read_csv(tables_dir / "04_split.csv").drop(columns=["segment", "hard_churn_6m"])
+    X = X.merge(split, on="household_id")
+    return (X if sample is None else X[X.muestra == sample]).reset_index(drop=True)
+
+
+def is_discrete(s: pd.Series) -> bool:
+    """Binaria / conteo / ≤ 10 valores o ≥ 70% en su mínimo (regla D9.1)."""
+    v = pd.Series(s).dropna()
+    vals, cnt = np.unique(v, return_counts=True)
+    return len(vals) <= 10 or (cnt.max() / len(v) >= 0.70 and vals[cnt.argmax()] == v.min())
+
+
+def fit_project_binning(c: str, df: pd.DataFrame, y: np.ndarray, params: dict) -> VarBinning:
+    """Binning con la configuración del paso 9 (para re-binnear dentro de cada fold de la CV)."""
+    dtype = "categorical" if c == "cluster" else "numerical"
+    mbs = 0.01 if (dtype == "categorical" or is_discrete(df[c])) else params["min_bin_pop"]
+    r = df[f"{c}__miss"] if f"{c}__miss" in df else None
+    return fit_binning(c, df[c], r, y, dtype=dtype, min_bin_size=mbs, min_events=params["min_bin_events"], min_event_rate_diff=0.005)

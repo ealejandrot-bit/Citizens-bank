@@ -1,0 +1,24 @@
+{
+  "final": [
+    "banker_change_6m_flag",
+    "external_transfer_pct_of_balance_60d",
+    "products_closed_180d",
+    "deposit_balance_vs_6m_avg_pct",
+    "share_of_wallet",
+    "recurring_deposit_change_pct",
+    "investment_redemption_pct",
+    "repeat_complaint_flag",
+    "return_vs_benchmark",
+    "transfer_to_competitor_bank_amount_90d",
+    "client_reply_rate",
+    "contact_gap_ratio",
+    "segment"
+  ],
+  "forced": [
+    "segment"
+  ],
+  "sensitivity_extra": [
+    "bureau_new_mortgage_elsewhere"
+  ],
+  "C_1se": 0.1
+}

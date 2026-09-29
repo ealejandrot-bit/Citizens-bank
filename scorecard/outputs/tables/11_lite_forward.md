@@ -1,0 +1,12 @@
+|   paso | agrega                               | dimensión                   |   AUC CV anidado |   variables (con segment) |   ganancia | en A-lite   |
+|-------:|:-------------------------------------|:----------------------------|-----------------:|--------------------------:|-----------:|:------------|
+|      1 | banker_change_6m_flag                | relación con banquero       |           0.6546 |                         2 |     0.1546 | True        |
+|      2 | client_reply_rate                    | relación con banquero       |           0.722  |                         3 |     0.0674 | True        |
+|      3 | external_transfer_pct_of_balance_60d | externalización/competencia |           0.7441 |                         4 |     0.0221 | True        |
+|      4 | share_of_wallet                      | nivel patrimonial           |           0.7541 |                         5 |     0.01   | True        |
+|      5 | return_vs_benchmark                  | rendimiento                 |           0.7591 |                         6 |     0.005  | False       |
+|      6 | repeat_complaint_flag                | fricción de servicio        |           0.7628 |                         7 |     0.0037 | False       |
+|      7 | recurring_deposit_change_pct         | ingresos recurrentes        |           0.764  |                         8 |     0.0012 | False       |
+|      8 | products_closed_180d                 | pérdida de productos        |           0.7645 |                         9 |     0.0006 | False       |
+|      9 | investment_redemption_pct            | salida de activos           |           0.7648 |                        10 |     0.0003 | False       |
+|     10 | contact_gap_ratio                    | relación con banquero       |           0.7637 |                        11 |    -0.0011 | False       |

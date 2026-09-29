@@ -1,0 +1,8 @@
+| etapa                                            |   variables |   salen |
+|:-------------------------------------------------|------------:|--------:|
+| 1. IV ≥ 0.02                                     |          38 |      18 |
+| 2. Exclusión regulatoria                         |          37 |       1 |
+| 3. Clustering de variables (|ρ| > 0.6)           |          30 |       7 |
+| 4. VIF < 5 (WoE)                                 |          30 |       0 |
+| 5–6. LASSO C_1SE (≥ 80% folds) + regla de cierre |          12 |      18 |
+| Final (+ segment forzada)                        |          13 |       0 |

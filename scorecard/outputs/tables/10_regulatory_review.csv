@@ -1,0 +1,4 @@
+variable,marco,IV,evidencia,decisión
+bureau_new_mortgage_elsewhere,FCRA §604 (propósito permisible); DM.2,0.1245,"sin base legal documentada en la base; bin 'sin dato' (sin propósito permisible / sin aprobación) = 712 hogares, tasa 7.3%, WoE -0.204 ≠ 0 → la falta de permiso recibiría puntos de riesgo (proxy); ΔAUC CV por incluirla (sobre las 38) = -0.0005",fuera del campeón; modelo de sensibilidad en paso 11
+age_primary,"Fair lending (ECOA / Reg B si el score toca decisiones de crédito), UDAAP",0.0032,IV 0.003 < 0.02: sin poder predictivo; se revisa además que las seleccionadas no sean proxy de edad,fuera por evidencia y por criterio regulatorio
+(proxy de edad),Fair lending,,|ρ| máx de las variables finales con edad = 0.043 (recurring_deposit_change_pct),sin proxy relevante (|ρ| < 0.30)

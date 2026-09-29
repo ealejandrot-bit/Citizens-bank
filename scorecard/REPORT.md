@@ -18,6 +18,8 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 7. [Segmentación](#7-segmentación)
 8. [Correlación y diagnóstico de estructura](#8-correlación-y-diagnóstico-de-estructura)
 9. [Binning, WoE e IV](#9-binning-woe-e-iv)
+10. [Selección de variables](#10-selección-de-variables)
+11. [Estimación: campeón, versión ejecutiva y challenger](#11-estimación-campeón-versión-ejecutiva-y-challenger)
 
 ---
 
@@ -730,3 +732,165 @@ Lectura:
 - Tamaño mínimo 5% / 1% según tipo de variable (desvío del brief, con evidencia). Descartados 5% para todo y sin
   mínimo.
 - WoE neutral para missing con < 30 eventos; búsqueda de pre-binning entre 3 tamaños.
+
+---
+
+## 10. Selección de variables
+
+**Objetivo**
+- Pasar de 38 variables con señal a un conjunto corto, no redundante, diverso y defendible ante regulación.
+
+**Por qué**
+- Un scorecard con 8–12 variables de dimensiones distintas es estable, explicable y resiste que una fuente de datos
+  falle; 38 variables correlacionadas no lo son.
+
+**Método**
+- IV ≥ 0.02 → exclusión regulatoria → clustering jerárquico (promedio) sobre 1 − |Spearman| de los WoE, corte
+  |ρ| > 0.6, representante = mayor IV (desempate: menor missing) → VIF < 5 sobre WoE → LASSO (L1) sobre WoE en la CV
+  5×5, C por regla 1-SE → regla de cierre: diversidad primero, ≤ 3 por dimensión, 8–12 señales, `segment` forzada.
+- Revisión regulatoria (DM.2): FCRA para el buró; fair lending para edad y proxies de edad.
+
+**Código** · `src/10_selection.py`
+
+**Salida** · `outputs/tables/10_selection_funnel.csv`, `10_var_clusters.csv`, `10_vif_woe.csv`, `10_lasso_path.csv`,
+`10_lasso_selection.csv`, `10_performance_by_stage.csv`, `10_regulatory_review.csv`, `10_age_proxy.csv`, `10_final_vars.csv`
+
+| Etapa | Variables | Salen |
+|:--|--:|--:|
+| 1. IV ≥ 0.02 | 38 | 18 |
+| 2. Exclusión regulatoria (buró) | 37 | 1 |
+| 3. Clustering de variables (|ρ| > 0.6) | 30 | 7 |
+| 4. VIF < 5 sobre WoE | 30 | 0 |
+| 5–6. LASSO C_1SE (≥ 80% de folds) + regla de cierre | 12 | 18 |
+| Final (+ `segment` forzada) | 13 | — |
+
+- Clustering: los bloques del paso 8 colapsan en un representante: salida de AUM → `aum_vs_baseline_pct`; depósitos
+  (cambio 90d, vs 6m, flujo neto, cambio de SOW) → `deposit_balance_vs_6m_avg_pct`; posiciones / cash / redención →
+  `investment_redemption_pct`.
+- LASSO (C_1SE = 0.1): 13 variables con β ≠ 0 en el 100% de los folds; las de flujos externos redundantes
+  (`transfer_to_competitor_pct_90d`, `net_external_flow_pct_90d`, destinos nuevos) caen a ≤ 8%.
+
+![LASSO](outputs/figures/10_lasso.png)
+
+Revisión regulatoria [DATA-SINT]:
+
+| Variable | Marco | IV | Evidencia | Decisión |
+|:--|:--|--:|:--|:--|
+| `bureau_new_mortgage_elsewhere` | FCRA §604 | 0.125 | sin base legal documentada; "sin dato" (712 hogares sin permiso) tendría WoE −0.20 → la falta de permiso sumaría riesgo; ΔAUC CV −0.0005 | fuera del campeón; sensibilidad en paso 11 |
+| `age_primary` | fair lending / UDAAP | 0.003 | sin poder predictivo | fuera |
+| proxies de edad | fair lending | — | |ρ| máx WoE finales vs edad = 0.043 | sin proxy |
+
+- Regla de cierre revisada (D10.3): la versión inicial dejaba fuera toda la dimensión "deterioro de saldos" por un
+  empate de frecuencias; se reemplazó por "diversidad primero". AUC CV 0.7717 (v1) vs 0.7710 (v2), diferencia
+  menor que 1 sd.
+- AUC CV (optimista, WoE de todo desarrollo): 38 variables 0.770 · 30 tras clustering 0.773 · 13 finales 0.771.
+  Reducir de 38 a 13 no cuesta poder.
+
+**QC** · 8 PASS · 0 WARN · 0 FAIL
+- 12 señales + `segment`; sin prohibidas ni excluidas; VIF máx. 2.16; ≤ 3 por dimensión; 9 dimensiones; toda
+  dimensión con candidata estable representada; pérdida de AUC vs 38 variables −0.0006; sin proxy de edad.
+
+**Decisiones y alternativas descartadas** · D10.1–D10.3
+- Buró fuera por FCRA (queda como sensibilidad). Regla de cierre v1 descartada por dejar una dimensión sin cubrir.
+
+---
+
+## 11. Estimación: campeón, versión ejecutiva y challenger
+
+**Objetivo**
+- Estimar el scorecard, probar su robustez, construir una versión ligera para la alta dirección y compararlos contra
+  un challenger de machine learning.
+
+**Por qué**
+- El campeón debe ser interpretable (β positivos sobre WoE, puntos por bin) y no perder frente a un modelo más
+  complejo. La versión ejecutiva responde al pedido de poder explicar el score en una lámina.
+
+**Método y fórmulas**
+- **A (campeón)**: logit P(bueno) = β₀ + Σ βⱼ·WoEⱼ con `statsmodels` sobre desarrollo; β > 0 esperado. Eliminación
+  hacia atrás p > 0.05 sin tocar `segment` (D11.3). Interacción UHNW × top-3 solo si ΔAUC ≥ 0.005 (D11.2).
+- **A-lite (versión ejecutiva)**: forward selection con CV anidada; el modelo más chico con AUC ≥ AUC(A) − 0.01 (D11.4).
+- **A′**: logística L2 (C por CV) para robustez de coeficientes. **A + buró**: sensibilidad regulatoria.
+- **B (challenger)**: LightGBM con restricciones monótonas según la dirección esperada (47 de 53 restringidas),
+  early stopping interno por fold, 107 árboles; importancia por permutación y SHAP en holdout.
+- **CV anidada** (D11.1): bins y WoE re-ajustados dentro de cada uno de los 25 folds; de ahí salen las OOF para
+  calibrar (DM.1).
+- Holdout (solo evaluación): AUC, PR-AUC, KS, Gini, Brier, pendiente de calibración; bootstrap pareado 500.
+  Regla: B gana solo con +0.03 AUC y +0.05 PR-AUC sin traslape de IC.
+
+**Código** · `src/11_estimation.py`, `src/metrics.py`
+
+**Salida** · `outputs/tables/11_modelA_coefficients.csv`, `11_modelAlite_coefficients.csv`, `11_backward_elimination.csv`,
+`11_cv_optimism.csv`, `11_interaction_test.csv`, `11_modelA2_robustness.csv`, `11_lite_forward.csv`, `11_lite_rule.csv`,
+`11_model_comparison.csv`, `11_champion_rule.csv`, `11_modelB_importance.csv`; modelos en `outputs/models/11_*`;
+OOF y predicciones de holdout en `outputs/data/11_*.csv`
+
+Modelo A · campeón operativo [DATA-SINT] (logit de "bueno" sobre WoE, desarrollo):
+
+| Variable | Dimensión | β | IC 95% | p | β·sd(WoE) |
+|:--|:--|--:|:--|--:|--:|
+| constante | — | 2.708 | [2.630, 2.786] | < 0.001 | — |
+| `client_reply_rate` | banquero | 0.639 | [0.469, 0.809] | < 0.001 | 0.396 |
+| `banker_change_6m_flag` | banquero | 0.649 | [0.547, 0.752] | < 0.001 | 0.371 |
+| `return_vs_benchmark` | rendimiento | 0.638 | [0.380, 0.896] | < 0.001 | 0.197 |
+| `external_transfer_pct_of_balance_60d` | externalización | 0.330 | [0.203, 0.457] | < 0.001 | 0.160 |
+| `share_of_wallet` | nivel | 0.312 | [0.166, 0.458] | < 0.001 | 0.146 |
+| `recurring_deposit_change_pct` | ingresos | 0.322 | [0.163, 0.480] | < 0.001 | 0.124 |
+| `repeat_complaint_flag` | fricción | 0.428 | [0.254, 0.603] | < 0.001 | 0.121 |
+| `contact_gap_ratio` | banquero | 0.266 | [0.070, 0.463] | 0.008 | 0.107 |
+| `segment` (forzada) | estructura | 2.056 | [0.639, 3.474] | 0.004 | 0.102 |
+| `products_closed_180d` | productos | 0.217 | [0.093, 0.340] | < 0.001 | 0.093 |
+| `investment_redemption_pct` | salida de activos | 0.243 | [0.051, 0.434] | 0.013 | 0.078 |
+
+- Todos los β > 0. La relación con el banquero (respuesta, cambio, brecha de contacto) aporta el mayor peso.
+- Eliminación hacia atrás: `deposit_balance_vs_6m_avg_pct` (p = 0.56) y `transfer_to_competitor_bank_amount_90d`
+  (p = 0.09); AUC anidado 0.7629 → 0.7637 (D11.3).
+- Robustez: A′ (L2, C = 1.0) con los mismos signos y razón A′/A entre 0.97 y 1.04 en las 10 señales. `segment`
+  0.65 (β inestable, contribución chica; D11.6).
+- Interacción UHNW × top-3: ΔAUC −0.0007, β no significativos → no se incluye (D11.2).
+
+Modelo A-lite · versión ejecutiva [DATA-SINT]:
+
+| Paso | Agrega | AUC CV anidado | Ganancia |
+|--:|:--|--:|--:|
+| 1 | `banker_change_6m_flag` | 0.655 | +0.155 |
+| 2 | `client_reply_rate` | 0.722 | +0.067 |
+| 3 | `external_transfer_pct_of_balance_60d` | 0.744 | +0.022 |
+| **4** | **`share_of_wallet`** ← A-lite | **0.754** | +0.010 |
+| 5 | `return_vs_benchmark` | 0.759 | +0.005 |
+| 6 | `repeat_complaint_flag` | 0.763 | +0.004 |
+| 7–10 | ingresos, productos, redención, brecha de contacto | 0.764–0.765 | ≤ +0.001 |
+
+- La historia en una frase: *el riesgo sube cuando el hogar cambió de banquero, dejó de responderle, está mandando
+  dinero fuera y tiene poca parte de su patrimonio con nosotros.* β (todos > 0): cambio de banquero 0.74, respuesta
+  0.80, transferencias externas 0.57, SOW 0.43, `segment` 2.21.
+- Cuatro señales dan el 96% de la ganancia de AUC sobre 0.5 del modelo completo (0.254 de 0.264 en CV anidada).
+
+Comparación en holdout [DATA-SINT] (5,964 hogares, 360 eventos; solo evaluación):
+
+| Modelo | Variables | AUC [IC 95%] | PR-AUC [IC 95%] | KS | Gini | Brier | Pendiente calib. | AUC CV honesta (sd) |
+|:--|--:|:--|:--|--:|--:|--:|--:|:--|
+| **A (campeón)** | 11 | **0.725** [0.697, 0.754] | **0.219** [0.183, 0.263] | 0.331 | 0.449 | 0.0525 | 0.84 | 0.764 (0.017) |
+| **A-lite (ejecutiva)** | 5 | 0.712 [0.683, 0.739] | 0.180 [0.152, 0.217] | 0.307 | 0.424 | 0.0534 | 0.84 | 0.754 (0.017) |
+| A′ (L2) | 11 | 0.725 [0.697, 0.754] | 0.221 [0.184, 0.267] | 0.331 | 0.450 | 0.0524 | 0.85 | 0.763 (0.017) |
+| B (LightGBM) | 53 | 0.722 [0.694, 0.752] | 0.225 [0.185, 0.269] | 0.336 | 0.444 | 0.0521 | 0.89 | 0.758 (0.019) |
+| A + buró | 12 | 0.724 [0.696, 0.753] | 0.217 [0.181, 0.260] | 0.329 | 0.448 | 0.0526 | 0.84 | 0.763 (0.017) |
+
+- **A vs B**: ΔAUC −0.002 [−0.012, +0.008], ΔPR-AUC +0.006 [−0.009, +0.019] → A se mantiene campeón. B no compra
+  nada a cambio de perder la tabla de puntos.
+- **A vs A-lite**: A-lite pierde 0.012 de AUC (IC pareado [−0.024, −0.001]) y 0.04 de PR-AUC. No es campeón, pero
+  por pedido del usuario se lleva como versión ejecutiva validada en paralelo (D11.4).
+- **Buró**: agregarlo no mejora (0.724 vs 0.725), lo que refuerza la exclusión por FCRA.
+- **Holdout más difícil que la CV** (0.725 vs 0.764): B muestra la misma brecha, así que es variación de muestra y no
+  sobreajuste de A (D11.7). La pendiente de calibración 0.84 (< 1: probabilidades algo extremas) se corrige en el paso 14.
+- **Drivers de B**: SHAP y permutación coinciden con A en los dos primeros (respuesta al banquero, cambio de banquero).
+  B usa además `tenure_years` y `cash_pct_of_portfolio_chg`, que A no tiene, sin ganar AUC.
+
+![Drivers](outputs/figures/11_drivers.png)
+
+**QC** · 8 PASS · 0 WARN · 0 FAIL
+- β > 0 en A y en A-lite; A′ con los mismos signos; p media de desarrollo = tasa (0.0604); OOF de CV anidada
+  (25 binnings por fold) que cubre todo desarrollo; holdout sin usar en ningún ajuste; B con monotonía declarada.
+
+**Decisiones y alternativas descartadas** · D11.1–D11.7
+- CV anidada para OOF; descartadas las OOF optimistas. Sin interacciones. Eliminación hacia atrás p > 0.05.
+- Dos versiones: A (operativa) y A-lite (ejecutiva). LightGBM descartado como campeón.
