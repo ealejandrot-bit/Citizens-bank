@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **10** · G0–G3 cerrados (2026-09-29) · bloque en curso: pasos 10–12 (G4).
-- Tests: 35 / 35 PASS (pasos 00–10).
+- Último paso completado: **11** · G0–G3 cerrados (2026-09-29) · bloque en curso: pasos 10–12 (G4).
+- Tests: 36 / 36 PASS (pasos 00–11).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -99,6 +99,12 @@ usuario · `[DEF-default]` default aplicado.
   Hallazgo: ordenar por p×RV global (sin tramo primero) captura ~59–61% del RV que se va al 10% con cualquier modelo, a
   cambio de menos eventos (18–21% vs 28%) [DATA]: la regla de prioridad pesa más que el modelo; es decisión de negocio.
   En el subconjunto justo A-lite: su política captura 24.9% del RV al 10% (Crítico+Alto de A-lite = 13% de hogares).
+
+- **D11.1 · Arquetipos.** Asignación sin reajuste de los arquetipos del M1 a los 803 eventos B de val: relación
+  desatendida 33.1%, salida activa 19.3%, desgaste silencioso 47.6% [DATA]. El EBM no detecta mejor a ninguno: Crítico+Alto
+  −4.9 / −2.6 / −2.6 pp vs M1 (el EBM marca 25.6% de hogares en Crítico+Alto vs 28.0% del M1); en desgaste silencioso
+  deja menos en Estable (20.7% vs 24.9%) pero no sube más a Crítico+Alto [DATA]. A-lite (justo) marca 10.9% del desgaste
+  silencioso en Crítico+Alto (marca solo 13% de hogares) [DATA]. El desgaste silencioso sigue siendo el punto ciego común.
 
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
