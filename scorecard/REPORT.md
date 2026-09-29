@@ -22,6 +22,7 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 11. [Estimación: campeón, versión ejecutiva y challenger](#11-estimación-campeón-versión-ejecutiva-y-challenger)
 12. [Escalamiento, tramos y salida por hogar](#12-escalamiento-tramos-y-salida-por-hogar)
 13. [Validación](#13-validación)
+14. [Calibración](#14-calibración)
 
 ---
 
@@ -1136,3 +1137,103 @@ Lectura:
 **Decisiones y alternativas descartadas** · D13.1–D13.4
 - KS sobre umbrales únicos; C1 con diferencia pareada (decisión del usuario). Descartado detener el pipeline por el
   traslape de IC marginales.
+
+---
+
+## 14. Calibración
+
+**Objetivo**
+- Que la probabilidad signifique lo que dice, en cuatro capas: hogar (modelo), tramo, segmento y valor, y overrides.
+
+**Por qué**
+- El ranking ordena la lista, pero la dirección y el comité leen probabilidades y "valor esperado en riesgo". Si el
+  modelo dice 40% y ocurre 34%, se sobredimensiona el esfuerzo y se pierde credibilidad.
+
+**Método y fórmulas**
+- Capa 1: logit(p_cal) = a + b·logit(p) con a y b ajustados sobre las OOF de desarrollo (DM.1). En holdout, solo
+  diagnóstico: pendiente de recalibración b (0.8–1.2), intercepto de ajuste (calibración en el agregado), Brier y
+  esperado vs observado por decil con Wilson 95%.
+- Capa 2: por tramo, esperado (media p_cal) vs observado con Wilson 90%; tasa oficial p = (eventos + m·p_modelo) /
+  (N + m), m = 30, sobre desarrollo.
+- Capa 3: HNW vs UHNW; Σ pᵢ·RVᵢ vs RV de churners por tramo (IC bootstrap de la razón); tasas por quintil de RV y
+  top 5%; interacción con log RV en desarrollo.
+- Capa 4: precisión de cada override frente a la tasa oficial de su tramo.
+
+**Código** · `src/14_calibration.py`
+
+**Salida** · `outputs/tables/14_layer1_model.csv`, `14_layer1_deciles.csv`, `14_layer2_tramo.csv`, `14_layer3_segment.csv`,
+`14_layer3_value_tramo.csv`, `14_layer3_value_quintile.csv`, `14_layer3_logrv_interaction.csv`, `14_layer4_overrides.csv`
+
+![Calibración](outputs/figures/14_calibration.png)
+
+Capa 1 · modelo [DATA-SINT]:
+
+| Modelo | Platt a / b (dev) | b holdout [IC 95%] | Intercepto de ajuste holdout [IC 95%] | Media p_cal / observado holdout | Brier (sin modelo) | Deciles dentro de Wilson 95% |
+|:--|:--|:--|:--|:--|:--|:--|
+| A | −0.089 / 0.962 | 0.876 [0.779, 0.973] | −0.042 [−0.155, +0.071] | 6.25% / 6.04% | 0.0524 (0.0567) | 10 de 10 |
+| A-lite | −0.054 / 0.977 | 0.856 [0.753, 0.958] | −0.039 [−0.151, +0.073] | 6.24% / 6.04% | 0.0533 (0.0567) | 9 de 10 |
+
+Capa 2 · tramo, modelo A [DATA-SINT]:
+
+| Tramo | Dev: N / eventos | Dev: p modelo / observado | Tasa oficial (m = 30) | Holdout: esperado | Holdout: observado [Wilson 90%] |
+|:--|:--|:--|--:|--:|:--|
+| Crítico | 461 / 177 | 39.4% / 38.4% | 38.5% | 39.6% | 34.0% [29.2, 39.3] |
+| Alto | 1,394 / 199 | 12.4% / 14.3% | 14.2% | 12.2% | 11.4% [9.4, 13.7] |
+| Vigilancia | 6,649 / 367 | 5.6% / 5.5% | 5.5% | 5.5% | 5.2% [4.6, 6.0] |
+| Estable | 5,409 / 97 | 2.1% / 1.8% | 1.8% | 2.2% | 2.8% [2.3, 3.4] |
+
+A-lite: tasa oficial Crítico 35.8% / Alto 14.0% / Vigilancia 5.5% / Estable 1.7%; en holdout solo Estable queda fuera
+de su Wilson 90% (2.6% [2.1, 3.3]).
+
+Capa 3 · segmento y valor, modelo A [DATA-SINT] (holdout):
+
+| Corte | Esperado | Observado [Wilson 90%] |
+|:--|--:|:--|
+| HNW (336 eventos) | 6.1% | 6.0% [5.5, 6.5] |
+| UHNW (24 eventos) | 8.7% | 7.3% [5.3, 10.0] |
+| RV Q1 ($1.0–2.2M) | 6.3% | 5.9% [4.8, 7.1] |
+| RV Q5 ($12–569M) | 6.7% | 6.5% [5.5, 7.8] |
+| Top 5% RV (≥ $31M) | 8.4% | 7.4% [5.2, 10.2] |
+
+| Tramo | Valor esperado Σp·RV $M | RV de churners $M | Observado / esperado [IC 95%] |
+|:--|--:|--:|:--|
+| Crítico | 1,257 | 800 | 0.64 [0.43, 0.95] |
+| Alto | 860 | 715 | 0.83 [0.51, 1.20] |
+| Vigilancia | 1,594 | 1,654 | 1.04 [0.75, 1.34] |
+| Estable | 482 | 476 | 0.99 [0.67, 1.42] |
+| Total | 4,194 | 3,645 | 0.87 [0.73, 1.04] |
+
+- Interacción con log RV (desarrollo): β = −0.014 [−0.177, +0.150], p = 0.87 → la calibración no depende del tamaño
+  del hogar; no se agrega interacción.
+
+Capa 4 · overrides [DATA-SINT]: las 5 reglas de Alto tienen precisión en holdout de 19–33%, por encima de la tasa
+oficial del tramo (14.2%). Pensión detenida (Crítico) tiene 37.5% en holdout y 29.0% en desarrollo, por debajo de la
+tasa del Crítico (38.5%) → candidata a bajar a Alto en la primera revisión (D14.5).
+
+Lectura:
+- **Calibración de hogar aceptable**: b dentro de 0.8–1.2, media calibrada = observada (IC del intercepto incluye 0),
+  10 de 10 deciles dentro del Wilson y Brier 7.6% mejor que no tener modelo.
+- **La cola alta sale algo extrema en holdout** (b = 0.88 con IC que excluye 1): Crítico esperado 39.6% vs observado
+  34.0%, y en valor 0.64×. En desarrollo el Crítico estaba calibrado. No se corrige con el holdout (DM.1); queda como
+  disparador de recalibración (D14.2).
+- **Tasas oficiales de Alto y Estable** fuera del Wilson en holdout por optimismo de selección de los cortes (D14.3).
+  Para comunicar a dirección, conviene dar la tasa por tramo como rango (desarrollo–holdout): Crítico 34–38%, Alto
+  11–14%, Vigilancia 5–6%, Estable 2–3%.
+- **Segmento y tamaño**: HNW, UHNW, quintiles de valor y top 5% calibrados dentro de su Wilson.
+
+Nota de diseño (no ejecutable con un corte transversal):
+- La intervención bajará el churn observado en Crítico y Alto; eso **no** es descalibración. Para no confundir ambos
+  efectos, la predicción se calibra sobre cohortes previas al lanzamiento (o sobre un grupo sin intervenir) y el
+  efecto de retención se mide por uplift con un **grupo de control aleatorio de 10–15% dentro de Alto**, sin contacto
+  proactivo, comparado contra los contactados.
+- En Crítico no se deja control (el costo de no actuar es demasiado alto); su efecto se infiere de Alto.
+
+**QC** · 14 PASS · 4 WARN · 0 FAIL
+- Platt b en rango (dev 0.96 / 0.98; holdout 0.88 / 0.86); calibración en el agregado (IC incluye 0); Brier mejor que
+  la base; deciles dentro de Wilson; HNW y UHNW calibrados; sin interacción con tamaño.
+- WARN: tasas oficiales de tramo fuera del Wilson en holdout (A: Alto y Estable; A-lite: Estable); valor en Crítico
+  observado/esperado 0.64 con IC que excluye 1 (ambos modelos).
+
+**Decisiones y alternativas descartadas** · D14.1–D14.5
+- Sin shift de intercepto ni recalibración con holdout; sin interacción por valor. Descartado re-ajustar Platt en
+  holdout (lo convertiría en muestra de desarrollo).

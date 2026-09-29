@@ -294,3 +294,26 @@ diferencia; con dos modelos evaluados sobre los mismos hogares la prueba correct
 Resultado: **A aprobado** (ΔAUC vs count [+0.015, +0.064]; Δcaptura [+2.1, +8.7] pp). **A-lite aprobado con reserva**:
 ΔAUC vs count [+0.0005, +0.053] (en el 2.2% de las réplicas no supera al conteo); se mantiene como versión ejecutiva,
 no como la que ordena la operación. Mensaje para dirección: la mejora sobre `multi_signal_count` es real pero moderada.
+
+## 2026-09-29 · Paso 14
+
+**D14.1 · Calibración ajustada solo en desarrollo (DM.1).** Platt sobre OOF anidadas (A: a = −0.089, b = 0.962;
+A-lite: −0.054, 0.977). Shift de intercepto: no se aplica (en desarrollo la media calibrada = tasa; en holdout el
+intercepto de ajuste −0.042 tiene IC [−0.155, +0.071] que incluye 0).
+**D14.2 · Hallazgo: probabilidades algo extremas en holdout.** b de recalibración en holdout 0.876 [0.779, 0.973]
+(A) y 0.856 (A-lite): dentro de 0.8–1.2 pero con IC que excluye 1. Se nota en Crítico (esperado 39.6% vs observado
+34.0%; valor observado/esperado 0.64 [0.43, 0.95]) y en Estable (2.2% vs 2.8%). En desarrollo el Crítico está
+calibrado (39.4% vs 38.4%). Lectura: el holdout es más difícil que desarrollo (D11.7); no se re-calibra con holdout.
+Disparador: si en el primer ciclo con datos reales b < 0.9 o el Crítico observado queda bajo su Wilson 90%, se
+recalibra con la cohorte nueva.
+**D14.3 · Tasa oficial por tramo** = shrinkage beta-binomial (m = 30) sobre desarrollo; con N de cientos a miles el
+shrinkage apenas mueve la tasa (Alto 14.28% → 14.24%). En holdout la tasa oficial de Alto (14.2%) y Estable (1.8%)
+quedan fuera del Wilson 90% (11.4% [9.4, 13.7] y 2.8% [2.3, 3.4]): los cortes se eligieron maximizando la separación
+en desarrollo (optimismo de selección) y el holdout separa menos. Alternativa para comunicar: usar la media de p_cal
+del tramo (Alto 12.2%, dentro del Wilson) y reportar la tasa observada de holdout como rango.
+**D14.4 · Valor.** Sin descalibración por tamaño: interacción con log RV en desarrollo β = −0.014 (p = 0.87) → no se
+agrega. Por quintil de RV y en el top 5% la tasa esperada cae dentro del Wilson 90%; la brecha de valor se concentra en
+Crítico (pocos hogares grandes: el mayor churner es 14% del valor observado del tramo).
+**D14.5 · Overrides.** Todas las reglas de Alto tienen precisión en holdout (19–33%) mayor que la tasa oficial del
+tramo (14.2%). Pensión detenida (Crítico): 37.5% en holdout vs tasa del tramo 38.5% (29.0% en desarrollo), por
+debajo del tramo en ambas muestras → candidata a bajar a Alto en la primera revisión con datos reales.

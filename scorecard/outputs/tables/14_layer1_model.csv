@@ -1,0 +1,3 @@
+modelo,Platt a (dev OOF),Platt b (dev OOF),"b en [0.8, 1.2] (dev)",b holdout (diagnóstico),IC95 b holdout,"b holdout en [0.8, 1.2]",intercepto de ajuste holdout (logit),IC95 intercepto,media p_cal holdout %,tasa observada holdout %,media p_cal dev OOF %,tasa dev %,Brier holdout,Brier sin modelo (tasa base),shift de intercepto aplicado
+A,-0.0889,0.9621,True,0.8759,"[0.779, 0.973]",True,-0.0417,"[-0.155, 0.071]",6.2493,6.0362,6.0375,6.0375,0.0524,0.0567,no (dev: media = tasa; holdout: IC incluye 0)
+A-lite,-0.0536,0.9773,True,0.8555,"[0.753, 0.958]",True,-0.0388,"[-0.151, 0.073]",6.2384,6.0362,6.0375,6.0375,0.0533,0.0567,no (dev: media = tasa; holdout: IC incluye 0)
