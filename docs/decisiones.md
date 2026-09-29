@@ -76,7 +76,7 @@ Citizens es un banco de EE. UU.: todos los montos son dólares nominales, sin co
 referencias también son de EE. UU.: ACH/SEC, ABA/SWIFT, Social Security, IRS, CFPB/OCC, FCRA.
 
 **D-10 · Validación estadística** (`scripts/stats_step0.py`, reporte en
-`docs/reports/step0_stats_report.md`). 196 pruebas, todas OK con α = 0.01 y corrección
+`docs/reports/step0_stats_report.md`). 200 pruebas, todas OK con α = 0.01 y corrección
 Benjamini-Hochberg:
 - **Bondad de ajuste:** cada columna contra la distribución y los parámetros con que se generó.
   Se usa KS y Cramér-von Mises sobre la PIT, χ² para edad y frecuencia de pago, y binomial

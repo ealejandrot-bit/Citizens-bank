@@ -29,7 +29,7 @@ docs/reports/               Reporte de cada paso
 pip install -r requirements.txt
 python scripts/extract_catalog.py   # catálogo de variables
 python scripts/build_step0.py       # genera data/synthetic/step0_*.csv + manifiesto
-python scripts/stats_step0.py       # 196 pruebas estadísticas + 200 semillas de referencia (~1 min)
+python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
 
