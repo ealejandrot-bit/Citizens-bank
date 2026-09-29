@@ -24,6 +24,7 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 13. [Validación](#13-validación)
 14. [Calibración](#14-calibración)
 15. [Estabilidad](#15-estabilidad)
+16. [Acción, arquetipos y EWS](#16-acción-arquetipos-y-ews)
 
 ---
 
@@ -1315,3 +1316,86 @@ Lectura:
 
 **Decisiones y alternativas descartadas** · D15.1–D15.4
 - Sin OOT simulado; cluster 2 bajo monitoreo sin modelo aparte.
+
+---
+
+## 16. Acción, arquetipos y EWS
+
+**Objetivo**
+- Traducir el score en acción: por qué se va cada hogar (arquetipo), qué hace quién y cuándo (playbook), y cuándo
+  suena la alarma (EWS).
+
+**Por qué**
+- El score predice; no decide la acción. Dos hogares con el mismo score pueden necesitar cosas opuestas: una
+  contraoferta de pricing o una llamada del Head of PB.
+
+**Método**
+- K-means sobre el riesgo por señal (−WoE) de los 840 churners de desarrollo, con 14 señales: las 10 de A más
+  depósitos vs 6m, AUM vs baseline, envíos a competidores y queja escalada. K ∈ {3, 4} con tamaño mínimo 10%,
+  ARI bootstrap ≥ 0.70 y mayor silhouette → K = 3.
+- Nombres fijados después de ver los centroides (D16.1). Churners de holdout y hogares alertados asignados al
+  centroide más cercano.
+- Playbook = tramo × arquetipo. EWS y matriz de migración como especificación (no calculables con un corte).
+
+**Código** · `src/16_action.py`
+
+**Salida** · `outputs/tables/16_archetypes.csv`, `16_archetype_k.csv`, `16_archetype_mix.csv`, `16_archetype_detection.csv`,
+`16_tramo_x_archetype.csv`, `16_playbook.csv`, `16_ews_spec.csv`, `16_migration_matrix_design.csv`;
+`outputs/models/16_archetypes.pkl`; `outputs/data/16_archetype_assignment.csv`
+
+![Arquetipos](outputs/figures/16_archetypes.png)
+
+Arquetipos de churners [DATA-SINT] (desarrollo; holdout entre paréntesis):
+
+| Arquetipo | % de churners | % del valor de churners | Señales dominantes (% en el peor bin) | Detectado en Crítico + Alto |
+|:--|--:|--:|:--|:--|
+| **Desenganche silencioso** | 48.8% (52.8%) | 44.5% | < 3 contactos del banquero en 90d 65%; brecha de contacto 21%; sin movimiento de dinero | **10.2% (6.8%)** · 60–66% queda en Vigilancia |
+| **Externalización activa** | 27.9% (27.5%) | 33.6% | transferencias externas 90%; envíos a competidores 89%; caída de AUM 75%; caída de depósitos 74% | 98.3% (99.0%) · 68–77% en Crítico |
+| **Salida con el banquero** | 23.3% (19.7%) | 22.0% | cambio de banquero 100%; < 3 contactos 61%; queja escalada 14% | 53.1% (53.5%) · 45% en Vigilancia |
+
+Lectura:
+- **El score ve muy bien el dinero que se mueve** (Externalización activa: 99% detectado, casi todo en Crítico) y
+  razonablemente el cambio de banquero (53%).
+- **Punto ciego: el Desenganche silencioso.** La mitad de los churners se va sin mover dinero ni cambiar de banquero
+  antes de T0; su única huella es la falta de contacto. El score lo deja en Vigilancia, donde la alerta individual no
+  alcanza (D16.2). Respuesta: campaña de cobertura en Vigilancia y, con datos reales, señales de engagement (uso de
+  app, sentimiento en el Client Assistant, reuniones), que la base no trae (D5.4).
+- La mezcla de arquetipos es estable entre desarrollo y holdout (diferencia máx. 4 pp).
+
+Playbook tramo × arquetipo [DATA-SINT] (hogares en toda la cartera elegible):
+
+| Tramo | Arquetipo | Hogares | Acción | Responsable | SLA primer contacto | Cadencia |
+|:--|:--|--:|:--|:--|:--|:--|
+| Crítico | Desenganche silencioso | 9 | Restablecer cobertura: el banquero tuvo < 3 contactos en 90 días con la mayoría de estos hogares; contacto proactivo, revisión de objetivos y familia (next gen), invitación a evento; escalar si no hay respuesta | banquero (Head of PB revisa cobertura del book) | ≤ 5 días hábiles | semanal hasta cerrar el caso; comité mensual revisa el 100% |
+| Crítico | Externalización activa | 620 | Conversación de consolidación: entender a dónde va el dinero, oferta competitiva (tasa, pricing, crédito), plan de wealth | banquero + especialista de producto | ≤ 5 días hábiles | semanal hasta cerrar el caso; comité mensual revisa el 100% |
+| Crítico | Salida con el banquero | 67 | Transición de relación: llamada del Head of PB, presentación de banquero senior, plan de 90 días; si el banquero anterior se fue a un competidor, contacto antes de que el cliente lo siga | Head of PB + nuevo banquero | ≤ 5 días hábiles | semanal hasta cerrar el caso; comité mensual revisa el 100% |
+| Alto | Desenganche silencioso | 764 | Restablecer cobertura: el banquero tuvo < 3 contactos en 90 días con la mayoría de estos hogares; contacto proactivo, revisión de objetivos y familia (next gen), invitación a evento; escalar si no hay respuesta | banquero (Head of PB revisa cobertura del book) | ≤ 15 días hábiles | quincenal; comité revisa muestra y overrides |
+| Alto | Externalización activa | 468 | Conversación de consolidación: entender a dónde va el dinero, oferta competitiva (tasa, pricing, crédito), plan de wealth | banquero + especialista de producto | ≤ 15 días hábiles | quincenal; comité revisa muestra y overrides |
+| Alto | Salida con el banquero | 768 | Transición de relación: llamada del Head of PB, presentación de banquero senior, plan de 90 días; si el banquero anterior se fue a un competidor, contacto antes de que el cliente lo siga | Head of PB + nuevo banquero | ≤ 15 días hábiles | quincenal; comité revisa muestra y overrides |
+| Vigilancia | Desenganche silencioso | 7,973 | Campaña de cobertura de bajo costo (contacto proactivo, revisión anual de objetivos, invitación a evento); prioriza hogares con < 3 contactos del banquero en 90 días y mayor p × valor | banquero (con apoyo de marketing / Copilot) | ≤ 30 días (campaña mensual) | mensual; pasa a caso individual si sube a Alto |
+
+- La prioridad dentro de cada celda es p × `relationship_value`. El arquetipo de un hogar alertado que no churneó es
+  una aproximación para elegir la acción (D16.4).
+
+Especificación de EWS:
+
+| Disparador | Condición | Acción | Prioridad |
+|:--|:--|:--|:--|
+| Entrada a Crítico | el tramo pasa a Crítico en el refresco | alerta inmediata a banquero y Head of PB; SLA 5 días | 1 |
+| Override activo | pensión detenida → Crítico; transferencias a competidores ≥ 10%, ≥ 2 destinos nuevos, queja repetida, cambio de trustee, insatisfacción → Alto | alerta con la regla como razón principal | 1–2 |
+| Subida de dos tramos | Estable → Alto o Vigilancia → Crítico entre dos refrescos | alerta aunque no llegue a Crítico (aceleración) | 2 |
+| Entrada a Alto | el tramo pasa a Alto (dentro del cupo del 10%) | tarea al banquero; SLA 15 días | 2 |
+| Cambio de arquetipo en alertado | hogar en Crítico/Alto cambia de arquetipo | actualizar la acción del playbook | 3 |
+
+- Refresco propuesto: mensual (las señales usan ventanas de 30–180 días).
+- Matriz de migración (diseño): tramo en t × tramo en t+1, con % de hogares y tasa de churn posterior por celda. Se
+  calcula desde el segundo refresco; sirve para detectar deriva (más hogares subiendo que bajando sin cambio de
+  política) y validar el disparador de "subida de dos tramos".
+
+**QC** · 6 PASS · 0 WARN · 0 FAIL
+- 840 churners de desarrollo; tamaño mínimo 23%; ARI 0.925; nombres únicos; mezcla dev vs holdout ≤ 4 pp; todo hogar
+  alertado con arquetipo y acción.
+
+**Decisiones y alternativas descartadas** · D16.1–D16.4
+- K = 3 por regla; nombres por reglas reproducibles tras ver centroides (descartado el nombrado automático por lift);
+  etiqueta de falta de contacto corregida; campaña de cobertura en Vigilancia.

@@ -331,3 +331,21 @@ churn observado 4.1% vs esperado 6.4%; en desarrollo su AUC es 0.751. Se monitor
 (D7.2). El resto de las bandas con ≥ 20 eventos tiene AUC ≥ 0.69.
 **D15.4 · `segment`:** β bootstrap [0.04, 3.39], positivo en 99.4% de réplicas pero con CV 0.39: confirma D11.6
 (forzada, efecto real pequeño e impreciso).
+
+## 2026-09-29 · Paso 16
+
+**D16.1 · Arquetipos.** K-means sobre −WoE de 14 señales en los 840 churners de desarrollo; K = 3 (silhouette 0.274,
+ARI bootstrap 0.925, mínimo 23%); K = 4 más estable (0.987) pero con menor silhouette y un cluster de 12.5%. Nombres
+fijados después de ver los centroides, con reglas reproducibles (mayor riesgo en envíos a competidores → Externalización
+activa; mayor riesgo en cambio de banquero → Salida con el banquero; el resto → Desenganche silencioso). El nombrado
+automático inicial por "dimensión con mayor lift" se descartó: para el cluster más grande todos los lifts eran
+negativos y el nombre resultante ("insatisfacción con el rendimiento") no correspondía a su perfil.
+**D16.2 · Hallazgo: punto ciego del score.** El Desenganche silencioso es 49% de los churners (44% de su valor) y solo
+7–10% cae en Crítico/Alto; 60–66% queda en Vigilancia. Su señal dominante es la falta de contacto (65% con < 3 contactos
+del banquero en 90 días, bin "sin dato" de `client_reply_rate`; 48% en toda la cartera). Externalización activa se
+detecta al 99% y Salida con el banquero al 53%. Se agrega al playbook una campaña de cobertura en Vigilancia.
+**D16.3 · Etiqueta corregida.** El peor bin de `client_reply_rate` es "sin dato" (< 3 contactos en 90d), no "tasa de
+respuesta baja": se etiqueta como falta de contacto del banquero, lo que convierte la acción en un tema de cobertura.
+**D16.4 · Asignación de no churners.** Los hogares alertados se asignan al centroide más cercano solo para elegir la
+acción; el arquetipo de un hogar sin eventos es aproximado (el centroide del Desenganche silencioso está cerca del
+perfil sin señales).

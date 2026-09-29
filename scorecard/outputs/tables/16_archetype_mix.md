@@ -1,0 +1,5 @@
+| arquetipo              |   % churners dev |   % churners holdout |
+|:-----------------------|-----------------:|---------------------:|
+| Desenganche silencioso |            48.81 |                52.78 |
+| Externalización activa |            27.86 |                27.5  |
+| Salida con el banquero |            23.33 |                19.72 |
