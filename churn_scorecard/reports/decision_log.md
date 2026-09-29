@@ -4,7 +4,7 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **17** · G4 abierto, esperando respuesta · G0–G3 cerrados (G0–G1 "usa defaults"; G2–G3 respuestas del usuario, 2026-09-29) · bloque cerrado: pasos 15–17 (G4).
+- Último paso completado: **17** · proyecto cerrado (versión 1.0.0) · G0–G4 cerrados (G0, G1, G4 "usa defaults"; G2–G3 respuestas del usuario, 2026-09-29).
 - Tests: 84 / 84 PASS (pasos 00–17).
 
 ## Parámetros vigentes
@@ -34,6 +34,9 @@ usuario · `[DEF-default]` default aplicado.
 | Cola alta de RV | sin ajuste por tamaño; monitoreo del quintil superior de RV | [DEF] G3-2 |
 | UHNW en Alto | sin calibración propia; revisión prioritaria del banquero | [DEF] G3-3 |
 | Control aleatorio en Alto | 12.5% (595 hogares) | [DEF] G3-4 |
+| Alerta de migración (EWS) | caída ≥ 40 puntos (1 PDO) o 2 tramos entre refrescos mensuales | [DEF-default] G4-1 |
+| Gobernanza | roles propuestos en `step17_governance.csv` | [DEF-default] G4-2 |
+| Versión | 1.0.0 cerrada con `reports/model_document.md` | [DEF-default] G4-3 |
 
 ## Decisiones
 - **D0.0 · Ubicación.** El proyecto vive en `churn_scorecard/` dentro del repo Citizens-bank, separado del generador
@@ -209,5 +212,8 @@ usuario · `[DEF-default]` default aplicado.
 ## G3 · respuesta del usuario (2026-09-29)
 - "1. keep all three. 2. don't adjust 3. no separe 4. 12.5%" → G3-1 a G3-4 [DEF].
 
+## G4 · respuesta del usuario (2026-09-29)
+- "usa defaults" → G4-1 a G4-3 [DEF-default]. Versión 1.0.0 cerrada.
+
 ## Preguntas abiertas
-- G4-1 a G4-3 en `reports/gate_4.md`.
+- Ninguna con el usuario. Pendientes con el equipo de datos: sección 13 de `reports/model_document.md`.
