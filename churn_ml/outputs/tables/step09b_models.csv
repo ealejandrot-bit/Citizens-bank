@@ -1,0 +1,4 @@
+modelo,variables,detalle,target de desarrollo,forma
+A-lite,5,"segment, banker_change_6m_flag, client_reply_rate, external_transfer_pct_of_balance_60d, share_of_wallet",A (hard churn 6M),puntos por bin (logística WoE)
+M1 · scorecard,8,ver churn_scorecard/reports/step11.md,B,puntos por bin (logística WoE)
+EBM,12,ver reports/step02.md,B,puntos por bin (EBM aditivo)

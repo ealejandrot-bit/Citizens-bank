@@ -34,3 +34,19 @@
 | G3-3 | El EBM sobrestima el tramo Crítico en validación. No se puede re-ajustar con estos datos sin tocar otra vez la validación. | documentar y re-calibrar con el próximo snapshot con resultados; mientras tanto, publicar la tasa observada de Crítico |
 
 Responde o escribe **"usa defaults"**. No avanzo al paso 10 hasta tu respuesta.
+
+## Adenda · comparativa con A-lite (pedido del usuario, paso 9b) [DATA]
+- A-lite (5 variables, `scorecard/`) medido sin re-ajustar en los 1,737 hogares de val fuera del desarrollo de todos los
+  modelos (238 eventos B):
+
+| | A-lite (5 var.) | M1 (8 var.) | EBM (12 var.) |
+|:--|--:|--:|--:|
+| PR-AUC target B | 0.262 | 0.304 | 0.305 |
+| Gini target B | 0.312 | 0.321 | 0.327 |
+| Precisión top 5% (B) | 40.2% | 49.4% | 49.4% |
+| Captura RV de eventos top 10% (B) | 21.4% | 20.3% | 19.6% |
+| PR-AUC target A (hard) | 0.153 | 0.191 | 0.209 |
+
+- A-lite encuentra menos churners (−0.04 de PR-AUC vs M1 y EBM, IC que excluye 0) a cambio de ser el más simple; en
+  este subconjunto el EBM y el M1 quedan empatados (+0.001).
+- Respuesta del usuario: defaults G3 aprobados; se sigue al paso 10.

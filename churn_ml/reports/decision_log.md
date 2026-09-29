@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **9** · G0–G2 cerrados ("usa defaults", 2026-09-29) · G3 abierto, esperando respuesta.
-- Tests: 29 / 29 PASS (pasos 00–09).
+- Último paso completado: **9b** · G0–G3 cerrados (2026-09-29) · bloque en curso: pasos 10–12 (G4).
+- Tests: 32 / 32 PASS (pasos 00–09b).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -29,6 +29,10 @@ usuario · `[DEF-default]` default aplicado.
 | Cola de RV y UHNW | sin ajuste; monitoreo (como G3-2/G3-3 de M1) | [DEF-default] G2-2 |
 | XGBoost | segundo candidato solo como comparación hasta el paso 9 | [DEF-default] G2-3 |
 | Tramos ML | cortes propios H-3 + vista a igual % que M1 | [DEF-default] G2-4 |
+| Uso conjunto | se evalúa en el paso 10 (el ML no reemplaza al M1) | [DEF-default] G3-1 |
+| XGBoost | retirado tras el paso 9 (documentado; cumple 4 de 8 criterios H-2) | [DEF-default] G3-2 |
+| Crítico del EBM | sobrestima en val: documentar, re-calibrar con el próximo snapshot con resultados; publicar tasa observada | [DEF-default] G3-3 |
+| A-lite | incluido en la comparativa (paso 9b) y en el uso conjunto (paso 10) | [DEF] G3 |
 
 ## Decisiones
 - **D0.1 · Herencia por copia.** 16 archivos de `churn_scorecard/` copiados a `data/inherited/` con sha256 idéntico al
@@ -82,6 +86,13 @@ usuario · `[DEF-default]` default aplicado.
   y signo 99.96%). EBM en Crítico sobrestima en val (61.3% esperado vs 53.3% observado, fuera de Wilson 90%); resto de
   tramos dentro [DATA]. Top 1% de EBM: precisión 75.9% vs 63.8% del M1 [DATA].
 
+- **D9b.1 · Comparativa con A-lite (pedido del usuario).** A-lite (5 variables, target A, `scorecard/`) no se re-ajusta:
+  se usan sus scores copiados con sha256. 4,042 de los 5,779 hogares B de val estaban en su desarrollo ⟹ comparación
+  justa en los 1,737 fuera del desarrollo de todos (238 eventos B, 106 A) [DATA]. Target B: PR-AUC A-lite 0.262 vs M1
+  0.304 vs EBM 0.305; EBM − A-lite +0.042 (IC95 +0.013 a +0.069), M1 − A-lite +0.041; EBM − M1 +0.001 (IC95 −0.028 a
+  +0.030) [DATA]. Target A: EBM 0.209, M1 0.191, A-lite 0.153 [DATA]. A-lite captura algo más de RV de eventos en el top
+  10% (21.4% vs 20.3% M1 y 19.6% EBM con B) [DATA]. Subconjunto pequeño: IC amplios.
+
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
   sub-representado; L6 sin dimensión digital ni eventos de vida; L7 causalidad no identificable.
@@ -96,5 +107,9 @@ usuario · `[DEF-default]` default aplicado.
 ## G2 · respuesta del usuario (2026-09-29)
 - "usa defaults" → G2-1 a G2-4 [DEF-default].
 
+## G3 · respuesta del usuario (2026-09-29)
+- "me encanta, pero incluye en la comparativa A-lite" → G3-1 a G3-3 [DEF-default]; A-lite agregado (paso 9b, D9b.1).
+- "sí documenta, y vamos al que sigue" → se documenta y se sigue al paso 10.
+
 ## Preguntas abiertas
-- G3-1 a G3-3 en `reports/gate_3.md`.
+- Ninguna. Las de G4 se abrirán al cerrar el paso 12.
