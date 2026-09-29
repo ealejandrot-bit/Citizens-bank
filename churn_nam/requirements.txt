@@ -1,0 +1,17 @@
+pandas
+numpy
+scipy
+scikit-learn
+statsmodels
+optbinning
+lightgbm
+xgboost
+interpret-core
+optuna
+shap
+matplotlib
+openpyxl
+pyarrow
+pytest
+pyyaml
+torch  # CPU; pendiente de aprobación del usuario (fase 9)

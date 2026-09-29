@@ -1,0 +1,63 @@
+# Client Pulse · Modelo 3 (NAM) — parámetros. null = lo decide el usuario; la fase que lo usa se detiene.
+project:
+  seed: 42
+  report_header: "Dataset sintético, corte transversal: valida pipeline y metodología, no conclusiones sobre clientes reales."
+
+paths:
+  raw: data/raw/client_pulse_synthetic.xlsx          # copia de ../churn_scorecard/data/raw (sha256 b69feb13553901c4…)
+  sheet: client_pulse_synthetic
+  processed: data/processed
+  outputs: outputs
+  reports: reports
+  m1: ../churn_scorecard                             # solo lectura
+  m2: ../churn_ml                                    # solo lectura
+  alite: ../scorecard                                # solo lectura
+
+target:
+  primary: B                   # hard ∪ (soft con value_lost/RV ≥ theta); decidido: mismo split que M1/M2 (usuario, 2026-09-29)
+  theta: 0.25                  # heredado de M1 (I-1)
+  exclude_churn_excluded: true # heredado de M1 (I-4)
+  exclude_tenure_lt: 1.0       # heredado de M1 (I-8)
+
+splits:
+  reuse_m1_split: true         # decidido por el usuario (2026-09-29)
+  validation_frac_of_dev: null # fracción de dev reservada como validación (fases 6–11)
+  cv_folds: 5
+  cv_repeats: 5
+
+leakage:
+  forbidden: [value_lost_6m, hard_churn_6m, soft_churn_3m, churn_excluded, household_id, snapshot_date]
+  excluded_regulatory: [age_primary, bureau_new_mortgage_elsewhere]   # G1-3 de M1
+  multi_signal_count: null     # include | exclude | challenger_only
+
+class_weights: [none, balanced]
+
+nam:
+  hidden_units: null           # por subred
+  epochs_max: null
+  learning_rate: null
+  weight_decay: null
+  dropout: null
+  ensemble_members: null
+  monotone_method: positive_weights   # pesos ≥ 0 + activaciones monótonas ⟹ violación = 0 por construcción
+
+gate:
+  delta_pr_auc: null           # ΔPR-AUC mínimo NAM − champion (test, pooled)
+  delta_lift_at_5: null        # Δlift@5% mínimo
+  bootstrap_reps: 2000
+
+calibration:
+  methods: [platt, isotonic]
+  select_by: ece
+
+scorecard:
+  pdo: null
+  s0: null
+  o0: null
+  odds_convention: null        # good:bad | bad:good
+  score_min: null
+  score_max: null
+
+ews:
+  alerts_per_month: null       # capacidad de alertas
+  horizon_months: 6            # horizonte del target (hard 6M)
