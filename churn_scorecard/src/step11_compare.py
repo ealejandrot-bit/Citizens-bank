@@ -51,6 +51,17 @@ n_fail = int((H.cumple == "no").sum())
 recomm = ("Se mantiene el campeón WoE + logística: el challenger no cumple " + str(n_fail) + " de los criterios H-2 evaluables en dev."
           if n_fail else "El challenger cumple todos los criterios H-2 evaluables en dev; la decisión final se toma con validación (pasos 13–14).")
 
+CAL = ""
+if (TABLES / "step11C_calibration_metrics.csv").exists():
+    cm = T("step11C_calibration_metrics")
+    CAL = f"""### 11C · Ajuste de probabilidad: ML y random forest vs campeón (OOF dev, CV r1; pedido en G2-4) [DATA]
+{md_table(cm, floatfmt=",.4f")}
+
+- Verificación: tasa observada {cm['tasa observada %'].iloc[0]:.2f}% igual para todos; ECE = Σ share decil × |predicha − observada| [DATA].
+- Descriptivo (`src/step11_calibration_view.py`); la calibración formal (Platt sobre validación) es del paso 14, solo campeón.
+
+![Ajuste de probabilidad](../outputs/figs/step11C_calibration.png)
+"""
 rep = f"""# Paso 11 · Estimación (campeón y challenger)
 
 ## Objetivo
@@ -110,6 +121,7 @@ rep = f"""# Paso 11 · Estimación (campeón y challenger)
 ### Estabilidad de reason codes (200 réplicas bootstrap, 1,000 hogares de dev) [DATA]
 {md_table(pd.concat([rca, rcb], ignore_index=True), floatfmt=",.1f")}
 
+{CAL}
 ### Comparación pareada campeón vs challenger (CV 5×5, dev) [DATA]
 {md_table(cmp_, floatfmt=",.4f")}
 

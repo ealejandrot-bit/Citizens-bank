@@ -130,6 +130,20 @@
 | campeón            |        200 |                 1000 |                         1000 |              91.7 |              96.5 |                                89.0 |                            100.0 |                                              nan   |
 | challenger XGBoost |        200 |                 1000 |                         1000 |              77.0 |              80.2 |                                64.3 |                            nan   |                                               99.9 |
 
+### 11C · Ajuste de probabilidad: ML y random forest vs campeón (OOF dev, CV r1; pedido en G2-4) [DATA]
+| modelo                              |   Brier |   pendiente b |   media p % |   tasa observada % |   ECE (pp) |   tasa decil 10 predicha % |   tasa decil 10 observada % |
+|:------------------------------------|--------:|--------------:|------------:|-------------------:|-----------:|---------------------------:|----------------------------:|
+| campeón (logística WoE)             |  0.1074 |        0.9295 |     13.9210 |            13.8778 |     1.1267 |                    42.9998 |                     40.1038 |
+| XGBoost monotónico                  |  0.1058 |        0.9807 |     13.6400 |            13.8778 |     0.5866 |                    42.5981 |                     42.4759 |
+| EBM monotónico                      |  0.1057 |        0.9884 |     13.8833 |            13.8778 |     0.3545 |                    42.9749 |                     42.8466 |
+| random forest (crudo)               |  0.1822 |        1.0743 |     40.5114 |            13.8778 |    26.6336 |                    74.6233 |                     42.1053 |
+| random forest (corregido por prior) |  0.1071 |        1.0743 |     11.6982 |            13.8778 |     2.1981 |                    34.8035 |                     42.1053 |
+
+- Verificación: tasa observada 13.88% igual para todos; ECE = Σ share decil × |predicha − observada| [DATA].
+- Descriptivo (`src/step11_calibration_view.py`); la calibración formal (Platt sobre validación) es del paso 14, solo campeón.
+
+![Ajuste de probabilidad](../outputs/figs/step11C_calibration.png)
+
 ### Comparación pareada campeón vs challenger (CV 5×5, dev) [DATA]
 | métrica                    |   campeón |   challenger XGBoost |   Δ (challenger − campeón) |   % folds challenger mejor |
 |:---------------------------|----------:|---------------------:|---------------------------:|---------------------------:|

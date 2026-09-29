@@ -4,7 +4,7 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **11** · G2 abierto, esperando respuesta · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Último paso completado: **11** · G0, G1, G2 cerrados · bloque en curso: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
 - Tests: 60 / 60 PASS (pasos 00–11).
 
 ## Parámetros vigentes
@@ -26,6 +26,10 @@ usuario · `[DEF-default]` default aplicado.
 | Clientes con tenure < 1 | score con bandera "fuera de población de desarrollo"; revisión del banquero en onboarding; sin métricas del modelo | [DEF-default] G1-2 |
 | `age_primary`, `bureau_new_mortgage_elsewhere` | fuera del campeón y del challenger; solo sensibilidad | [DEF-default] G1-3 |
 | `history_months` < 24 | se conservan con indicador `hist_lt24` | [DEF-default] G1-4 |
+| Bins de flags raros / variables infladas en su mínimo | bins de negocio con ≥ 30 eventos por bin (D9.1, D9.1b) | [DEF] G2-1 |
+| Modelo UHNW | un solo modelo con `segment_uhnw`; UHNW reportado aparte | [DEF] G2-2 |
+| Selección por cluster | adición elige cualquier miembro, uno por cluster (D10.2) | [DEF] G2-3 |
+| Modelo a escalar | campeón WoE + logística; challenger solo como referencia de ajuste de probabilidad (11C) | [DEF] G2-4 |
 
 ## Decisiones
 - **D0.0 · Ubicación.** El proyecto vive en `churn_scorecard/` dentro del repo Citizens-bank, separado del generador
@@ -136,5 +140,13 @@ usuario · `[DEF-default]` default aplicado.
 ## G1 · respuesta del usuario (2026-09-29)
 - "usa defaults" → G1-1 a G1-4 con su default ([DEF-default] en la tabla de parámetros).
 
+## G2 · respuesta del usuario (2026-09-29)
+- "1. sí 2. sí un sólo modelo, 3. aceptar ajuste 4. sí, sólo quiero ver como se ve el ML con respecto a la probabilidad
+  de ajuste y ya, después de los random trees y las pruebas" → G2-1 a G2-4 [DEF]. Se agrega la vista 11C (ajuste de
+  probabilidad por decil de XGBoost, EBM y random forest vs campeón, OOF de dev); el ML no sigue a los pasos 12–17.
+- **D11.5 · Vista 11C.** XGBoost y EBM se ajustan mejor que el campeón en dev (ECE 0.6 y 0.4 pp vs 1.1 pp; b 0.98 y
+  0.99 vs 0.93); el random forest crudo sobrestima (media p 40.5% vs 13.9%, ECE 26.6 pp) por sus pesos balanceados y,
+  corregido por prior, subestima el decil superior (34.8% vs 42.1%) [DATA]. El campeón se calibra en el paso 14.
+
 ## Preguntas abiertas
-- G2-1 a G2-4 en `reports/gate_2.md`.
+- Ninguna. Las de G3 se abrirán al cerrar el paso 14.

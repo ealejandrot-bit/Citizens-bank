@@ -44,3 +44,11 @@ def test_comparacion():
     h = T("step11_h2_table")
     assert len(h) == 8 and h.cumple.isin(["sí", "no", "pendiente"]).all()
     assert len(T("step11_comparison")) == 8
+
+
+def test_vista_ajuste_11C():
+    m = T("step11C_calibration_metrics")
+    d = T("step11C_calibration_deciles")
+    assert len(m) == 5 and (d.groupby("modelo").decil.nunique() == 10).all()
+    assert (d.groupby("modelo").hogares.sum() == d.hogares.sum() / 5).all()
+    assert m["tasa observada %"].nunique() == 1
