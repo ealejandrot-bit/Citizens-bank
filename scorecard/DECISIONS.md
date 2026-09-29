@@ -129,3 +129,27 @@ umbrales de aceleración / HHI, monto no reinvertido, % de reuniones canceladas,
 **D5.4 · Huecos de tipo de feature** (para el equipo de datos; no se crean features nuevas porque la base no trae las
 series): sin tendencia en externalización; sin aceleración fuera de transferencias; sin persistencia en salida de
 activos, ingresos y banquero; rendimiento con una sola variable; relación con banquero sin cambio vs baseline.
+
+## 2026-09-29 · Paso 6
+
+**D6.1 · Univariado solo en desarrollo.** El holdout no se mira hasta el paso 13 (DM.1).
+**D6.2 · Dos medidas de efecto.** δ de Cliff (no paramétrica, robusta a colas) para continuas; **risk ratio con IC 95%
+y Fisher** para binarias y variables infladas en su mínimo (≥ 70% en el mínimo). Motivo: con prevalencia p, |δ| ≤ p,
+así que δ califica como "despreciable" un flag con lift 4.9× (`salary_deposit_stopped_flag`: δ = 0.145, RR = 5.6).
+Umbrales RR: fuerte ≥ 2, moderado ≥ 1.5, con IC inferior > 1.
+- Descartado: solo δ (brief); solo d de Cohen (asume normalidad, inválido con colas pesadas y ceros).
+**D6.3 · Lift máximo por grupo con ≥ 30 eventos** (mismo mínimo que un bin) para no leer lifts de celdas chicas.
+
+## 2026-09-29 · Paso 7
+
+**D7.1 · Regla de K fijada antes de ver resultados:** entre K con cluster mínimo ≥ 5% y ARI bootstrap medio ≥ 0.80,
+mayor silhouette. Resultado K = 3 (silhouette 0.191, ARI 0.992, mínimo 14.4%). K = 4–8 fallan estabilidad (ARI ≤ 0.85,
+p5 ≤ 0.58).
+- Descartado: GMM como método principal. Con 8 binarias la verosimilitud diagonal no está acotada y el BIC decrece
+  sin fin (de 187,300 en K = 2 a −275,088 en K = 8); solo coincide con K-means en K = 3 (ARI 0.83).
+- Descartado: k-prototypes / Gower (más adecuado para datos mixtos, pero K-means sobre binarias estandarizadas da
+  clusters estables e interpretables y es reproducible con sklearn). Queda como alternativa.
+**D7.2 · Sin modelos separados.** UHNW 80 eventos < 100; `segment` entra forzado; cluster = candidata del paso 9.
+**D7.3 · Hallazgo: la estructura no separa riesgo.** Tasa hard 6.04% / 6.08% / 5.95% por cluster (χ² p = 0.98), en
+línea con el paso 6 (has_*, edad, antigüedad, RV: todos despreciables). En esta base el churn lo explican las señales
+de comportamiento, no el perfil. Se espera que cluster no pase IV ≥ 0.02; si no pasa, sale por evidencia.

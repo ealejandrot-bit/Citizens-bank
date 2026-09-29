@@ -1,0 +1,1 @@
+variable,dimensión,mediana churn,p25–p75 churn,mediana no churn,p25–p75 no churn,% missing churn,% missing no churn,δ Cliff,tipo efecto,RR,IC95 RR,p (MW o Fisher),magnitud,δ HNW,δ UHNW,eventos UHNW con dato,signo estable por segmento,dirección esperada,dirección observada,evaluación,lift máx (grupo ≥ 30 eventos)

@@ -14,6 +14,8 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 3. [Calidad de datos](#3-calidad-de-datos)
 4. [Muestra](#4-muestra)
 5. [Auditoría de features y derivadas](#5-auditoría-de-features-y-derivadas)
+6. [Análisis univariado](#6-análisis-univariado)
+7. [Segmentación](#7-segmentación)
 
 ---
 
@@ -394,3 +396,153 @@ Conteo propio vs regla existente [DATA-SINT]:
 - Razón de missing como bin propio; descartado imputar.
 - Salida de AUM relativa a RV sin recorte; descartado recortar a 1.
 - Sin features nuevas para cubrir huecos: la base no trae las series. Queda como pregunta para el equipo de datos.
+
+---
+
+## 6. Análisis univariado
+
+**Objetivo**
+- Medir, variable por variable, cuánto separa churners de no churners, en qué dirección y si la dirección coincide
+  con la hipótesis de negocio del paso 2.
+
+**Por qué**
+- Un signo contrario a la hipótesis es la primera alarma de fuga, colinealidad o error de construcción; un efecto
+  nulo anticipa qué variables no pasarán el filtro de IV.
+
+**Método y fórmulas**
+- Solo desarrollo (13,913 hogares, 840 eventos).
+- Continuas: δ de Cliff = 2U/(n₁n₀) − 1 (U de Mann-Whitney); magnitud según Romano: < 0.147 despreciable, < 0.33
+  pequeño, < 0.474 mediano, resto grande.
+- Binarias e infladas en su mínimo: RR = tasa(x > mín) ÷ tasa(x = mín), IC 95% por log-RR, p de Fisher (D6.2).
+- Tasa por decil (continuas) o categoría, con bins propios "no aplica" y "sin dato"; lift máximo en grupos ≥ 30 eventos.
+- Por segmento: δ en HNW y en UHNW; signo estable si coincide cuando |δ UHNW| ≥ 0.147.
+- Evaluación: "coincide" / "DISCREPANCIA" si hay evidencia (efecto no despreciable y p < 0.05); si no, "sin evidencia".
+
+**Código** · `src/06_univariate.py`
+
+**Salida** · `outputs/tables/06_univariate.csv` (56 variables), `06_rate_by_decile.csv`, `06_sign_discrepancies.csv` (vacía)
+
+Variables con evidencia [DATA-SINT] (desarrollo; tabla completa en `06_univariate.csv`):
+
+| Variable | Dimensión | Efecto | Valor [IC 95%] | Lift máx | δ UHNW | Esperada / observada |
+|:--|:--|:--|:--|--:|--:|:--|
+| `salary_deposit_stopped_flag` | ingresos | RR 1 vs 0 | 5.61 [4.53, 6.93] | 4.87 | +0.11 | + / + |
+| `pension_deposit_stopped_flag` | ingresos | RR 1 vs 0 | 5.52 [3.93, 7.76] | — (27 eventos) | +0.20 | + / + |
+| `recurring_deposit_stopped_flag` | ingresos | RR 1 vs 0 | 4.46 [3.77, 5.29] | 3.92 | +0.06 | + / + |
+| `banker_change_6m_flag` | banquero | RR 1 vs 0 | 4.33 [3.81, 4.93] | 2.89 | +0.29 | + / + |
+| `new_external_destinations_90d` | externalización | RR > 0 | 4.31 [3.69, 5.03] | 3.57 | +0.23 | + / + |
+| `repeat_complaint_flag` | fricción | RR 1 vs 0 | 3.76 [3.13, 4.52] | 3.42 | +0.07 | + / + |
+| `complaint_age_days` | fricción | RR > 0 | 3.64 [3.00, 4.42] | — | +0.13 | + / + |
+| `trustee_change_flag` | productos | RR 1 vs 0 | 3.57 [2.61, 4.87] | 3.23 | +0.08 | + / + |
+| `bureau_new_mortgage_elsewhere` | externalización | RR 1 vs 0 | 3.53 [2.92, 4.28] | 3.18 | +0.10 | + / + |
+| `products_closed_180d` | productos | RR > 0 | 3.50 [3.04, 4.04] | 6.55 | +0.21 | + / + |
+| `complaint_escalated_flag` | fricción | RR 1 vs 0 | 3.20 [2.69, 3.80] | 2.86 | +0.18 | + / + |
+| `business_payroll_stopped_flag` | ingresos | RR 1 vs 0 | 3.00 [2.10, 4.29] | 2.59 | +0.03 | + / + |
+| `relationship_dissatisfaction_flag` | fricción | RR 1 vs 0 | 2.78 [1.91, 4.05] | — | −0.04 | + / + |
+| `positions_liquidated_pct` | salida de activos | RR > 0 | 2.18 [1.86, 2.57] | 2.12 | +0.17 | + / + |
+| `meetings_cancelled_by_client` | banquero | RR > 0 | 1.96 [1.60, 2.39] | 1.71 | +0.21 | + / + |
+| `accounts_closed_90d` | productos | RR > 0 | 1.83 [1.57, 2.13] | 4.37 | +0.17 | + / + |
+| `share_of_wallet` | nivel | δ | −0.264 | 2.57 | −0.10 | − / − |
+| `deposit_balance_vs_6m_avg_pct` | saldos | δ | −0.245 | 2.93 | −0.32 | − / − |
+| `external_transfer_pct_of_balance_60d` | externalización | δ | +0.242 | 3.05 | +0.29 | + / + |
+| `share_of_wallet_change` | productos | δ | −0.240 | 2.50 | −0.31 | − / − |
+| `deposit_balance_change_pct_90d` | saldos | δ | −0.237 | 2.73 | −0.38 | − / − |
+| `client_reply_rate` | banquero | δ | −0.232 | 1.09 | −0.25 | − / − |
+| `transfer_to_competitor_pct_90d` | externalización | δ | +0.230 | 2.94 | +0.36 | + / + |
+| `contact_gap_ratio` | banquero | δ | +0.228 | 1.78 | +0.27 | + / + |
+| `net_deposit_flow_pct_90d` | saldos | δ | −0.223 | 2.64 | −0.26 | − / − |
+| `aum_vs_baseline_pct` | salida de activos | δ | −0.214 | 3.12 | −0.22 | − / − |
+| `net_external_flow_pct_90d` | externalización | δ | −0.205 | 2.85 | −0.25 | − / − |
+| `return_vs_benchmark` | rendimiento | δ | −0.200 | 1.60 | −0.25 | − / − |
+| `recurring_deposit_change_pct` | ingresos | δ | −0.195 | 2.44 | −0.11 | − / − |
+| `aum_outflow_pct_90d` / `aum_outflow_90d` | salida de activos | δ | +0.190 / +0.186 | 2.67 / 2.63 | +0.20 | + / + |
+| `fixed_income_maturity_not_reinvested` | salida de activos | δ | +0.188 | 1.26 | +0.24 | + / + |
+| `investment_redemption_pct` | salida de activos | δ | +0.157 | 2.39 | +0.24 | + / + |
+| `aum_outflow_to_rv_90d` | salida de activos | δ | +0.154 | 2.48 | +0.20 | + / + |
+
+![Tasa por decil, 12 señales continuas](outputs/figures/06_rate_by_decile_top12.png)
+
+![Risk ratio de binarias](outputs/figures/06_risk_ratio_binary.png)
+
+Lectura:
+- **Signos**: 36 de 36 variables con evidencia coinciden con la hipótesis; **0 discrepancias**. Signo estable HNW vs
+  UHNW en todas las que tienen efecto en UHNW (|δ| ≥ 0.147).
+- **Forma**: el efecto de las continuas se concentra en el decil extremo (p. ej. `deposit_balance_vs_6m_avg_pct`:
+  D1 17.7% vs 4–6% en D2–D10; `external_transfer_pct_of_balance_60d`: D10 18.4%). Es un umbral más que una
+  pendiente: el binning debería aislar esa cola.
+- **Missing informativo**: "sin dato" supera la tasa base en `client_reply_rate` (8.6%), `deposit_balance_*` (~10–12%)
+  y `aum_vs_baseline_pct` (10.9%) → bin propio, no imputar (D5.1).
+- **Sin señal**: estructura y nivel patrimonial (`has_*`, `age_primary`, `tenure_years`, `history_months`,
+  `relationship_value`, `aum`, `deposit_balance`, `recurring_income_monthly`, `segment`) tienen |δ| < 0.075 y RR con IC
+  que cruza 1 (salvo `has_credit_anchor`, RR 0.86 [0.75, 1.00], débil). UHNW: RR 1.23 [0.94, 1.59], no significativo.
+- **Débiles**: `cash_pct_of_portfolio_chg` (δ 0.146, justo bajo el corte), `external_destination_concentration`,
+  `external_transfer_acceleration`, `outflow_vs_baseline_pct`: el IV decidirá.
+
+**QC** · 6 PASS · 0 WARN · 0 FAIL
+- Solo desarrollo; 56 variables evaluadas; tablas por decil suman 13,913 hogares y 840 eventos por variable;
+  0 discrepancias de signo; 0 inestabilidades de signo entre segmentos.
+
+**Decisiones y alternativas descartadas** · D6.1–D6.3
+- RR para binarias e infladas en su mínimo; descartados solo δ y d de Cohen.
+
+---
+
+## 7. Segmentación
+
+**Objetivo**
+- Ver si hay perfiles estructurales de hogar con riesgo distinto que el modelo deba considerar, además de `segment`.
+
+**Por qué**
+- Si un perfil concentra churn, puede requerir variable propia o calibración aparte. Si no, se descarta con evidencia
+  y no se complica el modelo.
+
+**Método**
+- Variables: `age_primary`, `tenure_years`, log₁₀ RV y 8 `has_*`, estandarizadas (media y desviación de desarrollo).
+  Sin señales ni target.
+- K-means (n_init = 20) K = 2…8 en desarrollo. Criterios: silhouette (muestra de 5,000), WCSS, estabilidad (ARI entre
+  la partición completa y 20 re-ajustes bootstrap), tamaño mínimo. GMM diagonal como comparación.
+- Regla fijada antes (D7.1): tamaño mínimo ≥ 5% y ARI ≥ 0.80 → mayor silhouette.
+- Churn por cluster en desarrollo con Wilson 90%; χ² cluster × hard. Descriptivo, sin inferir causalidad.
+
+**Código** · `src/07_segmentation.py`
+
+**Salida** · `outputs/tables/07_k_selection.csv`, `07_cluster_profile.csv`, `07_cluster_x_segment.csv`;
+`outputs/models/07_kmeans.pkl`; `outputs/data/07_clusters.csv`
+
+| K | Silhouette | ARI bootstrap (p5) | Cluster mín % | ARI K-means vs GMM |
+|--:|--:|:--|--:|--:|
+| 2 | 0.172 | 0.989 (0.984) | 36.2 | 0.01 |
+| **3** | **0.191** | **0.992 (0.988)** | **14.4** | **0.83** |
+| 4 | 0.161 | 0.851 (0.576) | 14.4 | 0.53 |
+| 5 | 0.155 | 0.755 (0.416) | 13.7 | 0.63 |
+| 6 | 0.140 | 0.716 (0.541) | 10.7 | 0.53 |
+| 7 | 0.143 | 0.615 (0.391) | 8.0 | 0.51 |
+| 8 | 0.151 | 0.667 (0.476) | 5.4 | 0.45 |
+
+![Selección de K](outputs/figures/07_k_selection.png)
+
+Perfiles (K = 3, desarrollo) [DATA-SINT]:
+
+| Cluster | Lectura | % hogares | Edad media | Antig. mediana | RV mediano $M | % UHNW | % inversión / advisory | % nómina / pensión | Tasa hard % [Wilson 90%] | % RV | Churn valor % |
+|:--|:--|--:|--:|--:|--:|--:|:--|:--|:--|--:|--:|
+| 0 | activos con nómina e inversión | 55.0 | 53.8 | 7.5 | 5.39 | 6.5 | 100 / 70 | 79 / 3 | 6.04 [5.60, 6.50] | 61.3 | 6.43 |
+| 1 | jubilados con pensión e inversión | 30.6 | 72.4 | 7.8 | 5.17 | 5.7 | 100 / 70 | 9 / 88 | 6.08 [5.50, 6.71] | 31.5 | 7.05 |
+| 2 | solo depósitos (sin inversión) | 14.4 | 60.9 | 7.7 | 2.91 | 1.5 | 0 / 0 | 53 / 36 | 5.95 [5.14, 6.88] | 7.2 | 6.35 |
+
+![Churn por cluster](outputs/figures/07_churn_by_cluster.png)
+
+- Los clusters se definen por ciclo de vida (nómina vs pensión) y tenencia de inversión; negocio, trust y crédito se
+  reparten igual (~26%, ~30%, ~34%) en los tres.
+- **La tasa de churn es la misma en los tres** (χ² = 0.04, p = 0.98; intervalos solapados con la tasa base). La
+  estructura del hogar no separa riesgo en esta base (D7.3), igual que en el univariado.
+- Cluster 2 casi sin UHNW (29 hogares): la cola de valor vive en los clusters con inversión.
+- Regla: sin modelos separados (UHNW 80 eventos < 100); `segment` forzado; cluster pasa al paso 9 como candidata
+  y se espera que no supere IV 0.02.
+
+**QC** · 7 PASS · 0 WARN · 0 FAIL
+- Sin señales ni target en el clustering; ajuste solo en desarrollo; K elegido cumple tamaño (14.4%) y estabilidad
+  (0.992); Σ share × tasa por cluster = tasa de desarrollo (6.0375%); asignación a los 20,000 hogares.
+
+**Decisiones y alternativas descartadas** · D7.1–D7.3
+- K = 3 por regla previa. Descartados GMM (BIC no acotado con binarias) y k-prototypes (alternativa válida,
+  no necesaria con esta estabilidad).

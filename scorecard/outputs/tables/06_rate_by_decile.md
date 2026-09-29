@@ -1,0 +1,381 @@
+| variable                               | grupo                         |   hogares |   eventos |   tasa % |   lift |
+|:---------------------------------------|:------------------------------|----------:|----------:|---------:|-------:|
+| segment                                | 0.0                           |     13147 |       784 |    5.963 |  0.988 |
+| segment                                | 1.0                           |       766 |        56 |    7.311 |  1.211 |
+| has_investments                        | 0.0                           |      1999 |       119 |    5.953 |  0.986 |
+| has_investments                        | 1.0                           |     11914 |       721 |    6.052 |  1.002 |
+| has_advisory                           | 0.0                           |      5566 |       352 |    6.324 |  1.047 |
+| has_advisory                           | 1.0                           |      8347 |       488 |    5.846 |  0.968 |
+| has_linked_business                    | 0.0                           |     10232 |       625 |    6.108 |  1.012 |
+| has_linked_business                    | 1.0                           |      3681 |       215 |    5.841 |  0.967 |
+| has_trust                              | 0.0                           |      9547 |       574 |    6.012 |  0.996 |
+| has_trust                              | 1.0                           |      4366 |       266 |    6.093 |  1.009 |
+| has_credit_anchor                      | 0.0                           |      9126 |       578 |    6.334 |  1.049 |
+| has_credit_anchor                      | 1.0                           |      4787 |       262 |    5.473 |  0.907 |
+| has_payroll_stream                     | 0.0                           |      6404 |       373 |    5.824 |  0.965 |
+| has_payroll_stream                     | 1.0                           |      7509 |       467 |    6.219 |  1.03  |
+| has_pension_stream                     | 0.0                           |      9184 |       568 |    6.185 |  1.024 |
+| has_pension_stream                     | 1.0                           |      4729 |       272 |    5.752 |  0.953 |
+| has_dividend_stream                    | 0.0                           |      7442 |       442 |    5.939 |  0.984 |
+| has_dividend_stream                    | 1.0                           |      6471 |       398 |    6.151 |  1.019 |
+| age_primary                            | (27.999, 45.0]                |      1399 |        78 |    5.575 |  0.923 |
+| age_primary                            | (45.0, 51.0]                  |      1726 |       106 |    6.141 |  1.017 |
+| age_primary                            | (51.0, 54.0]                  |      1158 |        75 |    6.477 |  1.073 |
+| age_primary                            | (54.0, 57.0]                  |      1324 |        74 |    5.589 |  0.926 |
+| age_primary                            | (57.0, 60.0]                  |      1437 |        97 |    6.75  |  1.118 |
+| age_primary                            | (60.0, 63.0]                  |      1376 |        81 |    5.887 |  0.975 |
+| age_primary                            | (63.0, 67.0]                  |      1671 |       101 |    6.044 |  1.001 |
+| age_primary                            | (67.0, 71.0]                  |      1344 |        61 |    4.539 |  0.752 |
+| age_primary                            | (71.0, 76.0]                  |      1243 |        92 |    7.401 |  1.226 |
+| age_primary                            | (76.0, 94.0]                  |      1235 |        75 |    6.073 |  1.006 |
+| tenure_years                           | (0.009000000000000001, 2.47]  |      1400 |        99 |    7.071 |  1.171 |
+| tenure_years                           | (2.47, 3.73]                  |      1384 |        95 |    6.864 |  1.137 |
+| tenure_years                           | (3.73, 4.98]                  |      1392 |        87 |    6.25  |  1.035 |
+| tenure_years                           | (4.98, 6.28]                  |      1400 |        87 |    6.214 |  1.029 |
+| tenure_years                           | (6.28, 7.64]                  |      1382 |        86 |    6.223 |  1.031 |
+| tenure_years                           | (7.64, 9.23]                  |      1397 |        95 |    6.8   |  1.126 |
+| tenure_years                           | (9.23, 11.08]                 |      1387 |        76 |    5.479 |  0.908 |
+| tenure_years                           | (11.08, 13.42]                |      1392 |        78 |    5.603 |  0.928 |
+| tenure_years                           | (13.42, 17.22]                |      1389 |        76 |    5.472 |  0.906 |
+| tenure_years                           | (17.22, 50.0]                 |      1390 |        61 |    4.388 |  0.727 |
+| history_months                         | (-0.001, 24.0]                |     13913 |       840 |    6.038 |  1     |
+| relationship_value                     | (1000062.499, 1555072.12]     |      1392 |        86 |    6.178 |  1.023 |
+| relationship_value                     | (1555072.12, 2123060.02]      |      1391 |        92 |    6.614 |  1.095 |
+| relationship_value                     | (2123060.02, 2840716.72]      |      1391 |        71 |    5.104 |  0.845 |
+| relationship_value                     | (2840716.72, 3735639.878]     |      1391 |        79 |    5.679 |  0.941 |
+| relationship_value                     | (3735639.878, 4853940.08]     |      1392 |        88 |    6.322 |  1.047 |
+| relationship_value                     | (4853940.08, 6430939.326]     |      1391 |        93 |    6.686 |  1.107 |
+| relationship_value                     | (6430939.326, 8790196.428]    |      1391 |        68 |    4.889 |  0.81  |
+| relationship_value                     | (8790196.428, 12444736.382]   |      1391 |        84 |    6.039 |  1     |
+| relationship_value                     | (12444736.382, 20850555.884]  |      1391 |        79 |    5.679 |  0.941 |
+| relationship_value                     | (20850555.884, 903973258.11]  |      1392 |       100 |    7.184 |  1.19  |
+| deposit_balance                        | (1358.279, 335437.148]        |      1392 |        83 |    5.963 |  0.988 |
+| deposit_balance                        | (335437.148, 562113.566]      |      1391 |        93 |    6.686 |  1.107 |
+| deposit_balance                        | (562113.566, 827484.502]      |      1391 |        86 |    6.183 |  1.024 |
+| deposit_balance                        | (827484.502, 1159510.486]     |      1391 |        87 |    6.254 |  1.036 |
+| deposit_balance                        | (1159510.486, 1545764.48]     |      1392 |        87 |    6.25  |  1.035 |
+| deposit_balance                        | (1545764.48, 2087608.466]     |      1391 |        68 |    4.889 |  0.81  |
+| deposit_balance                        | (2087608.466, 2901952.71]     |      1391 |        78 |    5.607 |  0.929 |
+| deposit_balance                        | (2901952.71, 4277915.004]     |      1391 |        79 |    5.679 |  0.941 |
+| deposit_balance                        | (4277915.004, 7492080.374]    |      1391 |        87 |    6.254 |  1.036 |
+| deposit_balance                        | (7492080.374, 419923774.57]   |      1392 |        92 |    6.609 |  1.095 |
+| aum                                    | (113383.249, 1114030.985]     |      1192 |        72 |    6.04  |  1     |
+| aum                                    | (1114030.985, 1570468.194]    |      1191 |        75 |    6.297 |  1.043 |
+| aum                                    | (1570468.194, 2136406.639]    |      1191 |        70 |    5.877 |  0.973 |
+| aum                                    | (2136406.639, 2856307.404]    |      1192 |        67 |    5.621 |  0.931 |
+| aum                                    | (2856307.404, 3709563.37]     |      1191 |        79 |    6.633 |  1.099 |
+| aum                                    | (3709563.37, 4894199.454]     |      1191 |        68 |    5.709 |  0.946 |
+| aum                                    | (4894199.454, 6663271.059]    |      1192 |        77 |    6.46  |  1.07  |
+| aum                                    | (6663271.059, 9486722.386]    |      1191 |        52 |    4.366 |  0.723 |
+| aum                                    | (9486722.386, 15816088.914]   |      1191 |        76 |    6.381 |  1.057 |
+| aum                                    | (15816088.914, 773011257.67]  |      1192 |        85 |    7.131 |  1.181 |
+| aum                                    | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| recurring_income_monthly               | (-0.001, 4207.18]             |      1392 |        81 |    5.819 |  0.964 |
+| recurring_income_monthly               | (4207.18, 10417.042]          |      1391 |        83 |    5.967 |  0.988 |
+| recurring_income_monthly               | (10417.042, 16931.34]         |      1391 |        92 |    6.614 |  1.095 |
+| recurring_income_monthly               | (16931.34, 23611.292]         |      1391 |        84 |    6.039 |  1     |
+| recurring_income_monthly               | (23611.292, 30919.71]         |      1392 |        77 |    5.532 |  0.916 |
+| recurring_income_monthly               | (30919.71, 39544.626]         |      1391 |        79 |    5.679 |  0.941 |
+| recurring_income_monthly               | (39544.626, 50366.986]        |      1391 |        75 |    5.392 |  0.893 |
+| recurring_income_monthly               | (50366.986, 69182.378]        |      1391 |       108 |    7.764 |  1.286 |
+| recurring_income_monthly               | (69182.378, 103481.416]       |      1391 |        64 |    4.601 |  0.762 |
+| recurring_income_monthly               | (103481.416, 2000229.77]      |      1392 |        97 |    6.968 |  1.154 |
+| share_of_wallet                        | (-0.000923, 0.175]            |      1392 |       216 |   15.517 |  2.57  |
+| share_of_wallet                        | (0.175, 0.256]                |      1391 |        95 |    6.83  |  1.131 |
+| share_of_wallet                        | (0.256, 0.325]                |      1391 |        90 |    6.47  |  1.072 |
+| share_of_wallet                        | (0.325, 0.394]                |      1391 |        77 |    5.536 |  0.917 |
+| share_of_wallet                        | (0.394, 0.461]                |      1392 |        78 |    5.603 |  0.928 |
+| share_of_wallet                        | (0.461, 0.533]                |      1391 |        71 |    5.104 |  0.845 |
+| share_of_wallet                        | (0.533, 0.616]                |      1391 |        55 |    3.954 |  0.655 |
+| share_of_wallet                        | (0.616, 0.718]                |      1391 |        52 |    3.738 |  0.619 |
+| share_of_wallet                        | (0.718, 0.876]                |      1391 |        54 |    3.882 |  0.643 |
+| share_of_wallet                        | (0.876, 1.0]                  |      1392 |        52 |    3.736 |  0.619 |
+| aum_outflow_90d                        | (-0.001, 8480.792]            |      7138 |       355 |    4.973 |  0.824 |
+| aum_outflow_90d                        | (8480.792, 30005.682]         |      1190 |        55 |    4.622 |  0.766 |
+| aum_outflow_90d                        | (30005.682, 80799.794]        |      1189 |        56 |    4.71  |  0.78  |
+| aum_outflow_90d                        | (80799.794, 312840.452]       |      1190 |        65 |    5.462 |  0.905 |
+| aum_outflow_90d                        | (312840.452, 463748492.52]    |      1190 |       189 |   15.882 |  2.631 |
+| aum_outflow_90d                        | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| aum_outflow_90d                        | NaN:sin_dato                  |        17 |         1 |    5.882 |  0.974 |
+| aum_outflow_pct_90d                    | (-0.001, 0.0037]              |      7138 |       348 |    4.875 |  0.808 |
+| aum_outflow_pct_90d                    | (0.0037, 0.0092]              |      1190 |        58 |    4.874 |  0.807 |
+| aum_outflow_pct_90d                    | (0.0092, 0.0175]              |      1189 |        58 |    4.878 |  0.808 |
+| aum_outflow_pct_90d                    | (0.0175, 0.0437]              |      1190 |        64 |    5.378 |  0.891 |
+| aum_outflow_pct_90d                    | (0.0437, 4.039]               |      1190 |       192 |   16.134 |  2.672 |
+| aum_outflow_pct_90d                    | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| aum_outflow_pct_90d                    | NaN:sin_dato                  |        17 |         1 |    5.882 |  0.974 |
+| investment_redemption_pct              | (-0.001, 0.00283]             |      5949 |       305 |    5.127 |  0.849 |
+| investment_redemption_pct              | (0.00283, 0.00937]            |      1189 |        51 |    4.289 |  0.71  |
+| investment_redemption_pct              | (0.00937, 0.0189]             |      1190 |        64 |    5.378 |  0.891 |
+| investment_redemption_pct              | (0.0189, 0.0362]              |      1189 |        64 |    5.383 |  0.892 |
+| investment_redemption_pct              | (0.0362, 0.0888]              |      1190 |        64 |    5.378 |  0.891 |
+| investment_redemption_pct              | (0.0888, 1.669]               |      1190 |       172 |   14.454 |  2.394 |
+| investment_redemption_pct              | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| investment_redemption_pct              | NaN:sin_dato                  |        17 |         1 |    5.882 |  0.974 |
+| positions_liquidated_pct               | (-0.001, 0.0235]              |     10695 |       568 |    5.311 |  0.88  |
+| positions_liquidated_pct               | (0.0235, 0.415]               |      1189 |       152 |   12.784 |  2.117 |
+| positions_liquidated_pct               | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| positions_liquidated_pct               | NaN:sin_dato                  |        30 |         1 |    3.333 |  0.552 |
+| aum_vs_baseline_pct                    | (-0.946, -0.0527]             |      1183 |       223 |   18.85  |  3.122 |
+| aum_vs_baseline_pct                    | (-0.0527, -0.018]             |      1182 |        54 |    4.569 |  0.757 |
+| aum_vs_baseline_pct                    | (-0.018, -0.0099]             |      1182 |        50 |    4.23  |  0.701 |
+| aum_vs_baseline_pct                    | (-0.0099, -0.00534]           |      1182 |        61 |    5.161 |  0.855 |
+| aum_vs_baseline_pct                    | (-0.00534, -0.00168]          |      1183 |        40 |    3.381 |  0.56  |
+| aum_vs_baseline_pct                    | (-0.00168, 0.0]               |      1757 |        79 |    4.496 |  0.745 |
+| aum_vs_baseline_pct                    | (0.0, 0.00354]                |       607 |        24 |    3.954 |  0.655 |
+| aum_vs_baseline_pct                    | (0.00354, 0.0112]             |      1182 |        58 |    4.907 |  0.813 |
+| aum_vs_baseline_pct                    | (0.0112, 0.0248]              |      1182 |        53 |    4.484 |  0.743 |
+| aum_vs_baseline_pct                    | (0.0248, 0.301]               |      1183 |        69 |    5.833 |  0.966 |
+| aum_vs_baseline_pct                    | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| aum_vs_baseline_pct                    | NaN:sin_dato                  |        91 |        10 |   10.989 |  1.82  |
+| cash_pct_of_portfolio_chg              | (-0.0509, -0.0121]            |      1183 |        63 |    5.325 |  0.882 |
+| cash_pct_of_portfolio_chg              | (-0.0121, -0.00665]           |      1182 |        55 |    4.653 |  0.771 |
+| cash_pct_of_portfolio_chg              | (-0.00665, -0.00266]          |      1182 |        61 |    5.161 |  0.855 |
+| cash_pct_of_portfolio_chg              | (-0.00266, 0.000962]          |      1182 |        62 |    5.245 |  0.869 |
+| cash_pct_of_portfolio_chg              | (0.000962, 0.00443]           |      1183 |        66 |    5.579 |  0.924 |
+| cash_pct_of_portfolio_chg              | (0.00443, 0.00833]            |      1182 |        47 |    3.976 |  0.659 |
+| cash_pct_of_portfolio_chg              | (0.00833, 0.0138]             |      1182 |        64 |    5.415 |  0.897 |
+| cash_pct_of_portfolio_chg              | (0.0138, 0.0247]              |      1182 |        59 |    4.992 |  0.827 |
+| cash_pct_of_portfolio_chg              | (0.0247, 0.0681]              |      1182 |        84 |    7.107 |  1.177 |
+| cash_pct_of_portfolio_chg              | (0.0681, 0.793]               |      1183 |       150 |   12.68  |  2.1   |
+| cash_pct_of_portfolio_chg              | NaN:no_aplica                 |      1999 |       119 |    5.953 |  0.986 |
+| cash_pct_of_portfolio_chg              | NaN:sin_dato                  |        91 |        10 |   10.989 |  1.82  |
+| fixed_income_maturity_not_reinvested   | (-0.001, 0.14]                |      1823 |        71 |    3.895 |  0.645 |
+| fixed_income_maturity_not_reinvested   | (0.14, 0.434]                 |       364 |        17 |    4.67  |  0.774 |
+| fixed_income_maturity_not_reinvested   | (0.434, 0.685]                |       364 |        26 |    7.143 |  1.183 |
+| fixed_income_maturity_not_reinvested   | (0.685, 1.0]                  |      1094 |        83 |    7.587 |  1.257 |
+| fixed_income_maturity_not_reinvested   | NaN:sin_dato                  |     10268 |       643 |    6.262 |  1.037 |
+| deposit_balance_change_pct_90d         | (-0.977, -0.254]              |      1384 |       228 |   16.474 |  2.729 |
+| deposit_balance_change_pct_90d         | (-0.254, -0.161]              |      1384 |        96 |    6.936 |  1.149 |
+| deposit_balance_change_pct_90d         | (-0.161, -0.103]              |      1383 |        72 |    5.206 |  0.862 |
+| deposit_balance_change_pct_90d         | (-0.103, -0.0554]             |      1384 |        52 |    3.757 |  0.622 |
+| deposit_balance_change_pct_90d         | (-0.0554, -0.00981]           |      1383 |        71 |    5.134 |  0.85  |
+| deposit_balance_change_pct_90d         | (-0.00981, 0.0333]            |      1384 |        72 |    5.202 |  0.862 |
+| deposit_balance_change_pct_90d         | (0.0333, 0.0819]              |      1383 |        66 |    4.772 |  0.79  |
+| deposit_balance_change_pct_90d         | (0.0819, 0.142]               |      1384 |        54 |    3.902 |  0.646 |
+| deposit_balance_change_pct_90d         | (0.142, 0.238]                |      1383 |        57 |    4.121 |  0.683 |
+| deposit_balance_change_pct_90d         | (0.238, 1.839]                |      1384 |        63 |    4.552 |  0.754 |
+| deposit_balance_change_pct_90d         | NaN:sin_dato                  |        77 |         9 |   11.688 |  1.936 |
+| deposit_balance_vs_6m_avg_pct          | (-0.998, -0.297]              |      1381 |       244 |   17.668 |  2.926 |
+| deposit_balance_vs_6m_avg_pct          | (-0.297, -0.188]              |      1380 |        79 |    5.725 |  0.948 |
+| deposit_balance_vs_6m_avg_pct          | (-0.188, -0.121]              |      1381 |        67 |    4.852 |  0.804 |
+| deposit_balance_vs_6m_avg_pct          | (-0.121, -0.0682]             |      1380 |        76 |    5.507 |  0.912 |
+| deposit_balance_vs_6m_avg_pct          | (-0.0682, -0.0186]            |      1381 |        56 |    4.055 |  0.672 |
+| deposit_balance_vs_6m_avg_pct          | (-0.0186, 0.032]              |      1380 |        62 |    4.493 |  0.744 |
+| deposit_balance_vs_6m_avg_pct          | (0.032, 0.0868]               |      1380 |        67 |    4.855 |  0.804 |
+| deposit_balance_vs_6m_avg_pct          | (0.0868, 0.155]               |      1381 |        58 |    4.2   |  0.696 |
+| deposit_balance_vs_6m_avg_pct          | (0.155, 0.255]                |      1380 |        62 |    4.493 |  0.744 |
+| deposit_balance_vs_6m_avg_pct          | (0.255, 2.203]                |      1381 |        58 |    4.2   |  0.696 |
+| deposit_balance_vs_6m_avg_pct          | NaN:sin_dato                  |       108 |        11 |   10.185 |  1.687 |
+| net_deposit_flow_pct_90d               | (-6.9430000000000005, -0.376] |      1388 |       221 |   15.922 |  2.637 |
+| net_deposit_flow_pct_90d               | (-0.376, -0.219]              |      1388 |        90 |    6.484 |  1.074 |
+| net_deposit_flow_pct_90d               | (-0.219, -0.133]              |      1388 |        75 |    5.403 |  0.895 |
+| net_deposit_flow_pct_90d               | (-0.133, -0.0681]             |      1388 |        74 |    5.331 |  0.883 |
+| net_deposit_flow_pct_90d               | (-0.0681, -0.0137]            |      1388 |        64 |    4.611 |  0.764 |
+| net_deposit_flow_pct_90d               | (-0.0137, 0.0385]             |      1387 |        63 |    4.542 |  0.752 |
+| net_deposit_flow_pct_90d               | (0.0385, 0.0924]              |      1388 |        64 |    4.611 |  0.764 |
+| net_deposit_flow_pct_90d               | (0.0924, 0.156]               |      1388 |        59 |    4.251 |  0.704 |
+| net_deposit_flow_pct_90d               | (0.156, 0.242]                |      1388 |        72 |    5.187 |  0.859 |
+| net_deposit_flow_pct_90d               | (0.242, 1.195]                |      1388 |        57 |    4.107 |  0.68  |
+| net_deposit_flow_pct_90d               | NaN:sin_dato                  |        34 |         1 |    2.941 |  0.487 |
+| external_transfer_pct_of_balance_60d   | (-0.001, 0.00309]             |      1391 |        63 |    4.529 |  0.75  |
+| external_transfer_pct_of_balance_60d   | (0.00309, 0.00452]            |      1390 |        69 |    4.964 |  0.822 |
+| external_transfer_pct_of_balance_60d   | (0.00452, 0.00579]            |      1390 |        56 |    4.029 |  0.667 |
+| external_transfer_pct_of_balance_60d   | (0.00579, 0.00711]            |      1390 |        64 |    4.604 |  0.763 |
+| external_transfer_pct_of_balance_60d   | (0.00711, 0.00862]            |      1391 |        63 |    4.529 |  0.75  |
+| external_transfer_pct_of_balance_60d   | (0.00862, 0.0104]             |      1390 |        71 |    5.108 |  0.846 |
+| external_transfer_pct_of_balance_60d   | (0.0104, 0.0131]              |      1390 |        52 |    3.741 |  0.62  |
+| external_transfer_pct_of_balance_60d   | (0.0131, 0.0171]              |      1390 |        66 |    4.748 |  0.786 |
+| external_transfer_pct_of_balance_60d   | (0.0171, 0.0288]              |      1390 |        79 |    5.683 |  0.941 |
+| external_transfer_pct_of_balance_60d   | (0.0288, 30.222]              |      1391 |       256 |   18.404 |  3.048 |
+| external_transfer_pct_of_balance_60d   | NaN:sin_dato                  |        10 |         1 |   10     |  1.656 |
+| new_external_destinations_90d          | 0.0                           |     12666 |       636 |    5.021 |  0.832 |
+| new_external_destinations_90d          | 1.0                           |       552 |       119 |   21.558 |  3.571 |
+| new_external_destinations_90d          | 2.0                           |       208 |        44 |   21.154 |  3.504 |
+| new_external_destinations_90d          | 3.0                           |        12 |         4 |   33.333 |  5.521 |
+| new_external_destinations_90d          | NaN:sin_dato                  |       475 |        37 |    7.789 |  1.29  |
+| transfer_to_competitor_bank_amount_90d | (-0.001, 1539.518]            |      2779 |       139 |    5.002 |  0.828 |
+| transfer_to_competitor_bank_amount_90d | (1539.518, 4278.915]          |      1389 |        66 |    4.752 |  0.787 |
+| transfer_to_competitor_bank_amount_90d | (4278.915, 7682.222]          |      1390 |        65 |    4.676 |  0.775 |
+| transfer_to_competitor_bank_amount_90d | (7682.222, 12932.085]         |      1389 |        56 |    4.032 |  0.668 |
+| transfer_to_competitor_bank_amount_90d | (12932.085, 20413.506]        |      1389 |        60 |    4.32  |  0.715 |
+| transfer_to_competitor_bank_amount_90d | (20413.506, 32659.008]        |      1390 |        63 |    4.532 |  0.751 |
+| transfer_to_competitor_bank_amount_90d | (32659.008, 56380.242]        |      1389 |        61 |    4.392 |  0.727 |
+| transfer_to_competitor_bank_amount_90d | (56380.242, 136137.402]       |      1389 |        84 |    6.048 |  1.002 |
+| transfer_to_competitor_bank_amount_90d | (136137.402, 472017112.18]    |      1390 |       245 |   17.626 |  2.919 |
+| transfer_to_competitor_bank_amount_90d | NaN:sin_dato                  |        19 |         1 |    5.263 |  0.872 |
+| transfer_to_competitor_pct_90d         | (-0.001, 0.00172]             |      2779 |       138 |    4.966 |  0.822 |
+| transfer_to_competitor_pct_90d         | (0.00172, 0.00364]            |      1389 |        65 |    4.68  |  0.775 |
+| transfer_to_competitor_pct_90d         | (0.00364, 0.00535]            |      1390 |        54 |    3.885 |  0.643 |
+| transfer_to_competitor_pct_90d         | (0.00535, 0.00717]            |      1389 |        60 |    4.32  |  0.715 |
+| transfer_to_competitor_pct_90d         | (0.00717, 0.00923]            |      1389 |        61 |    4.392 |  0.727 |
+| transfer_to_competitor_pct_90d         | (0.00923, 0.0121]             |      1390 |        75 |    5.396 |  0.894 |
+| transfer_to_competitor_pct_90d         | (0.0121, 0.0164]              |      1389 |        68 |    4.896 |  0.811 |
+| transfer_to_competitor_pct_90d         | (0.0164, 0.0264]              |      1389 |        71 |    5.112 |  0.847 |
+| transfer_to_competitor_pct_90d         | (0.0264, 18.583]              |      1390 |       247 |   17.77  |  2.943 |
+| transfer_to_competitor_pct_90d         | NaN:sin_dato                  |        19 |         1 |    5.263 |  0.872 |
+| external_transfer_acceleration         | (-30.709, -0.0099]            |      1390 |       140 |   10.072 |  1.668 |
+| external_transfer_acceleration         | (-0.0099, -0.00492]           |      1389 |        60 |    4.32  |  0.715 |
+| external_transfer_acceleration         | (-0.00492, -0.00259]          |      1389 |        65 |    4.68  |  0.775 |
+| external_transfer_acceleration         | (-0.00259, -0.000956]         |      1390 |        71 |    5.108 |  0.846 |
+| external_transfer_acceleration         | (-0.000956, 0.000352]         |      1389 |        71 |    5.112 |  0.847 |
+| external_transfer_acceleration         | (0.000352, 0.00171]           |      1389 |        46 |    3.312 |  0.549 |
+| external_transfer_acceleration         | (0.00171, 0.00348]            |      1390 |        71 |    5.108 |  0.846 |
+| external_transfer_acceleration         | (0.00348, 0.00606]            |      1389 |        64 |    4.608 |  0.763 |
+| external_transfer_acceleration         | (0.00606, 0.0119]             |      1389 |        60 |    4.32  |  0.715 |
+| external_transfer_acceleration         | (0.0119, 22.017]              |      1390 |       191 |   13.741 |  2.276 |
+| external_transfer_acceleration         | NaN:sin_dato                  |        19 |         1 |    5.263 |  0.872 |
+| net_external_flow_pct_90d              | (-6.292000000000001, -0.0176] |      1390 |       239 |   17.194 |  2.848 |
+| net_external_flow_pct_90d              | (-0.0176, -0.00264]           |      1389 |        81 |    5.832 |  0.966 |
+| net_external_flow_pct_90d              | (-0.00264, 0.0252]            |      1389 |        61 |    4.392 |  0.727 |
+| net_external_flow_pct_90d              | (0.0252, 0.0527]              |      1390 |        56 |    4.029 |  0.667 |
+| net_external_flow_pct_90d              | (0.0527, 0.0802]              |      1389 |        74 |    5.328 |  0.882 |
+| net_external_flow_pct_90d              | (0.0802, 0.111]               |      1389 |        64 |    4.608 |  0.763 |
+| net_external_flow_pct_90d              | (0.111, 0.148]                |      1390 |        62 |    4.46  |  0.739 |
+| net_external_flow_pct_90d              | (0.148, 0.197]                |      1389 |        54 |    3.888 |  0.644 |
+| net_external_flow_pct_90d              | (0.197, 0.27]                 |      1389 |        64 |    4.608 |  0.763 |
+| net_external_flow_pct_90d              | (0.27, 3.977]                 |      1390 |        84 |    6.043 |  1.001 |
+| net_external_flow_pct_90d              | NaN:sin_dato                  |        19 |         1 |    5.263 |  0.872 |
+| external_destination_concentration     | (0.173, 0.319]                |      1390 |        63 |    4.532 |  0.751 |
+| external_destination_concentration     | (0.319, 0.36]                 |      1389 |        67 |    4.824 |  0.799 |
+| external_destination_concentration     | (0.36, 0.41]                  |      1389 |        73 |    5.256 |  0.87  |
+| external_destination_concentration     | (0.41, 0.501]                 |      1390 |        67 |    4.82  |  0.798 |
+| external_destination_concentration     | (0.501, 0.516]                |      1389 |        62 |    4.464 |  0.739 |
+| external_destination_concentration     | (0.516, 0.553]                |      1389 |        88 |    6.335 |  1.049 |
+| external_destination_concentration     | (0.553, 0.675]                |      1390 |        76 |    5.468 |  0.906 |
+| external_destination_concentration     | (0.675, 1.0]                  |      4168 |       343 |    8.229 |  1.363 |
+| external_destination_concentration     | NaN:sin_dato                  |        19 |         1 |    5.263 |  0.872 |
+| outflow_vs_baseline_pct                | (-1.001, -0.927]              |      1381 |       122 |    8.834 |  1.463 |
+| outflow_vs_baseline_pct                | (-0.927, -0.831]              |      1381 |        75 |    5.431 |  0.9   |
+| outflow_vs_baseline_pct                | (-0.831, -0.724]              |      1381 |        67 |    4.852 |  0.804 |
+| outflow_vs_baseline_pct                | (-0.724, -0.598]              |      1380 |        71 |    5.145 |  0.852 |
+| outflow_vs_baseline_pct                | (-0.598, -0.451]              |      1381 |        66 |    4.779 |  0.792 |
+| outflow_vs_baseline_pct                | (-0.451, -0.284]              |      1381 |        74 |    5.358 |  0.888 |
+| outflow_vs_baseline_pct                | (-0.284, -0.076]              |      1380 |        66 |    4.783 |  0.792 |
+| outflow_vs_baseline_pct                | (-0.076, 0.207]               |      1381 |        63 |    4.562 |  0.756 |
+| outflow_vs_baseline_pct                | (0.207, 0.744]                |      1381 |        81 |    5.865 |  0.971 |
+| outflow_vs_baseline_pct                | (0.744, 6390.504]             |      1381 |       144 |   10.427 |  1.727 |
+| outflow_vs_baseline_pct                | NaN:sin_dato                  |       105 |        11 |   10.476 |  1.735 |
+| bureau_new_mortgage_elsewhere          | 0.0                           |     12691 |       690 |    5.437 |  0.901 |
+| bureau_new_mortgage_elsewhere          | 1.0                           |       510 |        98 |   19.216 |  3.183 |
+| bureau_new_mortgage_elsewhere          | NaN:sin_dato                  |       712 |        52 |    7.303 |  1.21  |
+| salary_deposit_stopped_flag            | 0.0                           |      7078 |       371 |    5.242 |  0.868 |
+| salary_deposit_stopped_flag            | 1.0                           |       262 |        77 |   29.389 |  4.868 |
+| salary_deposit_stopped_flag            | NaN:no_aplica                 |      6404 |       373 |    5.824 |  0.965 |
+| salary_deposit_stopped_flag            | NaN:sin_dato                  |       169 |        19 |   11.243 |  1.862 |
+| pension_deposit_stopped_flag           | 0.0                           |      4583 |       241 |    5.259 |  0.871 |
+| pension_deposit_stopped_flag           | 1.0                           |        93 |        27 |   29.032 |  4.809 |
+| pension_deposit_stopped_flag           | NaN:no_aplica                 |      9184 |       568 |    6.185 |  1.024 |
+| pension_deposit_stopped_flag           | NaN:sin_dato                  |        53 |         4 |    7.547 |  1.25  |
+| business_payroll_stopped_flag          | 0.0                           |      3455 |       180 |    5.21  |  0.863 |
+| business_payroll_stopped_flag          | 1.0                           |       192 |        30 |   15.625 |  2.588 |
+| business_payroll_stopped_flag          | NaN:no_aplica                 |     10232 |       625 |    6.108 |  1.012 |
+| business_payroll_stopped_flag          | NaN:sin_dato                  |        34 |         5 |   14.706 |  2.436 |
+| recurring_deposit_stopped_flag         | 0.0                           |     12342 |       655 |    5.307 |  0.879 |
+| recurring_deposit_stopped_flag         | 1.0                           |       532 |       126 |   23.684 |  3.923 |
+| recurring_deposit_stopped_flag         | NaN:no_aplica                 |       939 |        50 |    5.325 |  0.882 |
+| recurring_deposit_stopped_flag         | NaN:sin_dato                  |       100 |         9 |    9     |  1.491 |
+| recurring_deposit_change_pct           | (-1.001, -0.435]              |      1289 |       190 |   14.74  |  2.441 |
+| recurring_deposit_change_pct           | (-0.435, -0.128]              |      1288 |        98 |    7.609 |  1.26  |
+| recurring_deposit_change_pct           | (-0.128, -0.0713]             |      1288 |        59 |    4.581 |  0.759 |
+| recurring_deposit_change_pct           | (-0.0713, -0.0305]            |      1289 |        66 |    5.12  |  0.848 |
+| recurring_deposit_change_pct           | (-0.0305, -0.00751]           |      1288 |        60 |    4.658 |  0.772 |
+| recurring_deposit_change_pct           | (-0.00751, 0.000925]          |      1288 |        58 |    4.503 |  0.746 |
+| recurring_deposit_change_pct           | (0.000925, 0.0104]            |      1289 |        64 |    4.965 |  0.822 |
+| recurring_deposit_change_pct           | (0.0104, 0.0436]              |      1288 |        54 |    4.193 |  0.694 |
+| recurring_deposit_change_pct           | (0.0436, 0.179]               |      1288 |        67 |    5.202 |  0.862 |
+| recurring_deposit_change_pct           | (0.179, 3.561]                |      1289 |        64 |    4.965 |  0.822 |
+| recurring_deposit_change_pct           | NaN:no_aplica                 |       939 |        50 |    5.325 |  0.882 |
+| recurring_deposit_change_pct           | NaN:sin_dato                  |        90 |        10 |   11.111 |  1.84  |
+| products_closed_180d                   | 0.0                           |     12511 |       606 |    4.844 |  0.802 |
+| products_closed_180d                   | 1.0                           |       870 |        70 |    8.046 |  1.333 |
+| products_closed_180d                   | 2.0                           |       203 |        55 |   27.094 |  4.488 |
+| products_closed_180d                   | 3.0                           |       139 |        55 |   39.568 |  6.554 |
+| products_closed_180d                   | 4.0                           |        86 |        33 |   38.372 |  6.356 |
+| products_closed_180d                   | 5.0                           |        21 |         9 |   42.857 |  7.098 |
+| products_closed_180d                   | 6.0                           |         8 |         3 |   37.5   |  6.211 |
+| products_closed_180d                   | NaN:sin_dato                  |        75 |         9 |   12     |  1.988 |
+| accounts_closed_90d                    | (-0.001, 1.0]                 |     13454 |       723 |    5.374 |  0.89  |
+| accounts_closed_90d                    | (1.0, 12.0]                   |       440 |       116 |   26.364 |  4.367 |
+| accounts_closed_90d                    | NaN:sin_dato                  |        19 |         1 |    5.263 |  0.872 |
+| share_of_wallet_change                 | (-0.974, -0.136]              |      1381 |       208 |   15.062 |  2.495 |
+| share_of_wallet_change                 | (-0.136, -0.0628]             |      1381 |        90 |    6.517 |  1.079 |
+| share_of_wallet_change                 | (-0.0628, -0.0331]            |      1381 |        82 |    5.938 |  0.983 |
+| share_of_wallet_change                 | (-0.0331, -0.0161]            |      1380 |        75 |    5.435 |  0.9   |
+| share_of_wallet_change                 | (-0.0161, -0.00444]           |      1381 |        85 |    6.155 |  1.019 |
+| share_of_wallet_change                 | (-0.00444, 0.00113]           |      1381 |        58 |    4.2   |  0.696 |
+| share_of_wallet_change                 | (0.00113, 0.013]              |      1380 |        67 |    4.855 |  0.804 |
+| share_of_wallet_change                 | (0.013, 0.0314]               |      1381 |        64 |    4.634 |  0.768 |
+| share_of_wallet_change                 | (0.0314, 0.0733]              |      1381 |        43 |    3.114 |  0.516 |
+| share_of_wallet_change                 | (0.0733, 0.895]               |      1381 |        57 |    4.127 |  0.684 |
+| share_of_wallet_change                 | NaN:sin_dato                  |       105 |        11 |   10.476 |  1.735 |
+| trustee_change_flag                    | 0.0                           |      4171 |       228 |    5.466 |  0.905 |
+| trustee_change_flag                    | 1.0                           |       195 |        38 |   19.487 |  3.228 |
+| trustee_change_flag                    | NaN:no_aplica                 |      9547 |       574 |    6.012 |  0.996 |
+| complaint_escalated_flag               | 0.0                           |     13172 |       712 |    5.405 |  0.895 |
+| complaint_escalated_flag               | 1.0                           |       741 |       128 |   17.274 |  2.861 |
+| complaint_age_days                     | (-0.001, 351.0]               |     13913 |       840 |    6.038 |  1     |
+| repeat_complaint_flag                  | 0.0                           |     13404 |       735 |    5.483 |  0.908 |
+| repeat_complaint_flag                  | 1.0                           |       509 |       105 |   20.629 |  3.417 |
+| relationship_dissatisfaction_flag      | 0.0                           |      3934 |       224 |    5.694 |  0.943 |
+| relationship_dissatisfaction_flag      | 1.0                           |       164 |        26 |   15.854 |  2.626 |
+| relationship_dissatisfaction_flag      | NaN:sin_dato                  |      9815 |       590 |    6.011 |  0.996 |
+| banker_change_6m_flag                  | 0.0                           |     11797 |       475 |    4.026 |  0.667 |
+| banker_change_6m_flag                  | 1.0                           |      2041 |       356 |   17.442 |  2.889 |
+| banker_change_6m_flag                  | NaN:sin_dato                  |        75 |         9 |   12     |  1.988 |
+| contact_gap_ratio                      | (-0.001, 0.0333]              |      1483 |        52 |    3.506 |  0.581 |
+| contact_gap_ratio                      | (0.0333, 0.0778]              |      1452 |        62 |    4.27  |  0.707 |
+| contact_gap_ratio                      | (0.0778, 0.122]               |      1248 |        42 |    3.365 |  0.557 |
+| contact_gap_ratio                      | (0.122, 0.189]                |      1477 |        66 |    4.469 |  0.74  |
+| contact_gap_ratio                      | (0.189, 0.267]                |      1363 |        71 |    5.209 |  0.863 |
+| contact_gap_ratio                      | (0.267, 0.378]                |      1435 |        75 |    5.226 |  0.866 |
+| contact_gap_ratio                      | (0.378, 0.522]                |      1335 |        89 |    6.667 |  1.104 |
+| contact_gap_ratio                      | (0.522, 0.767]                |      1400 |       112 |    8     |  1.325 |
+| contact_gap_ratio                      | (0.767, 1.233]                |      1345 |       123 |    9.145 |  1.515 |
+| contact_gap_ratio                      | (1.233, 12.167]               |      1375 |       148 |   10.764 |  1.783 |
+| client_reply_rate                      | (-0.001, 0.333]               |      1417 |        93 |    6.563 |  1.087 |
+| client_reply_rate                      | (0.333, 0.375]                |        45 |         2 |    4.444 |  0.736 |
+| client_reply_rate                      | (0.375, 0.5]                  |      1093 |        51 |    4.666 |  0.773 |
+| client_reply_rate                      | (0.5, 0.6]                    |       611 |        18 |    2.946 |  0.488 |
+| client_reply_rate                      | (0.6, 0.667]                  |      1254 |        40 |    3.19  |  0.528 |
+| client_reply_rate                      | (0.667, 0.75]                 |       984 |        16 |    1.626 |  0.269 |
+| client_reply_rate                      | (0.75, 0.8]                   |       497 |         5 |    1.006 |  0.167 |
+| client_reply_rate                      | (0.8, 1.0]                    |      1356 |        37 |    2.729 |  0.452 |
+| client_reply_rate                      | NaN:sin_dato                  |      6656 |       578 |    8.684 |  1.438 |
+| meetings_cancelled_by_client           | 0.0                           |      4137 |       226 |    5.463 |  0.905 |
+| meetings_cancelled_by_client           | 1.0                           |      1026 |       106 |   10.331 |  1.711 |
+| meetings_cancelled_by_client           | 2.0                           |       203 |        20 |    9.852 |  1.632 |
+| meetings_cancelled_by_client           | 3.0                           |        56 |         8 |   14.286 |  2.366 |
+| meetings_cancelled_by_client           | 4.0                           |        14 |         2 |   14.286 |  2.366 |
+| meetings_cancelled_by_client           | 5.0                           |         7 |         2 |   28.571 |  4.732 |
+| meetings_cancelled_by_client           | 6.0                           |         3 |         1 |   33.333 |  5.521 |
+| meetings_cancelled_by_client           | 8.0                           |         1 |         1 |  100     | 16.563 |
+| meetings_cancelled_by_client           | 9.0                           |         1 |         0 |    0     |  0     |
+| meetings_cancelled_by_client           | NaN:sin_dato                  |      8465 |       474 |    5.6   |  0.927 |
+| return_vs_benchmark                    | (-0.146, -0.0621]             |       818 |        72 |    8.802 |  1.458 |
+| return_vs_benchmark                    | (-0.0621, -0.044]             |       818 |        79 |    9.658 |  1.6   |
+| return_vs_benchmark                    | (-0.044, -0.0316]             |       818 |        45 |    5.501 |  0.911 |
+| return_vs_benchmark                    | (-0.0316, -0.0208]            |       818 |        49 |    5.99  |  0.992 |
+| return_vs_benchmark                    | (-0.0208, -0.0106]            |       818 |        51 |    6.235 |  1.033 |
+| return_vs_benchmark                    | (-0.0106, -3.45e-05]          |       817 |        53 |    6.487 |  1.074 |
+| return_vs_benchmark                    | (-3.45e-05, 0.0115]           |       818 |        36 |    4.401 |  0.729 |
+| return_vs_benchmark                    | (0.0115, 0.0241]              |       818 |        39 |    4.768 |  0.79  |
+| return_vs_benchmark                    | (0.0241, 0.0437]              |       818 |        30 |    3.667 |  0.607 |
+| return_vs_benchmark                    | (0.0437, 0.156]               |       818 |        20 |    2.445 |  0.405 |
+| return_vs_benchmark                    | NaN:no_aplica                 |      5566 |       352 |    6.324 |  1.047 |
+| return_vs_benchmark                    | NaN:sin_dato                  |       168 |        14 |    8.333 |  1.38  |
+| aum_outflow_to_rv_90d                  | (-0.001, 0.00428]             |      9727 |       489 |    5.027 |  0.833 |
+| aum_outflow_to_rv_90d                  | (0.00428, 0.00978]            |      1390 |        71 |    5.108 |  0.846 |
+| aum_outflow_to_rv_90d                  | (0.00978, 0.0244]             |      1389 |        71 |    5.112 |  0.847 |
+| aum_outflow_to_rv_90d                  | (0.0244, 10.345]              |      1390 |       208 |   14.964 |  2.479 |
+| aum_outflow_to_rv_90d                  | NaN:sin_dato                  |        17 |         1 |    5.882 |  0.974 |
+| log_relationship_value                 | (5.999, 6.192]                |      1392 |        86 |    6.178 |  1.023 |
+| log_relationship_value                 | (6.192, 6.327]                |      1391 |        92 |    6.614 |  1.095 |
+| log_relationship_value                 | (6.327, 6.453]                |      1391 |        71 |    5.104 |  0.845 |
+| log_relationship_value                 | (6.453, 6.572]                |      1391 |        79 |    5.679 |  0.941 |
+| log_relationship_value                 | (6.572, 6.686]                |      1392 |        88 |    6.322 |  1.047 |
+| log_relationship_value                 | (6.686, 6.808]                |      1391 |        93 |    6.686 |  1.107 |
+| log_relationship_value                 | (6.808, 6.944]                |      1391 |        68 |    4.889 |  0.81  |
+| log_relationship_value                 | (6.944, 7.095]                |      1391 |        84 |    6.039 |  1     |
+| log_relationship_value                 | (7.095, 7.319]                |      1391 |        79 |    5.679 |  0.941 |
+| log_relationship_value                 | (7.319, 8.956]                |      1392 |       100 |    7.184 |  1.19  |
