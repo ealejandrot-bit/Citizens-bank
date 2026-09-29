@@ -40,6 +40,9 @@ scripts/build_step5.py      Construye, valida y escribe el Paso 5 (+ 20 semillas
 synthetic/banker.py         Paso 6: carteras, cambios de banker, bitácora de interacción → 11, 12, 13, 35
 synthetic/validate_step6.py Validación del Paso 6
 scripts/build_step6.py      Construye, valida y escribe el Paso 6 (+ 20 semillas de referencia)
+synthetic/complaints.py     Paso 7: quejas (categoría, SLA, escalamiento, reapertura) y Assistant → 14, 15, 33, 36
+synthetic/validate_step7.py Validación del Paso 7
+scripts/build_step7.py      Construye, valida y escribe el Paso 7 (+ 20 semillas de referencia)
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
@@ -57,6 +60,7 @@ python scripts/build_step3.py       # genera data/synthetic/step3_*.csv + catál
 python scripts/build_step4.py       # genera data/synthetic/step4_*.csv + manifiesto
 python scripts/build_step5.py       # genera data/synthetic/step5_*.csv + manifiesto
 python scripts/build_step6.py       # genera data/synthetic/step6_*.csv + manifiesto
+python scripts/build_step7.py       # genera data/synthetic/step7_*.csv + manifiesto
 python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
@@ -76,4 +80,5 @@ salida, así que si un rebuild da otro hash, algo cambió.
 | 4 | Investments: variables 9, 26, 27, 28, 34 | Construido y validado (53 pruebas, 20 semillas) |
 | 5 | Relationship & closures: variables 10, 29, 30, 31, 32 | Construido y validado (56 pruebas, 20 semillas) |
 | 6 | Banker: variables 11, 12, 13, 35 | Construido y validado (40 pruebas, 20 semillas) |
-| 7–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |
+| 7 | Complaints & voice of client: variables 14, 15, 33, 36 | Construido y validado (38 pruebas, 20 semillas) |
+| 8 | External & composite: variables 16, 37 | Pendiente |

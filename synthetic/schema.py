@@ -124,3 +124,15 @@ STEP6_COLUMNS: dict[str, tuple[str, str]] = {
     "meetings_cancelled_by_client": ("entero", "#35 · reuniones canceladas por el cliente en 6m; NULL si el banker no registra el campo"),
     "meetings_cancelled_pct": ("fracción", "#35 · ÷ reuniones agendadas"),
 }
+
+# Paso 7 · Complaints & voice of client (variables 14, 15, 33, 36 del Excel)
+STEP7_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "complaint_escalated_flag": ("0/1", "#14 · alguna queja escalada a gerencia / ombudsman / regulador / legal en 12m"),
+    "open_complaint_flag": ("0/1", "#15 · tiene queja abierta (distingue 0 días de sin queja)"),
+    "complaint_age_days": ("días", "#15 · días de la queja abierta más antigua; 0 si no hay (alerta > 30)"),
+    "complaint_out_of_sla_flag": ("0/1", "#15 · alguna queja abierta fuera de SLA (override del deck)"),
+    "repeat_complaint_flag": ("0/1", "#33 · ≥ 2 quejas de la misma categoría (nivel 2) en 12m o alguna reabierta"),
+    "complaints_12m": ("entero", "nº de quejas en 12m (contexto)"),
+    "relationship_dissatisfaction_flag": ("0/1", "#36 · insatisfacción detectada por el Assistant y confirmada por una persona (30d); NULL fuera del piloto"),
+}

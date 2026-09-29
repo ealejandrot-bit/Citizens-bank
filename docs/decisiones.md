@@ -400,6 +400,36 @@ El AUC combinado de 27 variables es 0.696; el techo sigue en 0.851.
 
 El AUC combinado de 31 variables es 0.757; el techo sigue en 0.851.
 
+## Paso 7 · Complaints & voice of client (variables 14, 15, 33, 36)
+
+**D-22 · Quejas con ciclo de vida completo y Assistant solo en piloto.**
+- **Volumen:** ~5,500 quejas en 12 meses; el 18% de los hogares se quejó, un volumen plausible
+  para PB. La primera calibración daba 27%, demasiado alto, y la corregí: pocos clientes se quejan y
+  esos repiten. La frecuencia depende de z_service (carga 1.4) y z_neglect.
+- **Categoría:** taxonomía de nivel 2 con 8 categorías. La categoría se inclina a "atención del banker"
+  con N alto y a "proceso / rendimiento" con S alto. Fraude y errores de estado de cuenta son ruido
+  independiente del riesgo. Quien hace ACATS puede quejarse de la demora de la transferencia.
+- **Ciclo de vida:** apertura, resolución (más lenta con S alto), SLA por categoría, escalamiento a
+  gerencia / ombudsman / regulador / legal (más probable fuera de SLA) y reapertura.
+- **#15** incluye `open_complaint_flag`, para distinguir 0 días de "sin queja" como pide el Excel,
+  y `complaint_out_of_sla_flag`, que es el override del deck.
+- **#36 (Assistant, factibilidad Low):** solo el piloto (30% de hogares, al azar y sin sesgo de
+  selección) tiene valor; el resto es NULL. Cadena: estado real de insatisfacción (S, N, y +3 en logit
+  si se está mudando: "I'm moving my money") → conversó en 30 días (60%) → clasificador (TPR 80%,
+  FPR 2%) → revisión humana (confirma 95% de los verdaderos y 10% de los falsos). La precisión de la
+  señal confirmada es 97.5%.
+
+| Variable | Alerta | IV mediano (p10–p90) | Lift |
+|---|---|---|---|
+| complaint_escalated_flag | 5.3% | 0.11 (0.10–0.14) | 3.1× |
+| complaint_age_days | 2.0% (> 30 días) | 0.10 (0.08–0.12) | 3.8× |
+| repeat_complaint_flag | 3.7% | 0.12 (0.09–0.13) | 4.0× |
+| relationship_dissatisfaction_flag | 4.1% del piloto | 0.20 (0.14–0.25) | 3.0× |
+
+- Las quejas son señales raras: su IV queda en la parte baja de "High", pero el lift de la alerta es
+  alto (3–4×). Tiene sentido: pocas quejas, muy informativas. El AUC combinado de 35 variables es
+  0.761; el techo sigue en 0.851.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

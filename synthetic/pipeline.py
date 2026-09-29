@@ -14,6 +14,7 @@ from .transfers import build_step3
 from .investments import build_step4
 from .relationship import build_step5
 from .banker import build_step6
+from .complaints import build_step7
 
 
 def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
@@ -33,4 +34,6 @@ def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
         out["f5"], out["sim5"] = build_step5(out["base"], out["truth"], cfg, seeds, out["exit"], out["sim1"])
     if upto >= 6:
         out["f6"], out["sim6"] = build_step6(out["base"], out["truth"], cfg, seeds, out["exit"])
+    if upto >= 7:
+        out["f7"], out["sim7"] = build_step7(out["base"], out["truth"], cfg, seeds, out["exit"])
     return out

@@ -1,6 +1,6 @@
 # Distribuciones por variable
 
-Estado: **Pasos 0 a 6 construidos y validados** (variables 1–13, 17–32, 34, 35). El resto es una
+Estado: **Pasos 0 a 7 construidos y validados** (variables 1–15, 17–36). El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
@@ -132,7 +132,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 13 | client_reply_rate | Contactos ~ Poisson(λ por segmento); respuestas ~ Beta-Binomial(n, p(N)) | N | < 50%: ≈ 15% | < 3 contactos |
 | 35 | meetings_cancelled_by_client | Reuniones ~ Poisson (UHNW 6, HNW 2 en 6m); canceladas ~ Binomial(n, p(N)) | N | ≥ 2 o ≥ 50%: ≈ 8% | sin reuniones |
 
-### Paso 7 · Complaints & voice of client
+### Paso 7 · Complaints & voice of client — CONSTRUIDO (ver decisiones D-22 y docs/reports/step7_report.md; lo de abajo era la propuesta original)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|
