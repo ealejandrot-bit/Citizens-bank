@@ -1,0 +1,12 @@
+objeto,PSI,lectura
+score (deciles de dev),0.0034060567670731955,estable
+p calibrada (deciles de dev),0.003545659401513786,estable
+tramo,0.0002537223773176118,estable
+variable · client_reply_rate (bins WoE),0.0007683399574458525,estable
+variable · banker_change_6m_flag (bins WoE),1.3266204979267853e-05,estable
+variable · share_of_wallet (bins WoE),0.0008072642789640194,estable
+variable · outflow_x_contact_gap (bins WoE),0.0007433172036899818,estable
+variable · return_vs_benchmark (bins WoE),0.0026869301119509578,estable
+variable · streams_stopped_count (bins WoE),0.00029443155416967537,estable
+variable · cash_pct_of_portfolio_chg (bins WoE),0.000862774158850881,estable
+variable · contact_gap_ratio_peer (bins WoE),0.0014981042207743722,estable

@@ -1,0 +1,6 @@
+disparador,regla,acción,evaluable hoy
+Entrada a Crítico,score ≤ 445 en el refresco,alerta al banquero y líder; SLA 5 días hábiles,sí (con el snapshot)
+Entrada a Alto,"445 < score ≤ 517, o override activo",alerta al banquero; SLA 15 días hábiles; 12.5% a control,sí (con el snapshot)
+Override,"cambio de banquero, queja escalada o transferencia a competidor ≥ 10%",sube a Alto aunque el score no lo indique,sí (con el snapshot)
+Migración,"caída ≥ 40 puntos (1 PDO = odds ×2) entre refrescos mensuales, o baja de 2 tramos",alerta de deterioro aunque no llegue a Alto,no: requiere 2 snapshots (L1)
+Salida de Crítico/Alto,2 refrescos seguidos en tramo inferior,cierre del caso,no: requiere 2 snapshots (L1)

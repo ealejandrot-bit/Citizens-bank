@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **14** · G3 abierto, esperando respuesta · G0, G1, G2 cerrados · bloque cerrado: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 75 / 75 PASS (pasos 00–14).
+- Último paso completado: **16** · G0–G3 cerrados (G0–G1 "usa defaults"; G2–G3 respuestas del usuario, 2026-09-29) · bloque en curso: pasos 15–17 (G4).
+- Tests: 80 / 80 PASS (pasos 00–16).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -30,6 +30,10 @@ usuario · `[DEF-default]` default aplicado.
 | Modelo UHNW | un solo modelo con `segment_uhnw`; UHNW reportado aparte | [DEF] G2-2 |
 | Selección por cluster | adición elige cualquier miembro, uno por cluster (D10.2) | [DEF] G2-3 |
 | Modelo a escalar | campeón WoE + logística; challenger solo como referencia de ajuste de probabilidad (11C) | [DEF] G2-4 |
+| Overrides | las 3 reglas activas (→ Alto) se mantienen | [DEF] G3-1 |
+| Cola alta de RV | sin ajuste por tamaño; monitoreo del quintil superior de RV | [DEF] G3-2 |
+| UHNW en Alto | sin calibración propia; revisión prioritaria del banquero | [DEF] G3-3 |
+| Control aleatorio en Alto | 12.5% (595 hogares) | [DEF] G3-4 |
 
 ## Decisiones
 - **D0.0 · Ubicación.** El proyecto vive en `churn_scorecard/` dentro del repo Citizens-bank, separado del generador
@@ -162,6 +166,17 @@ usuario · `[DEF-default]` default aplicado.
   UHNW dentro [DATA]. Sin calibración propia por pocos eventos (L5); pregunta G3-3. Control aleatorio en Alto: con
   12.5% (595 hogares) el efecto mínimo detectable es 4.9 pp (24% relativo) [DATA].
 
+- **D15.1 · Estabilidad.** PSI dev→val: score 0.0034, p calibrada 0.0035, tramo 0.0003, variables ≤ 0.0027; subgrupos
+  ≤ 0.035 (UHNW / cluster 0, 323 hogares en val); mezcla de subgrupos ≤ 0.0012. Participación de variables estable
+  entre folds (CV 3–13%; las 2 primeras siempre `banker_change_6m_flag` y `client_reply_rate`) [DATA]. Sin PSI temporal (L1).
+- **D16.1 · K de arquetipos.** La regla (tamaño ≥ 10%, ARI ≥ 0.80, mayor silhouette) elegiría K = 2; el SPEC pide 3–4
+  arquetipos, así que la elección se hace dentro de K ∈ {3, 4}: K = 3 (ARI 0.968, mínimo 19.4%); K = 4 no cumple
+  tamaño (3.5%) [DATA]. K = 2 queda como referencia.
+- **D16.2 · Arquetipos (nombrados tras revisar perfiles; descriptivos, no causales).** Relación desatendida 36.5% de
+  eventos dev (brecha de contacto 0.84, respuesta 0.33); salida activa a competidor 19.4% (transferencia mediana a
+  competidor $2.1M, cambio de banquero 66%, queja escalada 26%; 69% en Crítico); desgaste silencioso 44.1% (señales
+  cercanas a quienes se quedan; 21% en Estable) [DATA]. Mezcla estable en val (33.1% / 19.3% / 47.6%).
+
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].
 - **L2** Señales pre-ingenierizadas sin timestamps auditables; se asume as-of T0.
@@ -181,5 +196,8 @@ usuario · `[DEF-default]` default aplicado.
   0.99 vs 0.93); el random forest crudo sobrestima (media p 40.5% vs 13.9%, ECE 26.6 pp) por sus pesos balanceados y,
   corregido por prior, subestima el decil superior (34.8% vs 42.1%) [DATA]. El campeón se calibra en el paso 14.
 
+## G3 · respuesta del usuario (2026-09-29)
+- "1. keep all three. 2. don't adjust 3. no separe 4. 12.5%" → G3-1 a G3-4 [DEF].
+
 ## Preguntas abiertas
-- G3-1 a G3-4 en `reports/gate_3.md`.
+- Ninguna. Las de G4 se abrirán al cerrar el paso 17.
