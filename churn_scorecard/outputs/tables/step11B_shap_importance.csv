@@ -1,0 +1,17 @@
+variable,|φ| medio,restricción,% de Σ|φ|
+client_reply_rate,0.28495106,-1,21.758982
+banker_change_6m_flag,0.24135026,1,18.429607
+multi_signal_count,0.14685547,1,11.213944
+contact_gap_ratio,0.11507599,1,8.7872505
+share_of_wallet,0.11058941,-1,8.4446535
+cash_pct_of_portfolio_chg,0.07885953,1,6.0217466
+meetings_cancelled_by_client,0.047540396,1,3.6302047
+fixed_income_maturity_not_reinvested,0.04594048,1,3.5080342
+streams_stopped_count,0.042903725,1,3.2761462
+recurring_deposit_change_pct,0.040431734,-1,3.087384
+transfer_to_competitor_bank_amount_90d,0.03732504,1,2.8501556
+complaint_escalated_flag,0.03295797,1,2.5166845
+repeat_complaint_flag,0.03271016,1,2.4977615
+net_external_flow_pct_90d,0.031230263,-1,2.3847558
+business_payroll_stopped_flag,0.013780953,1,1.0523194
+share_of_wallet_change,0.0070765573,-1,0.54036885

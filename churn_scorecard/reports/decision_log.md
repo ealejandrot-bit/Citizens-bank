@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **10** · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 55 / 55 PASS (pasos 00–10).
+- Último paso completado: **11** · G2 abierto, esperando respuesta · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Tests: 60 / 60 PASS (pasos 00–11).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -110,6 +110,21 @@ usuario · `[DEF-default]` default aplicado.
 - **D10.4 · Challenger.** 70 candidatas → 14 redundantes (|ρ| > 0.75) → 40 sin permutation importance estable → 16
   variables [DATA], incluido `multi_signal_count` (compuesto, permitido en challenger por I-3).
 
+- **D11.1 · Comparación en dev.** Campeón y challenger se comparan en la CV 5×5 de dev (mismos folds, pareado). Los
+  criterios H-2 que exigen validación (caída dev→val, PSI por tramo, Brier tras Platt) se miden una sola vez en los
+  pasos 13–14; el holdout no se usa para elegir aquí.
+- **D11.2 · Campeón estimado.** 8 variables, todos los β > 0 (p < 0.001), VIF máx 1.38; intercepto corregido 1.807.
+  CV anidada: Gini 0.429, PR-AUC 0.344, b = 0.94; media de p en dev 13.94% vs tasa B 13.88%; reason codes top 1
+  estables en 91.7% [DATA]. Con target A: AUC 0.751 (mismas variables) [DATA].
+- **D11.3 · Challenger.** XGBoost monotónico, 150 trials (0 podados), prof. 3, 69 árboles; Gini 0.431, PR-AUC 0.363,
+  b = 0.98; 3 semillas con PR-AUC 0.3623–0.3630; EBM y variante WoE equivalentes; 0 violaciones de monotonía [DATA].
+  `scale_pos_weight` con probabilidad corregida por prior (logit − ln spw).
+- **D11.4 · Recomendación.** Challenger no cumple 4 criterios H-2 evaluables: ΔGini +0.002 (< 0.05), ΔPR-AUC +0.019
+  (< 0.03), sobreajuste 0.047 vs 0.018, reason codes top 1 77.0% con signo 99.9% (< 100%) [DATA]. Sí mejora la captura
+  de RV de eventos en el decil 1 (0.335 vs 0.284) [DATA]. Interacciones > 20% de |φ| en 10 de 16 variables (24.0%
+  global) [DATA]: documentadas, sin restricción (el challenger no se promueve). Default: campeón a pasos 12–14;
+  challenger como referencia, evaluado una vez en validación en el paso 13. Pregunta G2-4.
+
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].
 - **L2** Señales pre-ingenierizadas sin timestamps auditables; se asume as-of T0.
@@ -122,4 +137,4 @@ usuario · `[DEF-default]` default aplicado.
 - "usa defaults" → G1-1 a G1-4 con su default ([DEF-default] en la tabla de parámetros).
 
 ## Preguntas abiertas
-- Ninguna. Las de G2 se abrirán al cerrar el paso 11.
+- G2-1 a G2-4 en `reports/gate_2.md`.

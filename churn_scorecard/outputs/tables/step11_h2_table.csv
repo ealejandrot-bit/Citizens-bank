@@ -1,0 +1,9 @@
+criterio H-2,valor [DATA],cumple
+ΔGini ≥ +0.05,+0.0019,no
+ΔPR-AUC ≥ +0.03,+0.0189,no
+Sobreajuste (Gini entrenamiento − CV) no peor que campeón (proxy de la caída dev→val),0.0469 vs 0.0177,no
+"Brier ≤ campeón y b ∈ [0.8, 1.2] (OOF, antes de Platt)",0.1059 vs 0.1073; b = 0.979,sí
+Violaciones de monotonía = 0,0,sí
+Reason codes estables ≥ 70% (top 1) y signo coherente 100%,77.0%; signo 99.9%,no
+Captura de RV de eventos en decil 1 ≥ campeón,0.3353 vs 0.2835,sí
+PSI dev→val < 0.10 por tramo,pendiente paso 13,pendiente

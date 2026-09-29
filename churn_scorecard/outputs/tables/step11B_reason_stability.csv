@@ -1,0 +1,2 @@
+modelo,réplicas,hogares referencia,con al menos 1 reason code,acuerdo top 1 %,acuerdo top 3 %,% hogares con acuerdo top 1 ≥ 70%,% variables con signo coherente (media réplicas)
+challenger XGBoost,200,1000,1000,76.967,80.19183333333334,64.3,99.9375

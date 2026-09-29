@@ -1,0 +1,17 @@
+variable,% interacción en |φ|,principal socio,> 20%
+share_of_wallet_change,57.15548,client_reply_rate,True
+recurring_deposit_change_pct,41.03293,share_of_wallet,True
+meetings_cancelled_by_client,33.425495,client_reply_rate,True
+transfer_to_competitor_bank_amount_90d,32.200695,client_reply_rate,True
+share_of_wallet,31.949287,client_reply_rate,True
+business_payroll_stopped_flag,30.46028,contact_gap_ratio,True
+cash_pct_of_portfolio_chg,30.010841,banker_change_6m_flag,True
+net_external_flow_pct_90d,28.399134,client_reply_rate,True
+fixed_income_maturity_not_reinvested,27.904339,meetings_cancelled_by_client,True
+repeat_complaint_flag,26.862957,multi_signal_count,True
+contact_gap_ratio,20.138063,share_of_wallet,True
+multi_signal_count,19.57795,banker_change_6m_flag,False
+complaint_escalated_flag,18.997265,recurring_deposit_change_pct,False
+client_reply_rate,18.93274,share_of_wallet,False
+streams_stopped_count,18.38826,client_reply_rate,False
+banker_change_6m_flag,17.960804,client_reply_rate,False
