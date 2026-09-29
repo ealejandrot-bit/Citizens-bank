@@ -1,0 +1,15 @@
+pandas
+numpy
+scipy
+scikit-learn
+statsmodels
+optbinning
+lightgbm
+xgboost
+interpret-core
+optuna
+shap
+matplotlib
+openpyxl
+pyarrow
+pytest

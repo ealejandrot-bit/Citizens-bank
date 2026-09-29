@@ -1,0 +1,12 @@
+hecho,esperado (SPEC B),observado [DATA],coincide
+Filas / columnas raw,"20,000 / 62","20,000 / 62",True
+Target B: hogares / eventos / tasa,"19,261 / 2,674 / 13.88%","19,261 / 2,674 / 13.88%",True
+dev: hogares / B hogares / B eventos,"13,631 / 13,482 / 1,871","13,631 / 13,482 / 1,871",True
+val: hogares / B hogares / B eventos,"5,842 / 5,779 / 803","5,842 / 5,779 / 803",True
+dev ∩ val,0 hogares,0,True
+Folds CV 5×5 en dev,cv_r1..cv_r5 con 5 folds,"5, 5, 5, 5, 5",True
+Campeón M1 · CV anidada Gini / PR-AUC,0.429 / 0.344,0.429 / 0.344,True
+Campeón M1 · val Gini / PR-AUC,0.390 / 0.328,0.390 / 0.328,True
+Missing estructural aum ⟺ sin inversiones,exacto,exacto,True
+Candidatas sin resultado / edad / buró,0 prohibidas,"70 candidatas, 0 prohibidas",True
+Copias heredadas idénticas,16 de 16,16 de 16,True

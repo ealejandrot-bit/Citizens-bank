@@ -1,0 +1,17 @@
+highspy==1.14.0
+interpret-core==0.7.8
+lightgbm==4.7.0
+matplotlib==3.11.2
+numpy==2.4.6
+openpyxl==3.1.5
+optbinning==1.0.0
+optuna==5.0.0
+ortools==9.15.6755
+pandas==3.0.6
+pyarrow==25.0.1
+pytest==9.1.1
+scikit-learn==1.9.1
+scipy==1.17.1
+shap==0.51.0
+statsmodels==0.15.0
+xgboost==3.2.0

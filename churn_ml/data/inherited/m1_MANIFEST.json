@@ -1,0 +1,55 @@
+{
+  "versión del modelo": "1.0.0",
+  "fecha de snapshot": "2025-12-31",
+  "semilla": 42,
+  "python": "3.11.15",
+  "librerías": {
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.1",
+    "statsmodels": "0.15.0",
+    "optbinning": "1.0.0",
+    "xgboost": "3.2.0",
+    "interpret-core": "0.7.8",
+    "shap": "0.51.0",
+    "optuna": "5.0.0"
+  },
+  "archivos": {
+    "step07_kmeans.pkl": {
+      "sha256": "774b25cc66315937b45f3731e40b388f7ce54295acd6b1562441ba4f58b4517a",
+      "rol": "auxiliar"
+    },
+    "step09_binning.pkl": {
+      "sha256": "8d10dccd7b06554f008d09e5cf2016c2d45bee4b128276eefb7c1e111b2f0fca",
+      "rol": "campeón"
+    },
+    "step10_selection.pkl": {
+      "sha256": "ffffe1e79671ba8b8bf4764f11705de4440947aa27be7ee0680712ecc8b7ceb1",
+      "rol": "auxiliar"
+    },
+    "step11A_champion.pkl": {
+      "sha256": "20915054f1754c2f3ccb8baa1103aa0f4dd1c83f6df09dac783d701f02b056b3",
+      "rol": "campeón"
+    },
+    "step11B_challenger.pkl": {
+      "sha256": "4fd25c9ae46ce499e5ce8590ca4ad63e9ba621fd1d4bc9c10d5b4cdcc830fe98",
+      "rol": "challenger (referencia)"
+    },
+    "step11B_xgb.json": {
+      "sha256": "edd02eb306d003d454aa27bdcd1c2f4d04ea05322603066087a596148e575108",
+      "rol": "challenger (referencia)"
+    },
+    "step12_scaling.pkl": {
+      "sha256": "68cdbcd0622d39ca47a040be4fe4e1e3066e5353287c9932b9abc36520b9b2f4",
+      "rol": "campeón"
+    },
+    "step14_calibrator.pkl": {
+      "sha256": "3b69ad71d0d3b10df76da28b2c7cd4952ab266521949c1312aea266dea118bfc",
+      "rol": "campeón"
+    },
+    "step16_archetypes.pkl": {
+      "sha256": "bfe832eedf68fa3177a9eccf35630595fb7f4e1035caf985b7e9c237010594b6",
+      "rol": "auxiliar"
+    }
+  }
+}
