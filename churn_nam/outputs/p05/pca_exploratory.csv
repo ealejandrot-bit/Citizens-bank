@@ -1,0 +1,11 @@
+componente,varianza %,acumulada %,top 4 loadings
+PC1,16.05930052983686,16.05930052983686,"deposit_balance_vs_6m_avg_pct +0.37, net_deposit_flow_pct_90d +0.36, net_external_flow_pct_90d +0.35, deposit_balance_change_pct_90d +0.35"
+PC2,9.570579129155318,25.629879658992184,"deposit_balance +0.47, relationship_value +0.47, aum +0.40, outflow_vs_baseline_pct +0.33"
+PC3,6.418944840582075,32.04882449957426,"external_transfer_pct_of_balance_60d +0.38, transfer_to_competitor_pct_90d +0.37, relationship_value -0.27, aum -0.25"
+PC4,5.346633962291962,37.39545846186622,"aum_vs_baseline_pct +0.40, investment_redemption_pct -0.40, aum_outflow_90d -0.37, aum_outflow_pct_90d -0.36"
+PC5,4.020210751257027,41.415669213123245,"recurring_income_monthly +0.63, has_payroll_stream +0.35, has_linked_business +0.26, miss_recurring_deposit_stopped_flag -0.24"
+PC6,3.560130320123991,44.97579953324723,"contact_gap_ratio +0.76, miss_client_reply_rate +0.33, recurring_deposit_change_pct -0.21, share_of_wallet -0.19"
+PC7,3.492743996111331,48.46854352935856,"external_transfer_acceleration +0.83, outflow_vs_baseline_pct +0.41, transfer_to_competitor_bank_amount_90d -0.19, transfer_to_competitor_pct_90d -0.16"
+PC8,3.327924338230285,51.796467867588845,"tenure_years +0.92, history_months +0.25, contact_gap_ratio +0.17, cash_pct_of_portfolio_chg -0.15"
+PC9,3.201100597326749,54.99756846491559,"cash_pct_of_portfolio_chg +0.74, positions_liquidated_pct +0.28, aum_vs_baseline_pct +0.25, contact_gap_ratio -0.24"
+PC10,2.896847059176332,57.894415524091926,"recurring_deposit_change_pct +0.73, external_destination_concentration -0.43, contact_gap_ratio +0.30, share_of_wallet +0.23"

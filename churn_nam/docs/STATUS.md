@@ -1,8 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **6 · fase 4 (features y monotonía)** terminada con el mapa de signos confirmado. Siguiente: fase 5 (EDA).
-- Tests: 16 passed.
+- Paso actual: **7 · fase 5 (EDA)** terminada. Siguiente: PASO 8 = fase 6 (diseño de validación), bloqueada hasta que el
+  usuario llene gate.delta_pr_auc, gate.delta_lift_at_5 y splits.validation_frac_of_dev.
+- Tests: 19 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -35,6 +36,10 @@
   aplica), business payroll (52): propuesta = "dato aunque no aplica" → no aplica (como M1); "falta aunque aplica" → sin dato.
 - Missing "sin regla" (6 variables): indicador de missing propio (p. ej. client_reply_rate faltante tiene +9.7 pp de churn).
 - Missing "ruido" (4 variables, ≤ 1.5%): valor neutro sin indicador.
+
+## Propuestas de la fase 5 (pendientes; nada entra al modelo sin evidencia)
+- miss_recurring_deposit_stopped_flag y miss_recurring_deposit_change_pct son casi idénticos (|ρ| 0.991): dejar uno.
+- 6 clusters de redundancia (|ρ| ≥ 0.70): la redundancia se resuelve en la selección de cada método (fases 7–9), no aquí.
 
 ## Preguntas abiertas al usuario
 - Ninguna. Observación: con A-lite congelado, toda comparación contra A-lite (incluido el gate) se hace en ≈ 1,737
