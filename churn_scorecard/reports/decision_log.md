@@ -4,7 +4,7 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **4** · G0 cerrado ("usa defaults") · **G1 abierto — esperando respuesta del usuario**.
+- Último paso completado: **4** · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
 - Tests: 30 / 30 PASS (pasos 00–04).
 
 ## Parámetros vigentes
@@ -22,6 +22,10 @@ usuario · `[DEF-default]` default aplicado.
 | Antigüedad | excluir `tenure_years` < 1 | [DEF-default] I-8 |
 | Supervivencia | no; solo descriptivo en paso 14 | [DEF-default] I-9 |
 | `value_lost_6m` | solo churn por valor y calibración por valor; nunca predictor | [DEF-default] I-10 |
+| Signos esperados | los de `step02_signs_a_priori.csv`; las 7 "?" sin restricción monótona | [DEF-default] G1-1 |
+| Clientes con tenure < 1 | score con bandera "fuera de población de desarrollo"; revisión del banquero en onboarding; sin métricas del modelo | [DEF-default] G1-2 |
+| `age_primary`, `bureau_new_mortgage_elsewhere` | fuera del campeón y del challenger; solo sensibilidad | [DEF-default] G1-3 |
+| `history_months` < 24 | se conservan con indicador `hist_lt24` | [DEF-default] G1-4 |
 
 ## Decisiones
 - **D0.0 · Ubicación.** El proyecto vive en `churn_scorecard/` dentro del repo Citizens-bank, separado del generador
@@ -71,5 +75,8 @@ usuario · `[DEF-default]` default aplicado.
 ## G0 · respuesta del usuario (2026-09-29)
 - "usa defaults" → I-1 a I-10 y G0-a con su default, marcados [DEF-default] en la tabla de parámetros.
 
+## G1 · respuesta del usuario (2026-09-29)
+- "usa defaults" → G1-1 a G1-4 con su default ([DEF-default] en la tabla de parámetros).
+
 ## Preguntas abiertas
-- G1-1 a G1-4 en `reports/gate_1.md`.
+- Ninguna. Las de G2 se abrirán al cerrar el paso 11.

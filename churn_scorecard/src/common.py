@@ -99,3 +99,31 @@ def save_table(df: pd.DataFrame, name: str, index: bool = False) -> Path:
 
 def md_table(df: pd.DataFrame, floatfmt: str = ",.4g") -> str:
     return df.to_markdown(index=False, floatfmt=floatfmt)
+
+
+EXCLUDED_G13 = ["age_primary", "bureau_new_mortgage_elsewhere"]          # [DEF-default] G1-3
+DERIVED = ["log_rv", "aum_share", "deposit_share", "streams_stopped_count", "n_streams_eligible", "n_products_held",
+           "outflow_x_contact_gap", "competitor_x_new_destinations",
+           "ind_sin_dato_client_reply_rate", "ind_sin_dato_meetings_cancelled_by_client",
+           "ind_sin_dato_relationship_dissatisfaction_flag", "ind_sin_dato_fixed_income_maturity_not_reinvested",
+           "aum_outflow_pct_90d_peer", "net_deposit_flow_pct_90d_peer", "contact_gap_ratio_peer"]
+
+
+def candidates(include_composites: bool = False) -> list[str]:
+    """Predictores candidatos: proveedor (uso = predictor) − G1-3 + derivadas (+ compuestos si se pide)."""
+    d = pd.read_csv(TABLES / "step02_dictionary.csv")
+    prov = ["segment_uhnw" if c == "segment" else c for c in d.loc[d.uso == "predictor", "columna"] if c not in EXCLUDED_G13]
+    return prov + DERIVED + (COMPOSITES if include_composites else [])
+
+
+def load_split(part: str) -> pd.DataFrame:
+    """dev o val con todas las features (features.parquet) + targets / pesos / folds."""
+    F = pd.read_parquet(PROC / "features.parquet")
+    s = pd.read_parquet(PROC / f"{part}.parquet")
+    keep = [c for c in s.columns if c not in F.columns or c == ID]
+    out = s[keep].merge(F, on=ID, how="left")
+    out["segment_uhnw"] = (out["segment"] == "UHNW").astype(int)
+    for c in out.columns:
+        if out[c].dtype == bool and not c.startswith(("in_pop_", "y_")):     # máscaras de población quedan bool
+            out[c] = out[c].astype(int)
+    return out
