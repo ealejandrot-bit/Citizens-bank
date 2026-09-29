@@ -1,9 +1,8 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **7 · fase 5 (EDA)** terminada. Siguiente: PASO 8 = fase 6 (diseño de validación), bloqueada hasta que el
-  usuario llene gate.delta_pr_auc, gate.delta_lift_at_5 y splits.validation_frac_of_dev.
-- Tests: 18 passed.
+- Paso actual: **8 · fase 6 (diseño de validación)** terminada; gate pre-registrado. Siguiente: PASO 9 = fase 7 (benchmarks).
+- Tests: 22 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -19,12 +18,11 @@
 | 2026-09-29 | A-lite: solo el original congelado (comparación justa en test ∩ holdout de A-lite) |
 | 2026-09-29 | Aceptadas: decisiones de la fase 2; gate final NAM vs A-lite; escala 600 @ 20:1, PDO 40, odds buenos:malos |
 | 2026-09-29 | Signos (fase 4): 27 duros +, 12 duros −, 19 libres (7 has_* pasan a libres); app_* solo como máscara del NAM; 58 features |
+| 2026-09-29 | Gate: ΔPR-AUC ≥ 0.03 y Δlift@5% ≥ 0.25 (NAM − A-lite, target A); validación = 20% del dev |
 
 ## Parámetros en null (config.yaml) y fase que bloquean
 | parámetro | fase |
 |---|---|
-| splits.validation_frac_of_dev | 6 |
-| gate.delta_pr_auc, gate.delta_lift_at_5 | 6 (pre-registro) y 10 |
 | nam.hidden_units, epochs_max, learning_rate, weight_decay, dropout, ensemble_members | 9 |
 | scorecard.score_min, score_max | 12 |
 | ews.alerts_per_month | 13 (umbral) |
@@ -42,8 +40,8 @@
 - 6 clusters de redundancia (|ρ| ≥ 0.70): la redundancia se resuelve en la selección de cada método (fases 7–9), no aquí.
 
 ## Preguntas abiertas al usuario
-- Ninguna. Observación: con A-lite congelado, toda comparación contra A-lite (incluido el gate) se hace en ≈ 1,737
-  hogares del test fuera de su desarrollo (≈ 106 eventos A): poca potencia estadística; se verá en la fase 6 (EPV). `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
+- Criterio UHNW del gate ("sin deterioro"): en test ∩ holdout de A-lite hay 7 eventos A en UHNW; el criterio es de
+  potencia casi nula. ¿Se mantiene como criterio del gate o pasa a solo reportado? `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
 
 ## Preguntas abiertas al dueño del dato
 1. ¿Por qué 123 hogares tienen `churn_excluded` = True y targets vacíos? (se excluyen; motivo desconocido)

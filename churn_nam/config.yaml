@@ -22,7 +22,7 @@ target:
 
 splits:
   reuse_m1_split: true         # decidido por el usuario (2026-09-29)
-  validation_frac_of_dev: null # fracción de dev reservada como validación (fases 6–11)
+  validation_frac_of_dev: 0.20 # usuario 2026-09-29; estratificado por clase (hard / soft ≥ θ / indeterminado / no) × segmento
   cv_folds: 5
   cv_repeats: 5
 
@@ -56,8 +56,8 @@ quality:                       # decisiones de la fase 2 (usuario 2026-09-29)
 
 gate:
   reference: A-lite            # gate final: NAM vs A-lite (usuario 2026-09-29)
-  delta_pr_auc: null           # ΔPR-AUC mínimo NAM − champion (test, pooled)
-  delta_lift_at_5: null        # Δlift@5% mínimo
+  delta_pr_auc: 0.03           # usuario 2026-09-29: ΔPR-AUC mínimo NAM − A-lite (target A)
+  delta_lift_at_5: 0.25        # usuario 2026-09-29: Δlift@5% mínimo NAM − A-lite
   bootstrap_reps: 2000
 
 calibration:

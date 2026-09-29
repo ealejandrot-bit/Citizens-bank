@@ -1,0 +1,1 @@
+{"title": "Fase 6 · Diseño de validación", "order": ["gate_preregistered.json", "split_sizes.csv", "epv.csv"], "notes": {"split_sizes.csv": "El test se cuenta aquí (tamaños y eventos) pero no se usa en ningún ajuste hasta la fase 10.", "epv.csv": "EPV = eventos del train / variables candidatas (58)."}}
