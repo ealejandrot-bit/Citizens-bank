@@ -1,8 +1,8 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **1 · Entorno y utilidades** (terminado). Siguiente: PASO 2 = fase 0 (perfil) tras "go".
-- Tests: 5 passed, 1 skipped (test_leakage sin matrices de features todavía).
+- Paso actual: **2 · fase 0 (perfil)** terminada: 14 de 14 hechos de SPEC §2 coinciden. Siguiente: PASO 3 = fase 1 tras "go".
+- Tests: 7 passed, 1 skipped.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -12,6 +12,7 @@
 | 2026-09-29 | Push a la rama de trabajo al cerrar cada fase |
 | 2026-09-29 | Mismo split que M1/M2 (test ya mirado 2 veces: se declara tercera mirada) |
 | 2026-09-29 | "go" al PASO 1 = aprobación de los borradores y de PyTorch (torch 2.14.0 instalado en .venv) |
+| 2026-09-29 | Objetivo: todos los métodos en la forma más consistente posible y comparados; el más importante es A-lite |
 
 ## Parámetros en null (config.yaml) y fase que bloquean
 | parámetro | fase |
@@ -24,7 +25,9 @@
 | ews.alerts_per_month | 13 (umbral) |
 
 ## Preguntas abiertas al usuario
-- Ninguna nueva. `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
+- Marco de comparación consistente con A-lite como referencia (ver resumen de la fase 0): target principal, forma de
+  A-lite (congelado vs re-estimado con su receta), referencia del gate y escala del scorecard.
+- Ninguna otra. `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
 
 ## Preguntas abiertas al dueño del dato (heredadas de M1/M2)
 - Regla de `multi_signal_count`; motivo de `churn_excluded`; definición de `value_lost_6m`; fecha as-of de cada señal.
