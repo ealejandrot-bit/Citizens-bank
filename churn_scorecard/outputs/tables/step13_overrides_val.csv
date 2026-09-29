@@ -1,0 +1,4 @@
+regla,destino,movidos val,eventos,precisión val %,cumple umbral (12% Alto / 25% Crítico)
+banker_change_6m_flag = 1,Alto,167,24,14.37125748502994,True
+complaint_escalated_flag = 1,Alto,158,30,18.9873417721519,True
+transfer_to_competitor_pct_90d ≥ 10%,Alto,41,10,24.390243902439025,True

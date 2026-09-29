@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **12** · G0, G1, G2 cerrados · bloque en curso: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 67 / 67 PASS (pasos 00–12).
+- Último paso completado: **13** · G0, G1, G2 cerrados · bloque en curso: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Tests: 71 / 71 PASS (pasos 00–13).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -145,6 +145,12 @@ usuario · `[DEF-default]` default aplicado.
   bandas (CCC/D, B, BB, BBB, AA, AAA); Estable no alcanza para 3 bandas [DATA].
 - **D12.5 · Bins no observados en dev.** Hogares con antigüedad < 1 (fuera de población) tienen "sin dato" en 4
   variables que en dev no lo tenían: 0 puntos (neutral), fila explícita en el lookup [DATA].
+
+- **D13.1 · Validación aprobada.** Holdout usado una vez con el campeón final: Gini val 0.390 vs dev 0.444 (caída 12.1%
+  ≤ 15%); PR-AUC 0.328; KS 0.282; tramos monótonos en val (55.6% / 21.1% / 11.1% / 5.8%), PSI por tramo 0.0003,
+  lift Crítico/Estable 9.5x, ≥ 52 eventos por banda, overrides con precisión 14.4–24.4% en val; UHNW Gini 0.394 con
+  53 eventos (solo global). Target A: AUC val 0.743 [DATA]. 9 de 9 criterios cumplidos. El Gini de val (0.390) queda
+  también por debajo del de la CV anidada (0.429) [DATA]: se reporta, sin re-ajustar (holdout tocado una vez).
 
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].

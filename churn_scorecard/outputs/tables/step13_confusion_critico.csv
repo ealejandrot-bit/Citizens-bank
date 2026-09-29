@@ -1,0 +1,2 @@
+TP,FP,FN,TN,precisión %,recall %,falsos positivos por evento capturado
+139,111,664,4865,55.6,17.31008717310087,0.7985611510791367

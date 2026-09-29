@@ -1,0 +1,10 @@
+criterio,cumple
+Tasa monótona por tramo en dev (final),sí
+Tasa monótona por tramo en val (final),sí
+Tasa monótona por tramo en val (modelo),sí
+Caída de Gini dev→val ≤ 15% relativo (12.1%),sí
+PSI dev→val por tramo < 0.10 (final 0.0003; modelo 0.0003),sí
+≥ 30 eventos por tramo en val (mín 95),sí
+≥ 30 eventos por banda en val (mín 52),sí
+Overrides con precisión ≥ umbral en val,sí
+Lift Crítico/Estable ≥ 5x en val (9.5x),sí
