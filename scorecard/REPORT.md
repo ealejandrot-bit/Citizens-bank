@@ -3,12 +3,17 @@
 Modelo 1 de 3 (scoring estadístico) · Client Pulse · Citizens Private Bank · base **sintética**.
 Toda cifra es [DATA-SINT]: sale de los datos, pero la base es sintética; no es resultado de un banco real.
 
+Principio de diseño (DM.1): **el holdout solo evalúa.** Calibración, cortes de tramo y overrides se ajustan con
+predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
+
 ## Índice
 
 0. [Setup e inventario](#0-setup-e-inventario)
 1. [Target y churn rate](#1-target-y-churn-rate)
 2. [Diccionario de datos](#2-diccionario-de-datos)
 3. [Calidad de datos](#3-calidad-de-datos)
+4. [Muestra](#4-muestra)
+5. [Auditoría de features y derivadas](#5-auditoría-de-features-y-derivadas)
 
 ---
 
@@ -271,3 +276,121 @@ Outliers de `relationship_value` [DATA-SINT]:
 - Sin capping en ninguna variable (el pre-binning por cuantiles lo hace irrelevante; D0.5 para RV). Descartados
   winsorizar p1/p99 y eliminar outliers.
 - "No aplica" y "sin dato" como categorías de missing distintas en el binning.
+
+---
+
+## 4. Muestra
+
+**Objetivo**
+- Separar una muestra de desarrollo y un holdout intocable, y fijar las particiones de CV que usarán todos los pasos.
+
+**Por qué**
+- Sin OOT posible (corte único), el holdout estratificado y la CV repetida son la única evidencia de generalización.
+  Fijar los folds una vez hace trazables las predicciones OOF con las que se calibra (DM.1).
+
+**Método**
+- Población: 19,877 elegibles. Estratos: `hard_churn_6m` × `segment` (4 estratos). `train_test_split` 70/30, semilla 42.
+- CV: `RepeatedStratifiedKFold` 5 folds × 5 repeticiones sobre desarrollo, mismos estratos, semilla 42.
+
+**Código** · `src/04_split.py`
+
+**Salida** · `outputs/tables/04_split.csv` (`household_id`, `muestra`, `cv_r1`–`cv_r5`), `04_balance.csv`, `04_cv_folds.csv`
+
+| Muestra | Hogares | Eventos hard | Tasa hard % | % UHNW | Eventos UHNW | Tasa UHNW % | Tasa soft % | % RV | Churn valor hard % | RV máx $M |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| desarrollo | 13,913 | 840 | 6.04 | 5.51 | 56 | 7.31 | 8.80 | 70.9 | 6.62 | 904.0 |
+| holdout | 5,964 | 360 | 6.04 | 5.52 | 24 | 7.29 | 8.92 | 29.1 | 6.07 | 568.9 |
+
+- CV: cada fold tiene 2,782–2,783 hogares, 168 eventos hard y 11–12 eventos UHNW, en las 5 repeticiones.
+- El churn por valor difiere 0.55 pp entre muestras: no se estratificó por valor (D0.5, D4.1). Los hogares grandes
+  caen donde caen; la validación por valor llevará IC bootstrap.
+
+**QC** · 9 PASS · 0 WARN · 0 FAIL
+- Tasa hard 6.038% vs 6.036%; % UHNW 5.506% vs 5.516%; tasa UHNW 7.31% vs 7.30% (todas ≤ 0.5 pp).
+- Sin solapamiento; 123 excluidos fuera; todo hogar de desarrollo con fold en las 5 repeticiones; split idéntico en
+  re-ejecución (mismo hash de `04_split.csv`).
+
+**Decisiones y alternativas descartadas** · D4.1
+- Sin OOT: limitación documentada; la CV repetida la sustituye solo parcialmente.
+- Descartado estratificar por quintil de RV. Hallazgo: 24 eventos UHNW en holdout → IC anchos, se reportan.
+
+---
+
+## 5. Auditoría de features y derivadas
+
+**Objetivo**
+- Mapear las features ya construidas a su tipo, detectar huecos y crear solo las derivadas permitidas, sin fuga.
+
+**Por qué**
+- Las features vienen ingenierizadas y su cálculo original no es auditable desde la base; saber qué tipos de señal
+  faltan acota lo que el scorecard puede ver. Las derivadas corrigen el tratamiento del missing, no inventan señal.
+
+**Método**
+- Tipo por señal: nivel / frecuencia / recencia / magnitud / tendencia / aceleración / persistencia / cambio vs
+  baseline (clasificación del paso 2), cruzado con las 8 dimensiones.
+- Derivadas:
+  - `<var>__miss` ∈ {ok, no_aplica, sin_dato} para las 35 variables con missing (D5.1).
+  - Recodificación D3.3: `pension_deposit_stopped_flag` → NaN "no aplica" en los 134 hogares sin `has_pension_stream`.
+  - `aum_outflow_to_rv_90d` = `aum_outflow_90d` ÷ RV; 0 si `has_investments` = False (D5.2).
+  - `log_relationship_value` = log₁₀ RV (D5.3).
+  - Conteo propio de señales activas con los 33 umbrales del Excel, **solo para comparar** con `multi_signal_count`.
+- Matriz de features: `outputs/data/05_features.pkl` (regenerable, no versionada): 56 predictores candidatos
+  (54 elegibles + 2 derivadas) + 35 razones de missing + targets y compuestos para benchmark.
+
+**Código** · `src/05_features.py`
+
+**Salida** · `outputs/tables/05_feature_type_map.csv`, `05_feature_map.csv`, `05_missing_reasons.csv`,
+`05_signal_count_comparison.csv`; `outputs/data/05_features.pkl`, `05_predictor_meta.csv`
+
+Tipos de señal por dimensión [DATA-SINT]:
+
+| Dimensión | Frec. | Recencia | Magnitud | Tendencia | Acel. | Persist. | vs baseline | Huecos |
+|:--|--:|--:|--:|--:|--:|--:|--:|:--|
+| salida de activos | 0 | 0 | 5 | 0 | 0 | 0 | 2 | frecuencia, recencia, tendencia, aceleración, persistencia |
+| deterioro de saldos | 0 | 0 | 1 | 1 | 0 | 0 | 1 | frecuencia, recencia, aceleración, persistencia |
+| externalización / competencia | 1 | 1 | 4 | 0 | 1 | 1 | 1 | tendencia |
+| ingresos recurrentes | 0 | 4 | 0 | 0 | 0 | 0 | 1 | frecuencia, magnitud, tendencia, aceleración, persistencia |
+| pérdida de productos | 2 | 1 | 0 | 1 | 0 | 0 | 0 | magnitud, aceleración, persistencia, vs baseline |
+| fricción de servicio | 0 | 2 | 0 | 0 | 0 | 2 | 0 | frecuencia, magnitud, tendencia, aceleración, vs baseline |
+| relación con banquero | 2 | 2 | 0 | 0 | 0 | 0 | 0 | magnitud, tendencia, aceleración, persistencia, vs baseline |
+| rendimiento | 0 | 0 | 1 | 0 | 0 | 0 | 0 | todo salvo magnitud |
+
+- Externalización es la única dimensión casi completa (9 variables, 6 de 7 tipos). La aceleración solo existe en
+  transferencias. Rendimiento depende de una sola variable, disponible solo con advisory.
+
+El missing es informativo [DATA-SINT] (tasa hard por razón; selección):
+
+| Variable | no aplica | sin dato | Tasa hard ok % | no aplica % | sin dato % |
+|:--|--:|--:|--:|--:|--:|
+| `client_reply_rate` | 0 | 9,598 | 3.72 | — | 8.55 |
+| `salary_deposit_stopped_flag` | 9,228 | 232 | 5.97 | 5.99 | 10.87 |
+| `business_payroll_stopped_flag` | 14,713 | 64 | 6.15 | 5.98 | 10.94 |
+| `deposit_balance_change_pct_90d` | 0 | 110 | 6.02 | — | 9.09 |
+| `products_closed_180d`, `banker_change_6m_flag` | 0 | 106 | 6.02 | — | 9.43 |
+| `aum` y señales de inversión | 2,870 | 0–131 | 6.13–6.15 | 5.41 | 2.1–7.6 |
+| `meetings_cancelled_by_client` | 0 | 12,145 | 6.66 | — | 5.63 |
+
+- "No aplica" y "sin dato" tienen tasas distintas: mezclarlos en un bin, o imputar, perdería esa diferencia (D5.1).
+
+Conteo propio vs regla existente [DATA-SINT]:
+
+| Medida | Media | ρ Spearman vs base | Coincidencia exacta | Tasa hard si ≥ 3 |
+|:--|--:|--:|--:|--:|
+| `multi_signal_count` (base) | 1.74 | 1.000 | 100% | 13.06% |
+| grupos activos propios (0–7) | 1.76 | 0.978 | 93.8% | 12.84% |
+| señales activas propias (0–33) | 2.61 | 0.949 | — | 11.27% |
+
+- El conteo se replica al 93.8%; la diferencia viene de 6 insumos que no están en la base (D5.3). Queda como
+  diagnóstico; el benchmark del paso 13 usa `multi_signal_count` y `multi_signal_flag` originales.
+
+**QC** · 9 PASS · 1 WARN · 0 FAIL
+- Ningún predictor es outcome, compuesto, `snapshot_date` ni `household_id`; recodificación de pensión = 134;
+  toda variable con NaN tiene razón de missing; matriz de 20,000 filas.
+- Gate fallido y corregido (D5.2): el control `aum_outflow_to_rv_90d` ∈ [0, 1] partía de una premisa falsa (el
+  denominador es RV en T0, neto de la salida). Máx. 10.3; 258 hogares > 1 con tasa hard 33.3%. Control corregido
+  a ≥ 0 y WARN informativo; datos sin tocar.
+
+**Decisiones y alternativas descartadas** · D5.1–D5.4
+- Razón de missing como bin propio; descartado imputar.
+- Salida de AUM relativa a RV sin recorte; descartado recortar a 1.
+- Sin features nuevas para cubrir huecos: la base no trae las series. Queda como pregunta para el equipo de datos.

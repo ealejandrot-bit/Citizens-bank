@@ -8,3 +8,4 @@ data/synthetic/*.csv
 
 # scorecard
 scorecard/src/__pycache__/
+scorecard/outputs/data/

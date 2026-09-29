@@ -23,6 +23,7 @@ outputs/tables/    CSV + MD por paso
 outputs/figures/   PNG
 outputs/models/    modelos (pkl)
 outputs/scored/    scored_households.csv
+outputs/data/      matriz de features intermedia (regenerable, no versionada)
 REPORT.md          documento de modelo, pasos 0–17
 DECISIONS.md       decisiones metodológicas y alternativas descartadas
 ```

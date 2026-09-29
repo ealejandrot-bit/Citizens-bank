@@ -1,0 +1,36 @@
+variable,no_aplica,sin_dato,condición no aplica,tasa hard | ok %,tasa hard | no_aplica %,tasa hard | sin_dato %
+aum,2870,0,has_investments,6.142,5.409,
+aum_outflow_90d,2870,27,has_investments,6.146,5.409,3.704
+aum_outflow_pct_90d,2870,27,has_investments,6.146,5.409,3.704
+investment_redemption_pct,2870,27,has_investments,6.146,5.409,3.704
+positions_liquidated_pct,2870,48,has_investments,6.154,5.409,2.083
+aum_vs_baseline_pct,2870,131,has_investments,6.131,5.409,7.634
+cash_pct_of_portfolio_chg,2870,131,has_investments,6.131,5.409,7.634
+fixed_income_maturity_not_reinvested,0,14782,—,5.77,,6.131
+deposit_balance_change_pct_90d,0,110,—,6.02,,9.091
+deposit_balance_vs_6m_avg_pct,0,158,—,6.025,,7.595
+net_deposit_flow_pct_90d,0,57,—,6.044,,3.509
+external_transfer_pct_of_balance_60d,0,16,—,6.032,,12.5
+new_external_destinations_90d,0,696,—,5.98,,7.626
+transfer_to_competitor_bank_amount_90d,0,32,—,6.037,,6.25
+transfer_to_competitor_pct_90d,0,32,—,6.037,,6.25
+external_transfer_acceleration,0,32,—,6.037,,6.25
+net_external_flow_pct_90d,0,32,—,6.037,,6.25
+external_destination_concentration,0,32,—,6.037,,6.25
+outflow_vs_baseline_pct,0,153,—,6.023,,7.843
+bureau_new_mortgage_elsewhere,0,1008,—,5.971,,7.271
+salary_deposit_stopped_flag,9228,232,has_payroll_stream,5.974,5.988,10.87
+pension_deposit_stopped_flag,13199,84,has_pension_stream,5.915,6.099,6.024
+business_payroll_stopped_flag,14713,64,has_linked_business,6.146,5.977,10.938
+recurring_deposit_stopped_flag,1344,149,sin flujo recurrente (ningún has_*_stream ni negocio),6.056,5.693,6.757
+recurring_deposit_change_pct,1344,135,sin flujo recurrente (ningún has_*_stream ni negocio),6.041,5.693,8.955
+products_closed_180d,0,106,—,6.019,,9.434
+accounts_closed_90d,0,32,—,6.037,,6.25
+share_of_wallet_change,0,153,—,6.023,,7.843
+trustee_change_flag,13626,0,has_trust,6.217,5.953,
+relationship_dissatisfaction_flag,0,14089,—,6.122,,6.001
+banker_change_6m_flag,0,106,—,6.019,,9.434
+client_reply_rate,0,9598,—,3.723,,8.546
+meetings_cancelled_by_client,0,12145,—,6.659,,5.635
+return_vs_benchmark,7948,251,has_advisory,5.978,6.089,7.171
+aum_outflow_to_rv_90d,0,27,—,6.04,,3.704

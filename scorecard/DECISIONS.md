@@ -78,3 +78,54 @@ corta, condición operativa, patrón no detectado, saldo base < $10k). Cada uno 
 - `contact_gap_ratio` = −0.0 en 561 hogares → cosmético, equivale a 0.
 - Ratios > 100% del saldo (p. ej. 628 hogares con transferencias 60d > 100% del saldo promedio) → plausibles
   (el denominador es un promedio y puede haber entradas); se conservan, el binning los absorbe en el bin extremo.
+
+## 2026-09-29 · Mejoras al plan aprobadas por el usuario
+
+**DM.1 · El holdout solo evalúa; nada se ajusta en él.** El brief ajustaba Platt en el holdout (con CV interna) y
+validaba en el mismo holdout, lo que sesga la validación hacia el optimismo. Cambio:
+- Paso 14: Platt (a, b), shift de intercepto y shrinkage por tramo se ajustan sobre **predicciones out-of-fold (OOF)
+  de la CV 5×5 en desarrollo** (promedio de las 5 repeticiones por hogar). El holdout solo mide b, Brier y
+  esperado vs observado.
+- Mismo principio para lo que depende de la etiqueta: cortes de tramo (paso 12) y precisión/asignación de overrides
+  (paso 12) se deciden con OOF de desarrollo y se **reportan** en holdout. Si un criterio (p. ej. ≥ 30 eventos por
+  tramo) no se cumple en holdout, se reporta como hallazgo; no se recorta en holdout.
+- Descartado: ajustar en holdout con CV interna (el brief). Descartado también partir el holdout en calibración y
+  prueba (reduce el holdout a ~180 eventos hard y deja UHNW con ~12).
+
+**DM.2 · Revisión FCRA de `bureau_new_mortgage_elsewhere` (paso 10).** Además del criterio de fair lending, se
+evalúa: (a) propósito permisible (FCRA §604) para usar datos de buró en un modelo de retención/marketing; (b) que el
+missing (5.04%, hogares sin propósito permisible o sin aprobación legal) no se convierta en un proxy; (c) el aporte
+incremental del modelo con y sin la variable. Si no hay base legal documentada, sale del campeón y queda como
+sensibilidad.
+
+## 2026-09-29 · Paso 4
+
+**D4.1 · Split 70/30 estratificado por `hard_churn_6m` × `segment`, semilla 42; CV 5×5 (RepeatedStratifiedKFold)
+en desarrollo con la misma estratificación.** Folds guardados en `04_split.csv` (`cv_r1`–`cv_r5`) para que todos
+los pasos usen exactamente las mismas particiones y las predicciones OOF (DM.1) sean trazables.
+- Descartado: estratificar también por quintil de RV (reduce la varianza del churn por valor entre muestras, pero
+  la instrucción D0.5 pide no intervenir la concentración; se reporta la diferencia: 6.62% dev vs 6.07% holdout).
+- Descartado: OOT (corte único). La CV repetida sustituye solo parcialmente la estabilidad temporal (limitación).
+- Hallazgo: holdout con 24 eventos hard UHNW y ~11–12 por fold de CV → métricas UHNW con intervalos anchos.
+
+## 2026-09-29 · Paso 5
+
+**D5.1 · Razón de missing como variable auxiliar** (`<var>__miss` ∈ ok / no_aplica / sin_dato) para 35 predictores.
+El paso 9 la usa como bin propio. El missing es informativo: `client_reply_rate` sin dato (< 3 contactos) tiene tasa
+hard 8.55% vs 3.72% con dato.
+- Descartado: imputar (mediana, 0 o modelo); destruye la señal del missing y mezcla "no aplica" con "sin dato".
+
+**D5.2 · `aum_outflow_to_rv_90d` = `aum_outflow_90d` ÷ RV; 0 sin inversiones.** Permite comparar la salida de AUM
+entre hogares con y sin inversiones. El QC original exigía ∈ [0, 1]; falló (máx. 10.3) porque el denominador es RV en
+T0, ya neto de la salida: 258 hogares sacaron en 90d más de lo que les queda (tasa hard 33.3%, 5.5× la base). Es
+señal legítima (información ≤ T0), no error: el control se corrigió a ≥ 0 y el caso queda como WARN informativo.
+- Descartado: usar RV previo como denominador (no está en la base); recortar la razón a 1 (pierde la señal).
+
+**D5.3 · `log_relationship_value`** solo para legibilidad de gráficas y clustering (paso 7); en el WoE es
+equivalente a RV. **Conteo propio de señales** (33 umbrales del Excel, 7 grupos): ρ = 0.978 con `multi_signal_count`
+y 93.8% de coincidencia exacta; las diferencias vienen de columnas que no están en la base (destinos nuevos 30d,
+umbrales de aceleración / HHI, monto no reinvertido, % de reuniones canceladas, fuera de SLA). Solo diagnóstico.
+
+**D5.4 · Huecos de tipo de feature** (para el equipo de datos; no se crean features nuevas porque la base no trae las
+series): sin tendencia en externalización; sin aceleración fuera de transferencias; sin persistencia en salida de
+activos, ingresos y banquero; rendimiento con una sola variable; relación con banquero sin cambio vs baseline.

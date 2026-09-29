@@ -1,0 +1,38 @@
+columna,dimensión,tipo_feature,ventana,dirección_esperada
+aum_outflow_90d,salida de activos,magnitud,90d,+
+aum_outflow_pct_90d,salida de activos,magnitud,90d,+
+investment_redemption_pct,salida de activos,magnitud,90d,+
+positions_liquidated_pct,salida de activos,magnitud,90d,+
+aum_vs_baseline_pct,salida de activos,cambio vs baseline,baseline 6m,−
+cash_pct_of_portfolio_chg,salida de activos,cambio vs baseline,baseline 6m,+
+fixed_income_maturity_not_reinvested,salida de activos,magnitud,30d,+
+deposit_balance_change_pct_90d,deterioro de saldos,tendencia,90d,−
+deposit_balance_vs_6m_avg_pct,deterioro de saldos,cambio vs baseline,baseline 6m,−
+net_deposit_flow_pct_90d,deterioro de saldos,magnitud,90d,−
+external_transfer_pct_of_balance_60d,externalización/competencia,magnitud,60d,+
+new_external_destinations_90d,externalización/competencia,frecuencia,90d,+
+transfer_to_competitor_bank_amount_90d,externalización/competencia,magnitud,90d,+
+transfer_to_competitor_pct_90d,externalización/competencia,magnitud,90d,+
+external_transfer_acceleration,externalización/competencia,aceleración,3×30d,+
+net_external_flow_pct_90d,externalización/competencia,magnitud,90d,−
+external_destination_concentration,externalización/competencia,persistencia,90d,+
+outflow_vs_baseline_pct,externalización/competencia,cambio vs baseline,baseline 6m,+
+bureau_new_mortgage_elsewhere,externalización/competencia,recencia,6m,+
+salary_deposit_stopped_flag,ingresos recurrentes,recencia,45d,+
+pension_deposit_stopped_flag,ingresos recurrentes,recencia,60d,+
+business_payroll_stopped_flag,ingresos recurrentes,recencia,60d,+
+recurring_deposit_stopped_flag,ingresos recurrentes,recencia,45–60d,+
+recurring_deposit_change_pct,ingresos recurrentes,cambio vs baseline,baseline 6m,−
+products_closed_180d,pérdida de productos,frecuencia,180d,+
+accounts_closed_90d,pérdida de productos,frecuencia,90d,+
+share_of_wallet_change,pérdida de productos,tendencia,6m,−
+trustee_change_flag,pérdida de productos,recencia,12m,+
+complaint_escalated_flag,fricción de servicio,recencia,12m,+
+complaint_age_days,fricción de servicio,persistencia,T0,+
+repeat_complaint_flag,fricción de servicio,persistencia,12m,+
+relationship_dissatisfaction_flag,fricción de servicio,recencia,30d,+
+banker_change_6m_flag,relación con banquero,recencia,6m,+
+contact_gap_ratio,relación con banquero,recencia,T0,+
+client_reply_rate,relación con banquero,frecuencia,90d,−
+meetings_cancelled_by_client,relación con banquero,frecuencia,6m,+
+return_vs_benchmark,rendimiento,magnitud,12m,−
