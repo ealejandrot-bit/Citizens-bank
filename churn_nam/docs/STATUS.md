@@ -1,8 +1,8 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **8 · fase 6 (diseño de validación)** terminada; gate pre-registrado. Siguiente: PASO 9 = fase 7 (benchmarks).
-- Tests: 22 passed.
+- Paso actual: **9 · fase 7 (benchmarks)** terminada (solo validación). Siguiente: PASO 10 = fase 8 (challenger interpretable).
+- Tests: 24 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -40,6 +40,8 @@
 - 6 clusters de redundancia (|ρ| ≥ 0.70): la redundancia se resuelve en la selección de cada método (fases 7–9), no aquí.
 
 ## Preguntas abiertas al usuario
+- Potencia del gate: con ≈ 106 eventos A en test ∩ holdout de A-lite, el IC de lift@5% tiene ancho ≈ ±1.3 (en validación
+  con 164 eventos fue [4.2, 6.8]); exigir Δlift@5% ≥ 0.25 con IC > 0 es prácticamente inalcanzable. ¿Se mantiene?
 - Criterio UHNW del gate ("sin deterioro"): en test ∩ holdout de A-lite hay 7 eventos A en UHNW; el criterio es de
   potencia casi nula. ¿Se mantiene como criterio del gate o pasa a solo reportado? `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
 

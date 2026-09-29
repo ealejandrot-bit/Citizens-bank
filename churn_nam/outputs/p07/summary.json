@@ -1,0 +1,1 @@
+{"hogares train / validación": "10,904 / 2,727", "eventos A validación": 164, "features": 58, "mejor benchmark target A (PR-AUC pooled)": "XGBoost · ninguno · 0.267", "hogares en validación ∩ holdout A-lite": 823, "eventos A en ese subconjunto": 56, "test abierto": false}
