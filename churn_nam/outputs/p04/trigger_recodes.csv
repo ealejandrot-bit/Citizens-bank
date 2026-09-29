@@ -1,0 +1,13 @@
+variable,dato aunque no aplica → NaN (no aplica),"falta aunque aplica (sin dato, queda NaN)"
+business_payroll_stopped_flag,0,52
+trustee_change_flag,0,0
+pension_deposit_stopped_flag,130,60
+salary_deposit_stopped_flag,0,200
+return_vs_benchmark,0,1
+aum,0,0
+aum_outflow_pct_90d,0,0
+investment_redemption_pct,0,0
+aum_vs_baseline_pct,0,0
+cash_pct_of_portfolio_chg,0,0
+positions_liquidated_pct,0,0
+aum_outflow_90d,0,0

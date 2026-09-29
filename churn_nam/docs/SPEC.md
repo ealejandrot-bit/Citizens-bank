@@ -53,8 +53,11 @@ churn; `?` = libre. Dura = restricción con violación = 0 (test). Se re-confirm
 | variable | signo | tipo |
 |---|:-:|---|
 | banker_change_6m_flag, transfer_to_competitor_pct_90d, transfer_to_competitor_bank_amount_90d, external_transfer_pct_of_balance_60d, new_external_destinations_90d, external_transfer_acceleration, external_destination_concentration, outflow_vs_baseline_pct, aum_outflow_pct_90d, aum_outflow_90d, investment_redemption_pct, positions_liquidated_pct, cash_pct_of_portfolio_chg, fixed_income_maturity_not_reinvested, salary_deposit_stopped_flag, recurring_deposit_stopped_flag, pension_deposit_stopped_flag, business_payroll_stopped_flag, products_closed_180d, accounts_closed_90d, trustee_change_flag, contact_gap_ratio, meetings_cancelled_by_client, complaint_escalated_flag, complaint_age_days, repeat_complaint_flag, relationship_dissatisfaction_flag | + | dura |
-| client_reply_rate, share_of_wallet, share_of_wallet_change, deposit_balance_change_pct_90d, deposit_balance_vs_6m_avg_pct, net_deposit_flow_pct_90d, recurring_deposit_change_pct, net_external_flow_pct_90d, aum_vs_baseline_pct, return_vs_benchmark, tenure_years, has_* (8) | − | dura |
-| segment, relationship_value, deposit_balance, aum, history_months, recurring_income_monthly | ? | libre |
+| client_reply_rate, share_of_wallet, share_of_wallet_change, deposit_balance_change_pct_90d, deposit_balance_vs_6m_avg_pct, net_deposit_flow_pct_90d, recurring_deposit_change_pct, net_external_flow_pct_90d, aum_vs_baseline_pct, return_vs_benchmark, tenure_years, has_credit_anchor | − | dura |
+| segment, relationship_value, deposit_balance, aum, history_months, recurring_income_monthly, has_investments, has_dividend_stream, has_advisory, has_linked_business, has_trust, has_payroll_stream, has_pension_stream, miss_* (6) | ? | libre |
+
+Confirmado por el usuario en la fase 4 (2026-09-29): los 7 `has_*` sin señal o con dirección contraria en dev pasan a
+libres; `app_*` no entran como features (duplicados exactos de `has_*`), solo como máscara de "no aplica" en el NAM.
 
 ## 5. Fases
 

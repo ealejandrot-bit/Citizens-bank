@@ -1,0 +1,234 @@
+{
+ "segment_uhnw": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "relationship_value": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "deposit_balance": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "aum": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_investments": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_advisory": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_linked_business": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_trust": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_credit_anchor": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "has_payroll_stream": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_pension_stream": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "has_dividend_stream": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "tenure_years": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "history_months": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "recurring_income_monthly": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "aum_outflow_pct_90d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "deposit_balance_change_pct_90d": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "salary_deposit_stopped_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "recurring_deposit_stopped_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "recurring_deposit_change_pct": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "net_deposit_flow_pct_90d": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "external_transfer_pct_of_balance_60d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "new_external_destinations_90d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "investment_redemption_pct": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "products_closed_180d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "banker_change_6m_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "contact_gap_ratio": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "client_reply_rate": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "complaint_escalated_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "complaint_age_days": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "aum_vs_baseline_pct": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "deposit_balance_vs_6m_avg_pct": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "pension_deposit_stopped_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "business_payroll_stopped_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "transfer_to_competitor_pct_90d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "external_transfer_acceleration": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "net_external_flow_pct_90d": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "external_destination_concentration": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "outflow_vs_baseline_pct": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "fixed_income_maturity_not_reinvested": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "cash_pct_of_portfolio_chg": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "return_vs_benchmark": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "accounts_closed_90d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "share_of_wallet": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "share_of_wallet_change": {
+  "signo": "−",
+  "restricción": "dura"
+ },
+ "trustee_change_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "repeat_complaint_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "positions_liquidated_pct": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "meetings_cancelled_by_client": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "relationship_dissatisfaction_flag": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "aum_outflow_90d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "transfer_to_competitor_bank_amount_90d": {
+  "signo": "+",
+  "restricción": "dura"
+ },
+ "miss_fixed_income_maturity_not_reinvested": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "miss_relationship_dissatisfaction_flag": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "miss_meetings_cancelled_by_client": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "miss_client_reply_rate": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "miss_recurring_deposit_change_pct": {
+  "signo": "?",
+  "restricción": "libre"
+ },
+ "miss_recurring_deposit_stopped_flag": {
+  "signo": "?",
+  "restricción": "libre"
+ }
+}

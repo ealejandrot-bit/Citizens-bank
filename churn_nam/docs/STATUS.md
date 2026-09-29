@@ -1,8 +1,8 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **5 · fase 3 (leakage)** terminada. Siguiente: PASO 6 = fase 4 (features y monotonía) tras "go".
-- Tests: 13 passed.
+- Paso actual: **6 · fase 4 (features y monotonía)** terminada con el mapa de signos confirmado. Siguiente: fase 5 (EDA).
+- Tests: 16 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -17,6 +17,7 @@
 | 2026-09-29 | Target principal A (hard 6M, el de A-lite); B se reporta siempre |
 | 2026-09-29 | A-lite: solo el original congelado (comparación justa en test ∩ holdout de A-lite) |
 | 2026-09-29 | Aceptadas: decisiones de la fase 2; gate final NAM vs A-lite; escala 600 @ 20:1, PDO 40, odds buenos:malos |
+| 2026-09-29 | Signos (fase 4): 27 duros +, 12 duros −, 19 libres (7 has_* pasan a libres); app_* solo como máscara del NAM; 58 features |
 
 ## Parámetros en null (config.yaml) y fase que bloquean
 | parámetro | fase |

@@ -1,0 +1,71 @@
+feature,signo propuesto,restricción,fuente del signo,ρ Spearman dev vs A,ρ Spearman dev vs B,coincide
+segment_uhnw,?,libre,SPEC §4 (G1-1 de M1),0.01290366235010646,0.016630844315480852,—
+relationship_value,?,libre,SPEC §4 (G1-1 de M1),0.007448424641351309,0.005098947075016905,—
+deposit_balance,?,libre,SPEC §4 (G1-1 de M1),-0.0030979860503713903,-0.0019009178114836065,—
+aum,?,libre,SPEC §4 (G1-1 de M1),0.002685242718755351,0.007560643145112015,—
+has_investments,?,libre,SPEC §4 (G1-1 de M1),0.012780811304009715,0.010880542067214099,—
+has_advisory,?,libre,SPEC §4 (G1-1 de M1),-0.008604176711591726,-0.0013695756885856655,—
+has_linked_business,?,libre,SPEC §4 (G1-1 de M1),-0.0012734465188701395,0.00196565716054145,—
+has_trust,?,libre,SPEC §4 (G1-1 de M1),0.003497110263444168,-0.001290499132597476,—
+has_credit_anchor,−,dura,SPEC §4 (G1-1 de M1),-0.025082026058659234,-0.013622402821323315,sí
+has_payroll_stream,?,libre,SPEC §4 (G1-1 de M1),0.00512578945128627,4.958526848026769e-05,—
+has_pension_stream,?,libre,SPEC §4 (G1-1 de M1),0.0017805907733570085,0.0011740646340578965,—
+has_dividend_stream,?,libre,SPEC §4 (G1-1 de M1),0.014665742441587755,0.01510954151197108,—
+tenure_years,−,dura,SPEC §4 (G1-1 de M1),-0.02615035330798855,-0.03625187496566983,sí
+history_months,?,libre,SPEC §4 (G1-1 de M1),-0.004121289864596872,-0.017170189755590298,—
+recurring_income_monthly,?,libre,SPEC §4 (G1-1 de M1),0.013542568440735304,0.010282108861171452,—
+aum_outflow_pct_90d,+,dura,SPEC §4 (G1-1 de M1),0.08959371991886513,0.11122748174401192,sí
+deposit_balance_change_pct_90d,−,dura,SPEC §4 (G1-1 de M1),-0.09215221380190239,-0.09133608386935767,sí
+salary_deposit_stopped_flag,+,dura,SPEC §4 (G1-1 de M1),0.1943999554255332,0.21203688510083257,sí
+recurring_deposit_stopped_flag,+,dura,SPEC §4 (G1-1 de M1),0.14998620125835146,0.16660886227875596,sí
+recurring_deposit_change_pct,−,dura,SPEC §4 (G1-1 de M1),-0.07489794421206108,-0.07947575245757038,sí
+net_deposit_flow_pct_90d,−,dura,SPEC §4 (G1-1 de M1),-0.08868076450869526,-0.09598839572711987,sí
+external_transfer_pct_of_balance_60d,+,dura,SPEC §4 (G1-1 de M1),0.089546429494249,0.0984410816707013,sí
+new_external_destinations_90d,+,dura,SPEC §4 (G1-1 de M1),0.16184505435906837,0.16266150980244146,sí
+investment_redemption_pct,+,dura,SPEC §4 (G1-1 de M1),0.08365477793527862,0.10209194642903079,sí
+products_closed_180d,+,dura,SPEC §4 (G1-1 de M1),0.14197407222362163,0.1438215790654411,sí
+banker_change_6m_flag,+,dura,SPEC §4 (G1-1 de M1),0.1895726841233685,0.21205713606874627,sí
+contact_gap_ratio,+,dura,SPEC §4 (G1-1 de M1),0.10204905978717724,0.12224892025998968,sí
+client_reply_rate,−,dura,SPEC §4 (G1-1 de M1),-0.06446680592417718,-0.0899063538399775,sí
+complaint_escalated_flag,+,dura,SPEC §4 (G1-1 de M1),0.10954843706240902,0.12350030288458684,sí
+complaint_age_days,+,dura,SPEC §4 (G1-1 de M1),0.10218529182854,0.10492819669170501,sí
+aum_vs_baseline_pct,−,dura,SPEC §4 (G1-1 de M1),-0.0915304619405241,-0.11124551725482268,sí
+deposit_balance_vs_6m_avg_pct,−,dura,SPEC §4 (G1-1 de M1),-0.09631635693443973,-0.10185192382663476,sí
+pension_deposit_stopped_flag,+,dura,SPEC §4 (G1-1 de M1),0.15211672862315512,0.17001578373090326,sí
+business_payroll_stopped_flag,+,dura,SPEC §4 (G1-1 de M1),0.13993108815471167,0.14102238137452752,sí
+transfer_to_competitor_pct_90d,+,dura,SPEC §4 (G1-1 de M1),0.0831180821261025,0.08221329795317918,sí
+external_transfer_acceleration,+,dura,SPEC §4 (G1-1 de M1),0.03469586504403144,0.018523894870733252,sí
+net_external_flow_pct_90d,−,dura,SPEC §4 (G1-1 de M1),-0.08590724036034378,-0.09341195296937514,sí
+external_destination_concentration,+,dura,SPEC §4 (G1-1 de M1),0.041226487023662516,0.040183153386478244,sí
+outflow_vs_baseline_pct,+,dura,SPEC §4 (G1-1 de M1),0.02321333356483121,0.03447248315665676,sí
+fixed_income_maturity_not_reinvested,+,dura,SPEC §4 (G1-1 de M1),0.10122679954671598,0.1233145537170682,sí
+cash_pct_of_portfolio_chg,+,dura,SPEC §4 (G1-1 de M1),0.06811469584209916,0.0669249549434015,sí
+return_vs_benchmark,−,dura,SPEC §4 (G1-1 de M1),-0.0792972246335203,-0.10066176346062329,sí
+accounts_closed_90d,+,dura,SPEC §4 (G1-1 de M1),0.07526696963116412,0.07871409956958146,sí
+share_of_wallet,−,dura,SPEC §4 (G1-1 de M1),-0.11729193690163535,-0.13131260856580662,sí
+share_of_wallet_change,−,dura,SPEC §4 (G1-1 de M1),-0.09421876491427705,-0.10042486471359341,sí
+trustee_change_flag,+,dura,SPEC §4 (G1-1 de M1),0.14134216543906325,0.1437380498509335,sí
+repeat_complaint_flag,+,dura,SPEC §4 (G1-1 de M1),0.12621946140016171,0.12984797405011564,sí
+positions_liquidated_pct,+,dura,SPEC §4 (G1-1 de M1),0.10510067793189026,0.1142336302792024,sí
+meetings_cancelled_by_client,+,dura,SPEC §4 (G1-1 de M1),0.10703464424334894,0.12902277808590748,sí
+relationship_dissatisfaction_flag,+,dura,SPEC §4 (G1-1 de M1),0.10433006411601953,0.1235897039826558,sí
+aum_outflow_90d,+,dura,SPEC §4 (G1-1 de M1),0.08810148393335275,0.11065970208763065,sí
+transfer_to_competitor_bank_amount_90d,+,dura,SPEC §4 (G1-1 de M1),0.0882359859508294,0.0851443277963178,sí
+app_business_payroll_stopped_flag,?,libre,hereda de has_linked_business (duplicado exacto: True),-0.0012734465188701395,0.00196565716054145,—
+app_trustee_change_flag,?,libre,hereda de has_trust (duplicado exacto: True),0.003497110263444168,-0.001290499132597476,—
+app_pension_deposit_stopped_flag,?,libre,hereda de has_pension_stream (duplicado exacto: True),0.0017805907733570085,0.0011740646340578965,—
+app_salary_deposit_stopped_flag,?,libre,hereda de has_payroll_stream (duplicado exacto: True),0.00512578945128627,4.958526848026769e-05,—
+app_return_vs_benchmark,?,libre,hereda de has_advisory (duplicado exacto: True),-0.008604176711591726,-0.0013695756885856655,—
+app_aum,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+app_aum_outflow_pct_90d,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+app_investment_redemption_pct,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+app_aum_vs_baseline_pct,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+app_cash_pct_of_portfolio_chg,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+app_positions_liquidated_pct,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+app_aum_outflow_90d,?,libre,hereda de has_investments (duplicado exacto: True),0.012780811304009715,0.010880542067214099,—
+miss_fixed_income_maturity_not_reinvested,?,libre,propuesta: libre (sin hipótesis de negocio),0.011319931502167868,0.011964521320291736,—
+miss_relationship_dissatisfaction_flag,?,libre,propuesta: libre (sin hipótesis de negocio),-0.004825172712304332,0.0011725547605428192,—
+miss_meetings_cancelled_by_client,?,libre,propuesta: libre (sin hipótesis de negocio),-0.02460099254321788,-0.030170904743702147,—
+miss_client_reply_rate,?,libre,propuesta: libre (sin hipótesis de negocio),0.10290023833028253,0.13680534060203248,—
+miss_recurring_deposit_change_pct,?,libre,propuesta: libre (sin hipótesis de negocio),-0.00886785102508148,-0.014263191508894378,—
+miss_recurring_deposit_stopped_flag,?,libre,propuesta: libre (sin hipótesis de negocio),-0.00947804310452632,-0.014115292621412182,—

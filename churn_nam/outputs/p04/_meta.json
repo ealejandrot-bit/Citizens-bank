@@ -1,0 +1,1 @@
+{"title": "Fase 4 · Features y monotonía (mapa confirmado)", "order": ["summary.json", "monotonicity_map.json", "monotonicity_review.csv", "trigger_recodes.csv", "feature_dictionary.csv"], "notes": {"monotonicity_review.csv": "Dirección observada solo en dev heredado (sin mirar test); 'NO' = signo propuesto contrario a lo observado."}}
