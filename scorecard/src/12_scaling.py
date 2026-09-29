@@ -6,7 +6,9 @@ Mayor score = menor churn. 800 puntos no es 80% de nada: la probabilidad sale de
 
 Probabilidad calibrada (capa modelo, DM.1): Platt logit(p_cal) = a + b·logit(p) ajustado sobre las OOF de la CV anidada
 de desarrollo; se valida en el paso 14.
-Tramos (decididos con OOF de desarrollo, reportados en holdout; D12.2):
+Tramos (decididos con OOF de desarrollo, reportados en holdout; D12.2, D12.6): Crítico = top 3% + overrides de Crítico;
+  Alto = capacidad fija (10% de la cartera; parámetro) ocupada por prioridad = max(p_cal, precisión del override activo);
+  Vigilancia / Estable por rejilla con las restricciones siguientes. (Versión previa, sin capacidad en Alto:)
   Crítico = top 3% por probabilidad (capacidad) → Alto / Vigilancia / Estable con: salto ≥ 2× entre tramos contiguos,
   lift Crítico/Estable ≥ 5×, ≥ 70 eventos por tramo en desarrollo (≈ 30 en holdout); entre los cortes factibles se elige
   el de mayor margen de separación (ratio contiguo mínimo), desempate por Estable más grande. (La regla inicial —más
@@ -135,77 +137,93 @@ def build(name: str, vars_: list[str], pkl: str, oof_col: str) -> dict:
     a, b = platt.params
     p_cal = expit(a + b * logit(p_score))
     p_cal_oof = expit(a + b * logit(o))
-    # ── Tramos: decisión con OOF calibrada de desarrollo ─────────────────────────────
-    c0 = np.quantile(p_cal_oof, 1 - PARAMS["critical_capacity_pct"])
-    best, feas = None, []
-    grid_a = np.arange(0.05, 0.31, 0.01)       # % acumulado Crítico + Alto
-    for ca in grid_a:
-        for cb in np.arange(ca + 0.05, 0.71, 0.01):  # % acumulado hasta Vigilancia
-            c1, c2 = np.quantile(p_cal_oof, 1 - ca), np.quantile(p_cal_oof, 1 - cb)
-            tr = tramo_of(p_cal_oof, (c0, c1, c2))
-            r, e = rates_by_tramo(tr, yd)
-            ok = (r["Crítico"] >= 2 * r["Alto"]) and (r["Alto"] >= 2 * r["Vigilancia"]) and (r["Vigilancia"] >= 2 * r["Estable"]) \
-                and (r["Crítico"] >= 5 * r["Estable"]) and (e.min() >= 70)
-            feas.append({"% Crítico+Alto": ca, "% hasta Vigilancia": cb, "factible": ok, "min ratio contiguo": min(r["Crítico"] / r["Alto"], r["Alto"] / r["Vigilancia"], r["Vigilancia"] / r["Estable"]),
-                         "lift C/E": r["Crítico"] / r["Estable"], "eventos mín": e.min()})
-            if ok:
-                # D12.2 (revisada): máximo margen de separación (ratio contiguo mínimo); desempate Estable más grande
-                key = (round(min(r["Crítico"] / r["Alto"], r["Alto"] / r["Vigilancia"], r["Vigilancia"] / r["Estable"]), 3), 1 - cb)
-                if best is None or key > best[0]:
-                    best = (key, (c0, c1, c2), ca, cb)
-    feas = pd.DataFrame(feas)
-    relaxed = best is None
-    if relaxed:   # sin corte factible: el que maximiza el ratio contiguo mínimo con ≥ 70 eventos (D12.2)
-        f2 = feas[feas["eventos mín"] >= 70].sort_values("min ratio contiguo", ascending=False).iloc[0]
-        ca, cb = f2["% Crítico+Alto"], f2["% hasta Vigilancia"]
-        best = (None, (c0, np.quantile(p_cal_oof, 1 - ca), np.quantile(p_cal_oof, 1 - cb)), ca, cb)
-    cuts = best[1]
-    tramo_model = tramo_of(p_cal, cuts)
-    tramo_oof = tramo_of(p_cal_oof, cuts)
-    # ── Overrides (decisión en desarrollo con OOF) ────────────────────────────────────
+    # ── Tramos por capacidad + overrides (decisión con OOF calibrada de desarrollo; D12.6) ──
     dev = ALL[dev_m].reset_index(drop=True)
-    ov_rows, ov_assign = [], {}
-    size_dev = pd.Series(tramo_oof).value_counts()
-    for rule, fn in OVERRIDES.items():
-        m_dev = fn(dev).fillna(False).to_numpy()
-        m_hold = fn(ALL[hold_m]).fillna(False).to_numpy()
-        prec_d = yd[m_dev].mean() if m_dev.any() else np.nan
-        target = "Crítico" if prec_d >= 0.25 else "Alto" if prec_d >= 0.12 else None
-        moved = 0
-        if target:
-            above = TRAMOS[:TRAMOS.index(target) + 1]
-            moved = int((m_dev & ~np.isin(tramo_oof, above)).sum())
-            if moved > 0.30 * size_dev.get(target, 1):
-                target_new = "Alto" if target == "Crítico" else None
-                if target_new:
-                    above2 = TRAMOS[:2]
-                    moved2 = int((m_dev & ~np.isin(tramo_oof, above2)).sum())
-                    target = target_new if moved2 <= 0.30 * size_dev.get("Alto", 1) else None
-                    moved = moved2 if target else 0
-                else:
-                    target = None
-        prec_inc = yd[m_dev & (tramo_oof != "Crítico")].mean() if (m_dev & (tramo_oof != "Crítico")).any() else np.nan
-        yh = y_all[hold_m]
-        ov_rows.append({"modelo": name, "regla": rule, "hogares dev": int(m_dev.sum()), "eventos dev": int(yd[m_dev].sum()),
-                        "precisión dev %": 100 * prec_d, "precisión incremental dev % (fuera de Crítico)": 100 * prec_inc,
+    N = len(dev)
+    c0 = np.quantile(p_cal_oof, 1 - PARAMS["critical_capacity_pct"])
+    k_alto = int(round(PARAMS["alto_capacity_pct"] * N))
+    masks_dev = {r: fn(dev).fillna(False).to_numpy() for r, fn in OVERRIDES.items()}
+    masks_all = {r: fn(ALL).fillna(False).to_numpy() for r, fn in OVERRIDES.items()}
+    prec = {r: yd[m].mean() if m.any() else np.nan for r, m in masks_dev.items()}
+    level = {r: ("Crítico" if p_ >= 0.25 else "Alto" if p_ >= 0.12 else None) for r, p_ in prec.items()}
+    note = {r: "" for r in OVERRIDES}
+    crit_model = p_cal_oof >= c0
+    for r in OVERRIDES:   # ≤ 30% del Crítico por regla; si no, baja a Alto
+        if level[r] == "Crítico" and (masks_dev[r] & ~crit_model).sum() > 0.30 * crit_model.sum():
+            level[r], note[r] = "Alto", "bajó de Crítico (> 30% del tramo)"
+
+    def assign(p, masks, t_alto=None, c2=None):
+        crit = p >= c0
+        for r, lv in level.items():
+            if lv == "Crítico":
+                crit = crit | masks[r]
+        eff = p.copy()
+        for r, lv in level.items():
+            if lv == "Alto":
+                eff = np.where(masks[r], np.maximum(eff, min(prec[r], c0 - 1e-9)), eff)
+        return crit, eff
+
+    for _ in range(len(OVERRIDES) + 1):   # capacidad de Alto y regla ≤ 30% del tramo por override
+        crit, eff = assign(p_cal_oof, masks_dev)
+        rest = np.sort(eff[~crit])[::-1]
+        t_alto = rest[k_alto - 1]
+        alto = ~crit & (eff >= t_alto)
+        drop = [r for r, lv in level.items() if lv == "Alto" and (alto & masks_dev[r] & (p_cal_oof < t_alto)).sum() > 0.30 * alto.sum()]
+        if not drop:
+            break
+        worst = min(drop, key=lambda r: prec[r])
+        level[worst], note[worst] = None, "fuera (> 30% del Alto)"
+    # Vigilancia / Estable: rejilla con restricciones del brief, máximo margen de separación
+    best, feas = None, []
+    base_rest = ~crit & ~alto
+    tr0 = np.where(crit, "Crítico", np.where(alto, "Alto", ""))
+    for cb in np.arange(0.20, 0.90, 0.01):   # % acumulado de desarrollo hasta Vigilancia
+        c2 = np.quantile(p_cal_oof, 1 - cb)
+        tr = np.where(tr0 != "", tr0, np.where(p_cal_oof >= c2, "Vigilancia", "Estable"))
+        r, e = rates_by_tramo(tr, yd)
+        if (tr == "Vigilancia").sum() == 0 or (tr == "Estable").sum() == 0:
+            continue
+        mr = min(r["Crítico"] / r["Alto"], r["Alto"] / r["Vigilancia"], r["Vigilancia"] / r["Estable"])
+        ok = mr >= 2 and r["Crítico"] >= 5 * r["Estable"] and e.min() >= 70
+        feas.append({"% hasta Vigilancia": cb, "factible": ok, "min ratio contiguo": mr, "lift C/E": r["Crítico"] / r["Estable"], "eventos mín": e.min()})
+        key = (ok, round(mr, 3), 1 - cb)
+        if best is None or key > best[0]:
+            best = (key, c2, cb)
+    feas = pd.DataFrame(feas)
+    relaxed = not best[0][0]
+    c2, cb = best[1], best[2]
+    cuts = (c0, t_alto, c2)
+
+    def tramos(p, masks, with_ov=True):
+        if with_ov:
+            crit, eff = assign(p, masks)
+        else:
+            crit, eff = p >= c0, p
+        alto = ~crit & (eff >= t_alto)
+        return np.where(crit, "Crítico", np.where(alto, "Alto", np.where(p >= c2, "Vigilancia", "Estable")))
+
+    tramo_model = tramos(p_cal, masks_all, with_ov=False)
+    tramo_final = tramos(p_cal, masks_all)
+    tramo_oof_final = tramos(p_cal_oof, masks_dev)
+    tramo_oof_model = tramos(p_cal_oof, masks_dev, with_ov=False)
+    ca = (np.isin(tramo_oof_final, ["Crítico", "Alto"])).mean()
+    ov_rows = []
+    yh = y_all[hold_m]
+    for r in OVERRIDES:
+        m_dev, m_hold = masks_dev[r], masks_all[r][hold_m]
+        ov_rows.append({"modelo": name, "regla": r, "hogares dev": int(m_dev.sum()), "eventos dev": int(yd[m_dev].sum()),
+                        "precisión dev %": 100 * prec[r],
+                        "precisión incremental dev % (fuera de su tramo sin override)": 100 * yd[m_dev & (tramo_oof_model != (level[r] or "Crítico"))].mean(),
                         "hogares holdout": int(m_hold.sum()), "eventos holdout": int(yh[m_hold].sum()),
                         "precisión holdout %": 100 * yh[m_hold].mean() if m_hold.any() else np.nan,
-                        "hogares que sube (dev)": moved, "tramo asignado": target or "eliminado"})
-        if target:
-            ov_assign[rule] = target
+                        "hogares que entran por la regla (dev)": int((m_dev & (tramo_oof_final == (level[r] or "")) & (tramo_oof_model != tramo_oof_final)).sum()),
+                        "tramo asignado": level[r] or "eliminado", "nota": note[r]})
     ov = pd.DataFrame(ov_rows)
-    tramo_final = tramo_model.copy()
+    ov_assign = {r: lv for r, lv in level.items() if lv}
     ov_active = np.array([""] * len(ALL), dtype=object)
-    for rule, tgt in ov_assign.items():
-        m = OVERRIDES[rule](ALL).fillna(False).to_numpy()
-        up = m & (np.array([TRAMOS.index(t) for t in tramo_final]) > TRAMOS.index(tgt))
-        tramo_final[up] = tgt
-        ov_active[m] = [f"{s}; {rule}" if s else rule for s in ov_active[m]]
-    tramo_oof_final = tramo_oof.copy()
-    for rule, tgt in ov_assign.items():
-        m = OVERRIDES[rule](dev).fillna(False).to_numpy()
-        up = m & (np.array([TRAMOS.index(t) for t in tramo_oof_final]) > TRAMOS.index(tgt))
-        tramo_oof_final[up] = tgt
+    for r in ov_assign:
+        m = masks_all[r]
+        ov_active[m] = [f"{s_}; {r}" if s_ else r for s_ in ov_active[m]]
     # ── Reason codes ─────────────────────────────────────────────────────────────────
     L = np.column_stack([[0.0 if v in NO_REASON else loss_map[(v, b)] for b in bins[v]] for v in vars_])
     order = np.argsort(-L, axis=1)[:, :3]
@@ -215,16 +233,17 @@ def build(name: str, vars_: list[str], pkl: str, oof_col: str) -> dict:
         rc.append(codes + [""] * (3 - len(codes)))
     rc = np.array(rc)
     return {"name": name, "vars": vars_, "lookup": lk, "score": score, "p_score": p_score, "p_cal": p_cal, "platt": (a, b),
-            "cuts": cuts, "ca": best[2], "cb": best[3], "relaxed": relaxed, "feas": feas, "tramo_model": tramo_model,
-            "tramo": tramo_final, "tramo_oof": tramo_oof_final, "overrides": ov, "ov_active": ov_active, "rc": rc, "p_cal_oof": p_cal_oof}
+            "cuts": cuts, "ca": ca, "cb": cb, "relaxed": relaxed, "feas": feas, "tramo_model": tramo_model,
+            "tramo": tramo_final, "tramo_oof": tramo_oof_final, "tramo_oof_model": tramo_oof_model, "overrides": ov, "ov_active": ov_active, "rc": rc, "p_cal_oof": p_cal_oof}
 
 
-def master(res: dict, mask: np.ndarray, sample: str, tramo=None) -> tuple[pd.DataFrame, pd.DataFrame]:
+def master(res: dict, mask: np.ndarray, sample: str, tramo=None, tramo_m=None) -> tuple[pd.DataFrame, pd.DataFrame]:
     tr = res["tramo"][mask] if tramo is None else tramo
-    p, yy, r, lv, sc = res["p_cal"][mask], y_all[mask].astype(int), rv[mask], vl[mask], res["score"][mask]
+    p = res["p_cal"][mask] if tramo is None else res["p_cal_oof"][elig[dev_m]]
+    yy, r, lv, sc = y_all[mask].astype(int), rv[mask], vl[mask], res["score"][mask]
     base = yy.mean()
     H, V = [], []
-    tm = res["tramo_model"][mask] if tramo is None else tr
+    tm = res["tramo_model"][mask] if tramo_m is None else tramo_m
     for t in TRAMOS:
         m = tr == t
         mm = m & (tm == t)          # sin override: define los rangos de score / probabilidad
@@ -249,7 +268,7 @@ for name, vars_, pkl, col in [("A", cfg["models"]["A"], "11_modelA.pkl", "oof_A"
     save_table(R["overrides"].round(3), f"12_overrides_{tag}")
     for smp, msk in [("holdout", hold_m & elig), ("desarrollo", dev_m & elig)]:
         if smp == "desarrollo":   # decisión con OOF (DM.1): tramos OOF
-            H, V = master(R, msk, "desarrollo OOF", tramo=R["tramo_oof"][elig[dev_m]])
+            H, V = master(R, msk, "desarrollo OOF", tramo=R["tramo_oof"][elig[dev_m]], tramo_m=R["tramo_oof_model"][elig[dev_m]])
             H["churn esperado % (media p_cal)"] = [100 * R["p_cal_oof"][elig[dev_m]][R["tramo_oof"][elig[dev_m]] == t].mean() for t in TRAMOS]
         else:
             H, V = master(R, msk, smp)
@@ -274,6 +293,9 @@ for name, vars_, pkl, col in [("A", cfg["models"]["A"], "11_modelA.pkl", "oof_A"
     crit_all = int((R["tramo"][elig] == "Crítico").sum())
     qc.check(f"{name}: Crítico total vs capacidad (3% ≈ 600 hogares; overrides ≤ 30% del tramo)", crit_all <= 1.3 * PARAMS["critical_capacity_pct"] * elig.sum(),
              f"≤ {1.3 * PARAMS['critical_capacity_pct'] * elig.sum():.0f}", crit_all, severity="warn")
+    alto_share = (R["tramo"][elig & hold_m] == "Alto").mean()
+    qc.check(f"{name}: Alto ≈ capacidad (10% ± 1.5 pp, holdout)", abs(alto_share - PARAMS["alto_capacity_pct"]) <= 0.015,
+             f"{100 * PARAMS['alto_capacity_pct']:.0f}%", f"{100 * alto_share:.1f}%")
     qc.check(f"{name}: corte de tramos factible en desarrollo", not R["relaxed"], "factible", "factible" if not R["relaxed"] else "relajado", severity="warn")
     exact_score = OFFSET + FACTOR * (logit(1 - R["p_score"]))
     qc.check(f"{name}: score = Σ puntos enteros; mayor score ⇒ menor p", bool(np.all(np.diff(R["p_score"][np.argsort(R["score"])]) <= 1e-12)), "monótono", "ok")
@@ -301,8 +323,9 @@ params_t = pd.DataFrame([{"parámetro": "S₀", "valor": PARAMS["S0"]}, {"parám
                          {"parámetro": "PDO", "valor": PARAMS["PDO"]}, {"parámetro": "Factor = PDO/ln2", "valor": FACTOR},
                          {"parámetro": "Offset = S₀ − Factor·ln O₀", "valor": OFFSET}] +
                         [{"parámetro": f"Platt {k} (a, b)", "valor": f"{r['platt'][0]:.4f}, {r['platt'][1]:.4f}"} for k, r in results.items()] +
-                        [{"parámetro": f"Cortes p_cal {k} (Crítico / Alto / Vigilancia)", "valor": " / ".join(f"{100 * c:.2f}%" for c in r["cuts"])} for k, r in results.items()] +
-                        [{"parámetro": f"% acumulado {k} (Crítico / +Alto / +Vigilancia)", "valor": f"3% / {100 * r['ca']:.0f}% / {100 * r['cb']:.0f}%"} for k, r in results.items()])
+                        [{"parámetro": f"Cortes {k}: p_cal Crítico / prioridad Alto / p_cal Vigilancia", "valor": " / ".join(f"{100 * c:.2f}%" for c in r["cuts"])} for k, r in results.items()] +
+                        [{"parámetro": f"% acumulado {k} (Crítico / +Alto / +Vigilancia, desarrollo)", "valor": f"3% / {100 * r['ca']:.1f}% / {100 * r['cb']:.0f}%"} for k, r in results.items()]
+                        + [{"parámetro": "Capacidad Alto (supuesto, D12.6)", "valor": f"{100 * PARAMS['alto_capacity_pct']:.0f}% de la cartera"}])
 save_table(params_t, "12_scaling_params")
 
 # ── Figura: tasa por tramo holdout, A vs A-lite ─────────────────────────────────────────

@@ -1,5 +1,5 @@
 tramo,score mín–máx (sin override),p_cal mín–máx % (sin override),hogares,de ellos por override,% hogares,churn esperado % (media p_cal),churn observado % (holdout),eventos,captura eventos %,lift,responsable,SLA,gobernanza
 Crítico,360–500,26.4–78.7,235,16,3.94,39.608,34.043,80,22.222,5.64,banquero + Head of PB,≤ 5 días hábiles,comité mensual revisa el 100%
-Alto,501–592,7.2–26.0,1361,457,22.82,9.5,8.964,122,33.889,1.485,banquero,≤ 15 días hábiles,comité mensual revisa muestra y overrides
-Vigilancia,593–647,3.0–7.1,2466,0,41.348,4.558,4.501,111,30.833,0.746,banquero,siguiente contacto de cadencia,tablero mensual
-Estable,648–724,0.8–2.9,1902,0,31.891,1.995,2.471,47,13.056,0.409,banquero,cadencia normal,sin acción
+Alto,501–554,12.7–26.0,606,282,10.161,12.206,11.386,69,19.167,1.886,banquero,≤ 15 días hábiles,comité mensual revisa muestra y overrides
+Vigilancia,555–639,3.4–12.5,2809,0,47.099,5.521,5.233,147,40.833,0.867,banquero,siguiente contacto de cadencia,tablero mensual
+Estable,640–724,0.8–3.4,2314,0,38.799,2.186,2.766,64,17.778,0.458,banquero,cadencia normal,sin acción

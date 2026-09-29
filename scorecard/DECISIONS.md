@@ -258,3 +258,14 @@ agregada; se reporta para decisión de capacidad.
 **D12.4 · `segment` fuera de reason codes.** Es estructural y no accionable; con β inestable (D11.6) su bin UHNW resta
 26 puntos y aparecía como driver ("riesgo por ser UHNW"). Sigue dentro del score por diseño.
 **D12.5 · Etiquetas legibles** en lookup y reason codes (sí/no, rangos con %, "sin dato", "no aplica").
+**D12.6 · Capacidad fija en Alto (decisión del usuario, 2026-09-29: opción b).** Sin capacidad, Alto quedaba en 22.8%
+de la cartera (~4,600 hogares con SLA de 15 días; un tercio por override). Ahora Alto = **10% de la cartera**
+(parámetro `alto_capacity_pct`; supuesto: SLA 3× el de Crítico → ~3× su volumen; el usuario no tiene el dato y puede
+cambiarlo). El cupo se ocupa por prioridad = max(p_cal, precisión en desarrollo del override activo), acotada bajo el
+corte de Crítico; lo que no cabe baja a Vigilancia. Regla ≤ 30% del tramo por override, aplicada sobre el cupo:
+salen `banker_change_6m_flag` y `complaint_escalated_flag` (cada una ocuparía > 30% del Alto; su señal sigue en el
+score, cambio de banquero es la variable de más peso). Reemplaza el resultado de overrides de D12.3.
+Resultado A (holdout): Alto 10.2% de hogares, churn 11.4% (antes 9.0%); saltos 2.99× / 2.18× / 1.89× (en desarrollo
+2.57× / 2.60× / 2.82×); lift Crítico/Estable 12.3×. En conjunto los overrides son 47% del Alto en holdout (282 de 606).
+- Descartado: Alto sin capacidad (opción a); cupo ocupado solo por p_cal (dejaría fuera overrides con precisión
+  20–33%, mayor que la del margen del modelo, ~12%).

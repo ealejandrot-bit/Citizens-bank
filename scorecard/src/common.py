@@ -36,6 +36,7 @@ PARAMS = {
     "n_bootstrap": 500,
     "S0": 600, "O0": 15.0, "PDO": 40,
     "critical_capacity_pct": 0.03,
+    "alto_capacity_pct": 0.10,        # supuesto (D12.6): SLA 3× el de Crítico → ~3× su volumen
     "iv_min": 0.02, "iv_suspect": 0.50, "vif_max": 5.0,
     "min_bin_pop": 0.05, "min_bin_events": 30,
     "platt_b_range": (0.8, 1.2), "psi_max": 0.10,
