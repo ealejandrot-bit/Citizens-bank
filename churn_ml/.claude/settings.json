@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(python -m pytest:*)", "Bash(python src/*)"],
+    "deny": ["Write(data/raw/**)", "Edit(data/raw/**)"]
+  }
+}
