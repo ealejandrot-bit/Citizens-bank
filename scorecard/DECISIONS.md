@@ -317,3 +317,17 @@ Crítico (pocos hogares grandes: el mayor churner es 14% del valor observado del
 **D14.5 · Overrides.** Todas las reglas de Alto tienen precisión en holdout (19–33%) mayor que la tasa oficial del
 tramo (14.2%). Pensión detenida (Crítico): 37.5% en holdout vs tasa del tramo 38.5% (29.0% en desarrollo), por
 debajo del tramo en ambas muestras → candidata a bajar a Alto en la primera revisión con datos reales.
+
+## 2026-09-29 · Paso 15
+
+**D15.1 · Estabilidad sin eje temporal.** PSI desarrollo vs holdout (score y variables), métricas por sub-población,
+bootstrap de coeficientes y sensibilidad al re-binning. Descartado: simular un OOT partiendo por antigüedad o historia
+(no es tiempo calendario; mezclaría estabilidad con segmentación).
+**D15.2 · Hallazgo: la brecha CV–holdout no es de población.** PSI del score 0.003 (A) y 0.001 (A-lite); todas las
+variables < 0.004. Con la misma distribución de entrada, la caída de AUC (0.764 → 0.725, D11.7) es variación de la
+relación señal–churn en una muestra de 360 eventos, no cambio de población.
+**D15.3 · Sub-población más débil: cluster 2 (solo depósitos).** AUC holdout 0.660 [0.562, 0.762] con 35 eventos, y
+churn observado 4.1% vs esperado 6.4%; en desarrollo su AUC es 0.751. Se monitorea; no justifica un modelo aparte
+(D7.2). El resto de las bandas con ≥ 20 eventos tiene AUC ≥ 0.69.
+**D15.4 · `segment`:** β bootstrap [0.04, 3.39], positivo en 99.4% de réplicas pero con CV 0.39: confirma D11.6
+(forzada, efecto real pequeño e impreciso).

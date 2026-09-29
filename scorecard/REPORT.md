@@ -23,6 +23,7 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 12. [Escalamiento, tramos y salida por hogar](#12-escalamiento-tramos-y-salida-por-hogar)
 13. [Validación](#13-validación)
 14. [Calibración](#14-calibración)
+15. [Estabilidad](#15-estabilidad)
 
 ---
 
@@ -1237,3 +1238,80 @@ Nota de diseño (no ejecutable con un corte transversal):
 **Decisiones y alternativas descartadas** · D14.1–D14.5
 - Sin shift de intercepto ni recalibración con holdout; sin interacción por valor. Descartado re-ajustar Platt en
   holdout (lo convertiría en muestra de desarrollo).
+
+---
+
+## 15. Estabilidad
+
+**Objetivo**
+- Verificar que el score no dependa de la muestra, de una sub-población ni de decisiones finas de binning.
+
+**Por qué**
+- Sin OOT (corte único), la estabilidad se prueba entre muestras y sub-poblaciones. Un modelo que solo funciona en un
+  segmento, o que cambia con un corte de bin, no resiste la operación.
+
+**Método y fórmulas**
+- PSI = Σ (%holdout − %desarrollo)·ln(%holdout / %desarrollo); score en 10 bins por deciles de desarrollo, variables en
+  sus bins del paso 9. < 0.10 estable · 0.10–0.25 moderado · > 0.25 inestable.
+- AUC y KS por banda en holdout (IC bootstrap) y AUC en desarrollo OOF como referencia: quintil de RV, antigüedad,
+  historia < 24 vs 24, segmento, cluster del paso 7.
+- Bootstrap de coeficientes: 500 re-muestreos de desarrollo con bins fijos.
+- Re-binning: tres reglas alternativas, re-estimadas en desarrollo y medidas en holdout, con ΔAUC pareado.
+
+**Código** · `src/15_stability.py`
+
+**Salida** · `outputs/tables/15_psi.csv`, `15_metrics_by_band.csv`, `15_coef_bootstrap.csv`, `15_rebinning_sensitivity.csv`
+
+PSI [DATA-SINT]: score A 0.0030, score A-lite 0.0012; las 11 variables de A entre 0.0000 y 0.0011; las 38 candidatas
+< 0.0031. Todo "estable".
+
+AUC por sub-población, modelo A [DATA-SINT]:
+
+| Dimensión | Banda | Eventos holdout | AUC holdout [IC 95%] | AUC desarrollo OOF |
+|:--|:--|--:|:--|--:|
+| Quintil RV | Q1 ($1.0–2.2M) | 70 | 0.714 [0.642, 0.780] | 0.747 |
+| | Q2 | 70 | 0.689 [0.625, 0.763] | 0.757 |
+| | Q3 | 76 | 0.737 [0.676, 0.797] | 0.764 |
+| | Q4 | 66 | 0.780 [0.714, 0.830] | 0.780 |
+| | Q5 ($12M+) | 78 | 0.704 [0.649, 0.767] | 0.773 |
+| Antigüedad | < 2 años | 31 | 0.742 [0.630, 0.837] | 0.752 |
+| | 2–5 | 88 | 0.714 [0.654, 0.768] | 0.727 |
+| | 5–10 | 120 | 0.740 [0.682, 0.788] | 0.766 |
+| | 10–20 | 99 | 0.712 [0.658, 0.763] | 0.796 |
+| | ≥ 20 | 22 | 0.716 [0.596, 0.820] | 0.795 |
+| Historia | < 24 meses | 31 | 0.741 [0.648, 0.842] | 0.753 |
+| | = 24 meses | 329 | 0.723 [0.696, 0.749] | 0.765 |
+| Segmento | HNW | 336 | 0.725 [0.692, 0.755] | 0.764 |
+| | UHNW | 24 | 0.716 [0.606, 0.811] | 0.752 |
+| Cluster | 0 · activos con nómina e inversión | 199 | 0.731 [0.689, 0.771] | 0.771 |
+| | 1 · jubilados con pensión | 126 | 0.736 [0.694, 0.792] | 0.756 |
+| | 2 · solo depósitos | 35 | 0.660 [0.562, 0.762] | 0.751 |
+
+![AUC por banda](outputs/figures/15_auc_by_band.png)
+
+Bootstrap de coeficientes, modelo A [DATA-SINT]: todas las señales con β > 0 en ≥ 98.4% de las réplicas (la menos
+firme: `investment_redemption_pct`, IC [0.024, 0.448]); `segment` [0.04, 3.39] con 99.4% > 0 pero muy impreciso
+(D15.4). A-lite: 100% de réplicas con β > 0 en sus cuatro señales, con coeficientes más precisos (CV 0.07–0.16).
+
+Sensibilidad al re-binning [DATA-SINT] (holdout):
+
+| Binning | Bins (A) | AUC A | ΔAUC [IC 95%] | AUC A-lite | ΔAUC [IC 95%] |
+|:--|--:|--:|:--|--:|:--|
+| Base (paso 9) | 50 | 0.725 | — | 0.712 | — |
+| Más gruesos (mín. 10% / 2%) | 42 | 0.722 | −0.003 [−0.007, +0.002] | 0.709 | −0.003 [−0.007, +0.002] |
+| Más finos (mín. 3% / 1%, sin dif. mínima) | 61 | 0.726 | +0.002 [−0.001, +0.004] | 0.713 | +0.001 [−0.001, +0.004] |
+| Diferencia mínima de tasa 1 pp | 46 | 0.724 | −0.001 [−0.003, +0.002] | 0.708 | −0.004 [−0.008, −0.000] |
+
+Lectura:
+- **Población estable**: PSI casi nulo. La caída de AUC de la CV al holdout no se explica por cambio de población
+  (D15.2), lo que refuerza la lectura de variación de muestra.
+- **Discriminación pareja**: AUC 0.69–0.78 en todas las bandas con ≥ 20 eventos. La más débil es el cluster de hogares
+  solo con depósitos (0.66, 35 eventos), que además tiene menos churn del esperado (D15.3).
+- **Robustez**: β estables en signo; re-binning mueve el AUC ≤ 0.004. La tarjeta no depende de cortes finos.
+
+**QC** · 11 PASS · 0 WARN · 0 FAIL
+- PSI de score < 0.10 (ambos) y de las variables de A < 0.10; β > 0 en ≥ 97.5% de réplicas; |ΔAUC| por re-binning ≤ 0.01;
+  AUC ≥ 0.65 en toda banda con ≥ 20 eventos.
+
+**Decisiones y alternativas descartadas** · D15.1–D15.4
+- Sin OOT simulado; cluster 2 bajo monitoreo sin modelo aparte.

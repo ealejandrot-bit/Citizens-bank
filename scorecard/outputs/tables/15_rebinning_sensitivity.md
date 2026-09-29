@@ -1,0 +1,10 @@
+| modelo   | binning                                                                   |   bins totales |   AUC holdout |   ΔAUC vs base | IC95 Δ pareado   |   captura decil top |
+|:---------|:--------------------------------------------------------------------------|---------------:|--------------:|---------------:|:-----------------|--------------------:|
+| A        | base (paso 9)                                                             |             50 |        0.7246 |         0      | [0.000, 0.000]   |              0.3778 |
+| A        | bins más gruesos (mín. 10% continuas, 2% discretas)                       |             42 |        0.722  |        -0.0025 | [-0.007, 0.002]  |              0.3778 |
+| A        | bins más finos (mín. 3% continuas, 1% discretas, sin dif. mínima de tasa) |             61 |        0.7261 |         0.0016 | [-0.001, 0.004]  |              0.375  |
+| A        | diferencia mínima de tasa 1 pp                                            |             46 |        0.7238 |        -0.0008 | [-0.003, 0.002]  |              0.3778 |
+| A-lite   | base (paso 9)                                                             |             21 |        0.7122 |         0      | [0.000, 0.000]   |              0.3726 |
+| A-lite   | bins más gruesos (mín. 10% continuas, 2% discretas)                       |             18 |        0.7093 |        -0.0028 | [-0.007, 0.002]  |              0.3512 |
+| A-lite   | bins más finos (mín. 3% continuas, 1% discretas, sin dif. mínima de tasa) |             27 |        0.7133 |         0.0012 | [-0.001, 0.004]  |              0.3583 |
+| A-lite   | diferencia mínima de tasa 1 pp                                            |             18 |        0.7081 |        -0.0041 | [-0.008, -0.000] |              0.3487 |

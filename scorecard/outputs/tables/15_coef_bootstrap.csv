@@ -1,0 +1,17 @@
+modelo,variable,β,IC95 bootstrap,% réplicas β > 0,CV del β (sd/|media|)
+A,banker_change_6m_flag,0.6503,"[0.547, 0.756]",100.0,0.0826
+A,external_transfer_pct_of_balance_60d,0.3307,"[0.185, 0.455]",100.0,0.21
+A,products_closed_180d,0.2177,"[0.098, 0.342]",100.0,0.2979
+A,share_of_wallet,0.3125,"[0.165, 0.456]",100.0,0.2462
+A,recurring_deposit_change_pct,0.322,"[0.142, 0.471]",100.0,0.2651
+A,investment_redemption_pct,0.2429,"[0.024, 0.448]",98.4,0.4321
+A,repeat_complaint_flag,0.4289,"[0.239, 0.611]",100.0,0.2148
+A,return_vs_benchmark,0.641,"[0.363, 0.842]",100.0,0.1995
+A,client_reply_rate,0.6383,"[0.486, 0.809]",100.0,0.1318
+A,contact_gap_ratio,0.2686,"[0.063, 0.452]",99.8,0.38
+A,segment,2.0498,"[0.039, 3.387]",99.4,0.3944
+A-lite,segment,2.214,"[0.017, 3.548]",100.0,0.3616
+A-lite,banker_change_6m_flag,0.74,"[0.640, 0.835]",100.0,0.0697
+A-lite,client_reply_rate,0.796,"[0.638, 0.948]",100.0,0.0995
+A-lite,external_transfer_pct_of_balance_60d,0.5725,"[0.466, 0.681]",100.0,0.0974
+A-lite,share_of_wallet,0.4268,"[0.292, 0.565]",100.0,0.1615
