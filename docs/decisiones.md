@@ -454,6 +454,42 @@ La versión completa (101 columnas, con todas las ventanas y montos) se regenera
 `scripts/build_step8.py`. El AUC combinado de las 37 variables es 0.762, frente a un techo de 0.851.
 Resumen por variable en `docs/reports/final_report.md`.
 
+## Variable de churn construida y comparación de metodologías
+
+**D-24 · La etiqueta se construye sobre la ventana de resultado, como lo haría el banco.**
+Se simulan los 6 meses posteriores al corte (mercado futuro, ruido del saldo, choques de liquidez)
+y sobre esos saldos se aplican las definiciones del deck: **hard churn** si el valor cae a ≤ 5% y no
+se recupera; **soft churn** si la caída ex-mercado supera el 20% en 3 meses, sin salida total.
+- El hard churn coincide al 100% con el evento (6.04%); logo churn 6.0% vs AUM churn 6.4%.
+- El soft churn construido (11.0%) tiene ruido de etiqueta: 500 falsos positivos (compras de casa y
+  volatilidad del saldo que cruzan el −20%) y 72 contracciones que no llegan al umbral. **El umbral
+  de soft churn debe validarse** (deck slide 69).
+
+**D-25 · Comparación de metodologías** (`scripts/score_models.py`, `docs/reports/model_comparison.md`).
+Partición estratificada 70/30, métricas en test, IC 95% por bootstrap pareado.
+
+| Hard churn 6m | AUC | KS | Precisión top 10% | Lift top 10% |
+|---|---|---|---|---|
+| M0a · Reglas de negocio (slide 20) | 0.55 | 0.11 | 11% | 1.9× |
+| M0b · Scorecard experto (slide 22) | 0.70 | 0.33 | 23% | 3.7× |
+| M1 · Scorecard estadístico WoE | 0.75 | 0.37 | 23% | 3.8× |
+| M2 · Gradient Boosting | 0.76 | 0.40 | 24% | 4.0× |
+| M2 · Logística (challenger) | 0.77 | 0.41 | 24% | 4.0× |
+| M3 · Red neuronal (MLP + secuencia) | 0.75 | 0.39 | 23% | 3.9× |
+| Techo (probabilidad verdadera) | 0.86 | 0.56 | 33% | 5.4× |
+
+- Los estadísticos superan claramente al scorecard experto (+0.05–0.07 de AUC) y a las reglas.
+- **Gradient Boosting, logística, scorecard WoE y red neuronal no se distinguen** entre sí
+  (IC de la diferencia incluye 0). Con el criterio de promoción del deck (slide 28), el más simple y
+  explicable es suficiente. Esto también refleja que el generador es mayormente aditivo; en datos
+  reales las interacciones podrían favorecer al Gradient Boosting.
+- Todos los probabilísticos quedan calibrados (media 5.9–6.2% vs 6.0% observado).
+- La captura de AUM varía mucho (IC ~0.35–0.65) porque depende de pocos hogares grandes (cola Pareto).
+- Soft churn (alerta temprana): AUC 0.64–0.67, por el ruido de etiqueta; el scorecard experto casi no
+  lo anticipa (0.56).
+- Las bandas 70/40 del deck no calzan con la escala: el experto deja 96% en Low y el estadístico 0.2%
+  en High. Las bandas deberían fijarse por capacidad del banker (p. ej. High = top 5%).
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

@@ -3,3 +3,5 @@ __pycache__/
 .pytest_cache/
 data/synthetic/*.csv
 !data/synthetic/client_pulse_synthetic.csv
+!data/synthetic/churn_labels.csv
+!data/synthetic/scorecard_points.csv

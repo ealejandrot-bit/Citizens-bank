@@ -551,3 +551,20 @@ step8:
     # Compuesta de 35 variables: se espera más IV que cualquier variable sola (banda propia).
     multi_signal_count:            {alert: ">= 3", rate: [0.03, 0.30], iv: [0.30, 0.80], strength: High (compuesta), iv_base: all, driver: mixed}
     bureau_new_mortgage_elsewhere: {alert: "= 1",  rate: [0.005, 0.06], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+
+# ---------------------------------------------------------------------------
+# Resultado · construcción de la variable de churn (ventana (t, t+6m])
+# ---------------------------------------------------------------------------
+# Se simulan los 6 meses posteriores al corte (saldos y AUM) y la etiqueta se construye
+# con las definiciones del deck sobre lo observado, como lo haría el banco.
+outcome:
+  months: 6
+  hard_churn_residual_share: [0.0, 0.03]    # saldo que queda tras la salida total
+  hard_churn_max_share: 0.05                # etiqueta: valor ≤ 5% del valor en t y se mantiene hasta t+6
+  soft_churn_threshold: 0.20                # etiqueta: caída ex-mercado > 20% en 3 meses sin salida total
+  soft_churn_window_months: 3
+  deposit_sigma_monthly: 0.12               # igual que el Paso 1
+  aum_net_flow_sigma_monthly: 0.02
+  liquidity_shock_p_month: 0.01             # ruido que puede parecer contracción (compra de casa, impuestos)
+  liquidity_shock_size_median: 0.30
+  liquidity_shock_size_sigma: 0.5

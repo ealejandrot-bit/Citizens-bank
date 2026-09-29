@@ -3,6 +3,10 @@
 **Base final:** `data/synthetic/client_pulse_synthetic.csv` (20,000 hogares × 62 columnas, las 37
 variables del Excel + target). Resumen de cada variable en `docs/reports/final_report.md`.
 
+**Scores:** `python scripts/score_models.py` construye la variable de churn sobre la ventana de
+resultado y compara reglas, scorecard experto, scorecard WoE, Gradient Boosting, logística y red
+neuronal. Resultados en `docs/reports/model_comparison.md`.
+
 Base sintética a nivel hogar con las 37 variables de `docs/Client_Pulse_37_Variables.xlsx`,
 para prototipar el score de attrition de Citizens Private Bank (scorecard → ML → neural).
 Se construye por pasos, validando la distribución y las semillas de cada uno.
@@ -49,6 +53,9 @@ scripts/build_step7.py      Construye, valida y escribe el Paso 7 (+ 20 semillas
 synthetic/composite.py      Paso 8: multi-señal (umbrales del Excel) y buró → 16, 37
 synthetic/validate_step8.py Validación del Paso 8 y de la base final
 scripts/build_step8.py      Paso 8 + base final consolidada + reporte final de las 37 variables
+synthetic/outcome.py        Ventana de resultado (t, t+6m] y construcción de la variable de churn
+synthetic/scoring.py        Metodologías de score, métricas, bootstrap e importancia de drivers
+scripts/score_models.py     Construye el churn, entrena y compara las metodologías
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso

@@ -1,0 +1,322 @@
+variable,tramo,puntos (0–100),n_train,WoE
+multi_signal_count,=0,0.3187,2830,-0.7902
+multi_signal_count,=1,0.2823,4509,-0.4656
+multi_signal_count,=2,0.2574,3229,-0.2432
+multi_signal_count,=3,0.2169,1632,0.1180
+multi_signal_count,=4,0.1595,781,0.6303
+multi_signal_count,"[5, 6]",0.0913,496,1.2389
+multi_signal_count,"[6, 7]",0.0000,437,2.0531
+banker_change_6m_flag,=0,0.0000,11806,-0.3680
+banker_change_6m_flag,=1,6.7752,2039,1.0963
+banker_change_6m_flag,NULL,5.2390,69,0.7643
+products_closed_180d,=0,0.0000,12464,-0.2384
+products_closed_180d,=1,0.9565,906,0.3990
+products_closed_180d,NULL,1.5023,69,0.7627
+products_closed_180d,"[2, 3]",3.0756,220,1.8111
+products_closed_180d,"[3, 4]",3.6256,130,2.1775
+products_closed_180d,"[4, 6]",3.4587,125,2.0663
+transfer_to_competitor_pct_90d,=0,0.2616,2193,-0.1985
+transfer_to_competitor_pct_90d,NULL,0.9680,19,0.7924
+transfer_to_competitor_pct_90d,"[0.002645, 0.00417]",0.2683,1170,-0.1892
+transfer_to_competitor_pct_90d,"[0.00417, 0.00557]",0.2426,1170,-0.2252
+transfer_to_competitor_pct_90d,"[0.00557, 0.00712]",0.2295,1170,-0.2436
+transfer_to_competitor_pct_90d,"[0.00712, 0.008841]",0.1155,1170,-0.4034
+transfer_to_competitor_pct_90d,"[0.008841, 0.01101]",0.2556,1170,-0.2070
+transfer_to_competitor_pct_90d,"[0.01101, 0.01395]",0.2931,1170,-0.1543
+transfer_to_competitor_pct_90d,"[0.01395, 0.01848]",0.0000,1170,-0.5655
+transfer_to_competitor_pct_90d,"[0.01848, 0.03017]",0.3290,1170,-0.1040
+transfer_to_competitor_pct_90d,"[0.03017, 18.49]",1.3481,1171,1.3257
+transfer_to_competitor_pct_90d,"[1.453e-05, 0.002645]",0.2155,1171,-0.2633
+external_transfer_pct_of_balance_60d,NULL,2.1910,12,1.3038
+external_transfer_pct_of_balance_60d,"[0, 0.003092]",0.3280,1391,-0.1338
+external_transfer_pct_of_balance_60d,"[0.003092, 0.004549]",0.1533,1390,-0.2686
+external_transfer_pct_of_balance_60d,"[0.004549, 0.005809]",0.0000,1390,-0.3869
+external_transfer_pct_of_balance_60d,"[0.005809, 0.007113]",0.1324,1390,-0.2848
+external_transfer_pct_of_balance_60d,"[0.007113, 0.008651]",0.2917,1390,-0.1618
+external_transfer_pct_of_balance_60d,"[0.008651, 0.01046]",0.0896,1390,-0.3178
+external_transfer_pct_of_balance_60d,"[0.01046, 0.01303]",0.0000,1390,-0.3869
+external_transfer_pct_of_balance_60d,"[0.01303, 0.01703]",0.2143,1390,-0.2216
+external_transfer_pct_of_balance_60d,"[0.01703, 0.02854]",0.2728,1390,-0.1764
+external_transfer_pct_of_balance_60d,"[0.02854, 26.11]",2.0599,1391,1.2026
+client_reply_rate,=0.3333,10.2739,730,0.2370
+client_reply_rate,=0.5,8.1254,716,-0.2187
+client_reply_rate,=0.6667,7.7529,968,-0.2977
+client_reply_rate,=0.75,4.1510,569,-1.0616
+client_reply_rate,=1,5.9509,738,-0.6799
+client_reply_rate,NULL,10.8598,6643,0.3613
+client_reply_rate,"[0, 0.2]",9.8898,347,0.1556
+client_reply_rate,"[0.2, 0.2857]",8.7413,347,-0.0880
+client_reply_rate,"[0.2857, 0.4286]",6.6874,310,-0.5237
+client_reply_rate,"[0.4286, 0.5833]",4.3464,415,-1.0202
+client_reply_rate,"[0.5833, 0.6]",7.2733,35,-0.3994
+client_reply_rate,"[0.6, 0.7]",5.1348,650,-0.8529
+client_reply_rate,"[0.7, 0.7692]",0.0000,379,-1.9420
+client_reply_rate,"[0.7692, 0.8]",0.2662,153,-1.8856
+client_reply_rate,"[0.8, 0.8333]",4.8219,376,-0.9193
+client_reply_rate,"[0.8333, 0.9615]",4.4207,538,-1.0044
+share_of_wallet,=1,0.0000,824,-0.7477
+share_of_wallet,"[0.002608, 0.1659]",6.6790,1309,1.0914
+share_of_wallet,"[0.1659, 0.2459]",3.8186,1309,0.3038
+share_of_wallet,"[0.2459, 0.3136]",2.0268,1309,-0.1896
+share_of_wallet,"[0.3136, 0.3795]",2.9954,1309,0.0771
+share_of_wallet,"[0.3795, 0.4403]",2.8568,1309,0.0389
+share_of_wallet,"[0.4403, 0.5078]",1.1990,1309,-0.4175
+share_of_wallet,"[0.5078, 0.5808]",1.6025,1309,-0.3064
+share_of_wallet,"[0.5808, 0.6667]",1.4059,1309,-0.3606
+share_of_wallet,"[0.6667, 0.7776]",0.7497,1309,-0.5412
+share_of_wallet,"[0.7776, 0.9999]",1.1276,1309,-0.4372
+aum_vs_baseline_pct,NULL,0.4007,2122,-0.0894
+aum_vs_baseline_pct,"[-0.001762, 0]",0.0000,889,-0.4132
+aum_vs_baseline_pct,"[-0.005356, -0.001762]",0.0550,1179,-0.3687
+aum_vs_baseline_pct,"[-0.01006, -0.005356]",0.2234,1179,-0.2327
+aum_vs_baseline_pct,"[-0.01841, -0.01006]",0.2234,1179,-0.2327
+aum_vs_baseline_pct,"[-0.05685, -0.01841]",0.4328,1179,-0.0634
+aum_vs_baseline_pct,"[-0.9449, -0.05685]",2.0234,1180,1.2221
+aum_vs_baseline_pct,"[0, 0.003763]",0.2745,1469,-0.1913
+aum_vs_baseline_pct,"[0.003763, 0.01155]",0.1297,1179,-0.3083
+aum_vs_baseline_pct,"[0.01155, 0.02497]",0.1297,1179,-0.3083
+aum_vs_baseline_pct,"[0.02497, 0.3508]",0.3517,1180,-0.1289
+deposit_balance_vs_6m_avg_pct,NULL,1.6157,103,0.4416
+deposit_balance_vs_6m_avg_pct,"[-0.02045, 0.03142]",0.3205,1382,-0.2310
+deposit_balance_vs_6m_avg_pct,"[-0.07022, -0.02045]",0.4101,1381,-0.1844
+deposit_balance_vs_6m_avg_pct,"[-0.1241, -0.07022]",0.9221,1380,0.0814
+deposit_balance_vs_6m_avg_pct,"[-0.1913, -0.1241]",0.1970,1382,-0.2951
+deposit_balance_vs_6m_avg_pct,"[-0.3002, -0.1913]",0.5494,1381,-0.1121
+deposit_balance_vs_6m_avg_pct,"[-0.9814, -0.3002]",2.9119,1381,1.1146
+deposit_balance_vs_6m_avg_pct,"[0.03142, 0.0865]",0.1984,1381,-0.2943
+deposit_balance_vs_6m_avg_pct,"[0.0865, 0.1531]",0.0000,1380,-0.3974
+deposit_balance_vs_6m_avg_pct,"[0.1531, 0.2558]",0.1339,1381,-0.3279
+deposit_balance_vs_6m_avg_pct,"[0.2558, 4.532]",0.0318,1382,-0.3809
+accounts_closed_90d,=0,0.0000,11859,-0.1443
+accounts_closed_90d,=1,0.0171,1588,-0.0547
+accounts_closed_90d,NULL,0.1794,19,0.7946
+accounts_closed_90d,"[2, 3]",0.2774,204,1.3079
+accounts_closed_90d,"[3, 4]",0.3769,81,1.8285
+accounts_closed_90d,"[4, 5]",0.4753,50,2.3432
+accounts_closed_90d,"[5, 6]",0.3816,35,1.8532
+accounts_closed_90d,"[6, 12]",0.4419,78,2.1685
+new_external_destinations_90d,=0,0.5659,12654,-0.1905
+new_external_destinations_90d,NULL,0.3892,479,0.3584
+new_external_destinations_90d,"[1, 2]",0.0786,551,1.3233
+new_external_destinations_90d,"[2, 3]",0.0000,230,1.5676
+external_destination_concentration,=1,0.0000,2894,-0.3393
+external_destination_concentration,NULL,1.1204,19,0.7924
+external_destination_concentration,"[0.171, 0.3005]",0.1772,1100,-0.1602
+external_destination_concentration,"[0.3005, 0.3465]",0.0824,1100,-0.2560
+external_destination_concentration,"[0.3465, 0.3762]",0.1403,1100,-0.1975
+external_destination_concentration,"[0.3762, 0.4218]",0.0421,1100,-0.2967
+external_destination_concentration,"[0.4218, 0.5005]",0.3138,1100,-0.0223
+external_destination_concentration,"[0.5005, 0.5097]",0.0214,1100,-0.3177
+external_destination_concentration,"[0.5097, 0.5328]",0.1953,1100,-0.1420
+external_destination_concentration,"[0.5328, 0.5807]",0.3763,1100,0.0409
+external_destination_concentration,"[0.5807, 0.728]",0.2645,1100,-0.0720
+external_destination_concentration,"[0.728, 0.9999]",1.5220,1101,1.1981
+aum_outflow_pct_90d,=0,4.4788,6686,-0.1716
+aum_outflow_pct_90d,NULL,4.3194,2052,-0.1094
+aum_outflow_pct_90d,"[0.0001206, 0.004135]",4.5108,518,-0.1840
+aum_outflow_pct_90d,"[0.004135, 0.006476]",5.3287,517,-0.5029
+aum_outflow_pct_90d,"[0.006476, 0.009052]",4.3137,518,-0.1072
+aum_outflow_pct_90d,"[0.009052, 0.01187]",4.6095,517,-0.2225
+aum_outflow_pct_90d,"[0.01187, 0.01596]",4.7225,518,-0.2666
+aum_outflow_pct_90d,"[0.01596, 0.02152]",3.8728,518,0.0647
+aum_outflow_pct_90d,"[0.02152, 0.03107]",4.4054,517,-0.1429
+aum_outflow_pct_90d,"[0.03107, 0.06132]",4.8294,517,-0.3082
+aum_outflow_pct_90d,"[0.06132, 0.3288]",2.4588,518,0.6159
+aum_outflow_pct_90d,"[0.3288, 7.684]",0.0000,518,1.5744
+net_external_flow_pct_90d,NULL,0.2261,19,0.7930
+net_external_flow_pct_90d,"[-0.003231, 0.0249]",1.0517,1390,-0.2370
+net_external_flow_pct_90d,"[-0.01793, -0.003231]",1.0265,1389,-0.2056
+net_external_flow_pct_90d,"[-4.8, -0.01793]",0.0000,1390,1.0750
+net_external_flow_pct_90d,"[0.0249, 0.05286]",1.1431,1389,-0.3510
+net_external_flow_pct_90d,"[0.05286, 0.08126]",0.9126,1389,-0.0635
+net_external_flow_pct_90d,"[0.08126, 0.1113]",1.0517,1390,-0.2370
+net_external_flow_pct_90d,"[0.1113, 0.148]",1.0144,1389,-0.1905
+net_external_flow_pct_90d,"[0.148, 0.1967]",1.0770,1390,-0.2686
+net_external_flow_pct_90d,"[0.1967, 0.274]",1.0265,1389,-0.2056
+net_external_flow_pct_90d,"[0.274, 2.54]",1.0032,1390,-0.1764
+share_of_wallet_change,NULL,1.6817,100,0.4738
+share_of_wallet_change,"[-0.005013, 0.0008757]",0.5454,1381,-0.3110
+share_of_wallet_change,"[-0.01745, -0.005013]",1.1630,1381,0.1156
+share_of_wallet_change,"[-0.03466, -0.01745]",0.8118,1382,-0.1270
+share_of_wallet_change,"[-0.06479, -0.03466]",0.9881,1381,-0.0052
+share_of_wallet_change,"[-0.1365, -0.06479]",1.1295,1381,0.0924
+share_of_wallet_change,"[-0.9726, -0.1365]",2.4002,1382,0.9701
+share_of_wallet_change,"[0.0008757, 0.01291]",0.6836,1382,-0.2155
+share_of_wallet_change,"[0.01291, 0.0311]",0.5210,1381,-0.3279
+share_of_wallet_change,"[0.0311, 0.07154]",0.0000,1381,-0.6877
+share_of_wallet_change,"[0.07154, 0.8945]",0.3647,1382,-0.4358
+external_transfer_acceleration,NULL,1.9560,19,0.7930
+external_transfer_acceleration,"[-0.0008886, 0.0003687]",0.5115,1389,-0.1610
+external_transfer_acceleration,"[-0.00252, -0.0008886]",0.5550,1389,-0.1323
+external_transfer_acceleration,"[-0.004896, -0.00252]",0.3486,1390,-0.2686
+external_transfer_acceleration,"[-0.009957, -0.004896]",0.0000,1389,-0.4989
+external_transfer_acceleration,"[-23.95, -0.009957]",1.3358,1390,0.3834
+external_transfer_acceleration,"[0.0003687, 0.001712]",0.1146,1390,-0.4232
+external_transfer_acceleration,"[0.001712, 0.003473]",0.4441,1389,-0.2056
+external_transfer_acceleration,"[0.003473, 0.006001]",0.4199,1390,-0.2216
+external_transfer_acceleration,"[0.006001, 0.01199]",0.3498,1389,-0.2679
+external_transfer_acceleration,"[0.01199, 22.6]",2.1786,1390,0.9400
+deposit_balance_change_pct_90d,NULL,0.3103,72,0.7123
+deposit_balance_change_pct_90d,"[-0.01129, 0.0322]",1.2732,1384,-0.1867
+deposit_balance_change_pct_90d,"[-0.05735, -0.01129]",1.3390,1384,-0.2482
+deposit_balance_change_pct_90d,"[-0.1059, -0.05735]",1.3733,1384,-0.2802
+deposit_balance_change_pct_90d,"[-0.1645, -0.1059]",1.1372,1384,-0.0597
+deposit_balance_change_pct_90d,"[-0.2573, -0.1645]",0.9037,1384,0.1583
+deposit_balance_change_pct_90d,"[-0.9411, -0.2573]",0.0000,1385,1.0020
+deposit_balance_change_pct_90d,"[0.0322, 0.08018]",1.3390,1384,-0.2482
+deposit_balance_change_pct_90d,"[0.08018, 0.1403]",1.4268,1384,-0.3301
+deposit_balance_change_pct_90d,"[0.1403, 0.2389]",1.3733,1384,-0.2802
+deposit_balance_change_pct_90d,"[0.2389, 1.839]",1.4836,1385,-0.3832
+recurring_deposit_stopped_flag,=0,0.4115,12326,-0.1394
+recurring_deposit_stopped_flag,NULL,0.3786,1039,-0.0065
+recurring_deposit_stopped_flag,otro,0.0000,549,1.5247
+net_deposit_flow_pct_90d,NULL,1.4936,35,0.1436
+net_deposit_flow_pct_90d,"[-0.01506, 0.0379]",2.0913,1388,-0.1898
+net_deposit_flow_pct_90d,"[-0.07008, -0.01506]",2.0371,1387,-0.1595
+net_deposit_flow_pct_90d,"[-0.1354, -0.07008]",2.0125,1388,-0.1458
+net_deposit_flow_pct_90d,"[-0.2221, -0.1354]",2.0125,1388,-0.1458
+net_deposit_flow_pct_90d,"[-0.3848, -0.2221]",1.5742,1388,0.0987
+net_deposit_flow_pct_90d,"[-5.797, -0.3848]",0.0000,1388,0.9766
+net_deposit_flow_pct_90d,"[0.0379, 0.09169]",2.0913,1388,-0.1898
+net_deposit_flow_pct_90d,"[0.09169, 0.1559]",2.3791,1388,-0.3503
+net_deposit_flow_pct_90d,"[0.1559, 0.2412]",2.0913,1388,-0.1898
+net_deposit_flow_pct_90d,"[0.2412, 1.71]",2.5405,1388,-0.4403
+contact_gap_ratio,"[0, 0.03333]",0.0000,1064,-0.7191
+contact_gap_ratio,"[0.03333, 0.07778]",0.6375,1505,-0.5053
+contact_gap_ratio,"[0.07778, 0.1333]",0.4930,1577,-0.5538
+contact_gap_ratio,"[0.1333, 0.1889]",1.0655,1288,-0.3618
+contact_gap_ratio,"[0.1889, 0.2667]",1.5618,1416,-0.1954
+contact_gap_ratio,"[0.2667, 0.3778]",1.9405,1484,-0.0684
+contact_gap_ratio,"[0.3778, 0.5222]",2.4868,1368,0.1148
+contact_gap_ratio,"[0.5222, 0.7556]",2.9970,1382,0.2858
+contact_gap_ratio,"[0.7556, 1.233]",3.4093,1429,0.4241
+contact_gap_ratio,"[1.233, 5.3]",4.1498,1401,0.6724
+recurring_deposit_change_pct,NULL,1.0426,1026,0.0193
+recurring_deposit_change_pct,"[-0.007535, 0.0007424]",0.0000,1289,-0.4412
+recurring_deposit_change_pct,"[-0.03127, -0.007535]",0.5701,1289,-0.1894
+recurring_deposit_change_pct,"[-0.07201, -0.03127]",0.5720,1288,-0.1885
+recurring_deposit_change_pct,"[-0.1318, -0.07201]",0.1767,1289,-0.3632
+recurring_deposit_change_pct,"[-0.4313, -0.1318]",1.5804,1289,0.2569
+recurring_deposit_change_pct,"[-1, -0.4313]",3.1461,1289,0.9485
+recurring_deposit_change_pct,"[0.0007424, 0.01016]",0.6081,1288,-0.1726
+recurring_deposit_change_pct,"[0.01016, 0.04422]",0.3811,1289,-0.2728
+recurring_deposit_change_pct,"[0.04422, 0.182]",0.3416,1289,-0.2903
+recurring_deposit_change_pct,"[0.182, 3.561]",0.8459,1289,-0.0676
+salary_deposit_stopped_flag,=0,0.5255,7067,-0.1773
+salary_deposit_stopped_flag,NULL,0.4811,6563,-0.0038
+salary_deposit_stopped_flag,otro,0.0000,284,1.8792
+repeat_complaint_flag,=0,0.0000,13399,-0.1094
+repeat_complaint_flag,otro,4.2768,515,1.4438
+complaint_age_days,=0,0.0000,13432,-0.0940
+complaint_age_days,"[1, 6.1]",2.3910,49,1.0043
+complaint_age_days,"[107.8, 172.8]",4.0623,48,1.7720
+complaint_age_days,"[13, 20.3]",1.7475,55,0.7087
+complaint_age_days,"[172.8, 351]",4.4253,49,1.9388
+complaint_age_days,"[20.3, 29]",3.3596,43,1.4492
+complaint_age_days,"[29, 37]",3.6528,47,1.5839
+complaint_age_days,"[37, 52]",2.6634,50,1.1294
+complaint_age_days,"[52, 74.7]",2.5633,52,1.0835
+complaint_age_days,"[6.1, 13]",3.1815,41,1.3674
+complaint_age_days,"[74.7, 107.8]",3.0649,48,1.3139
+bureau_new_mortgage_elsewhere,=0,0.0000,12675,-0.1184
+bureau_new_mortgage_elsewhere,NULL,0.2083,714,0.2285
+bureau_new_mortgage_elsewhere,otro,0.8664,525,1.3246
+complaint_escalated_flag,=0,0.0000,13158,-0.1165
+complaint_escalated_flag,=1,1.8523,756,1.1565
+investment_redemption_pct,=0,0.3661,5588,-0.1873
+investment_redemption_pct,NULL,0.4546,2052,-0.1094
+investment_redemption_pct,"[0.004672, 0.008252]",0.0000,627,-0.5091
+investment_redemption_pct,"[0.008252, 0.01245]",0.3098,627,-0.2367
+investment_redemption_pct,"[0.01245, 0.01778]",0.3079,628,-0.2384
+investment_redemption_pct,"[0.01778, 0.02499]",0.7387,627,0.1403
+investment_redemption_pct,"[0.02499, 0.03518]",0.6813,627,0.0898
+investment_redemption_pct,"[0.03518, 0.05162]",0.2681,628,-0.2734
+investment_redemption_pct,"[0.05162, 0.08335]",0.6516,627,0.0637
+investment_redemption_pct,"[0.08335, 0.2483]",1.3418,627,0.6705
+investment_redemption_pct,"[0.2483, 1.669]",1.7088,628,0.9931
+investment_redemption_pct,"[2.682e-11, 0.004672]",0.7918,628,0.1870
+positions_liquidated_pct,=0,0.0000,10318,-0.1206
+positions_liquidated_pct,NULL,0.0013,2065,-0.1161
+positions_liquidated_pct,"[0.0003483, 0.01606]",0.1509,153,0.3958
+positions_liquidated_pct,"[0.01606, 0.02236]",0.1954,153,0.5483
+positions_liquidated_pct,"[0.02236, 0.03023]",0.0713,153,0.1234
+positions_liquidated_pct,"[0.03023, 0.0365]",0.0055,153,-0.1018
+positions_liquidated_pct,"[0.0365, 0.04438]",0.0400,153,0.0163
+positions_liquidated_pct,"[0.04438, 0.05108]",0.1954,153,0.5483
+positions_liquidated_pct,"[0.05108, 0.0584]",0.1263,153,0.3117
+positions_liquidated_pct,"[0.0584, 0.09738]",0.3488,153,1.0733
+positions_liquidated_pct,"[0.09738, 0.1643]",0.4723,153,1.4960
+positions_liquidated_pct,"[0.1643, 0.415]",0.4122,154,1.2904
+outflow_vs_baseline_pct,NULL,0.8738,100,0.4738
+outflow_vs_baseline_pct,"[-0.07351, 0.2079]",0.1658,1381,-0.2780
+outflow_vs_baseline_pct,"[-0.2798, -0.07351]",0.1496,1382,-0.2951
+outflow_vs_baseline_pct,"[-0.4511, -0.2798]",0.3087,1381,-0.1262
+outflow_vs_baseline_pct,"[-0.5991, -0.4511]",0.3735,1381,-0.0574
+outflow_vs_baseline_pct,"[-0.7227, -0.5991]",0.4098,1382,-0.0188
+outflow_vs_baseline_pct,"[-0.8287, -0.7227]",0.0000,1381,-0.4540
+outflow_vs_baseline_pct,"[-0.9263, -0.8287]",0.1810,1381,-0.2618
+outflow_vs_baseline_pct,"[-1, -0.9263]",0.8115,1382,0.4077
+outflow_vs_baseline_pct,"[0.2079, 0.743]",0.3735,1381,-0.0574
+outflow_vs_baseline_pct,"[0.743, 6391]",1.0195,1382,0.6286
+cash_pct_of_portfolio_chg,NULL,0.4460,2122,-0.0894
+cash_pct_of_portfolio_chg,"[-0.00258, 0.000886]",0.5868,1179,-0.0324
+cash_pct_of_portfolio_chg,"[-0.00662, -0.00258]",0.0000,1179,-0.2698
+cash_pct_of_portfolio_chg,"[-0.01196, -0.00662]",0.0919,1179,-0.2327
+cash_pct_of_portfolio_chg,"[-0.05478, -0.01196]",0.6222,1180,-0.0181
+cash_pct_of_portfolio_chg,"[0.000886, 0.004502]",0.3504,1179,-0.1280
+cash_pct_of_portfolio_chg,"[0.004502, 0.008585]",0.0919,1179,-0.2327
+cash_pct_of_portfolio_chg,"[0.008585, 0.01413]",0.2669,1179,-0.1618
+cash_pct_of_portfolio_chg,"[0.01413, 0.02531]",0.3912,1179,-0.1115
+cash_pct_of_portfolio_chg,"[0.02531, 0.06873]",0.7341,1179,0.0272
+cash_pct_of_portfolio_chg,"[0.06873, 0.7926]",2.7370,1180,0.8377
+return_vs_benchmark,NULL,3.6804,5742,-0.0098
+return_vs_benchmark,"[-0.0006908, 0.01087]",3.3262,817,-0.0930
+return_vs_benchmark,"[-0.01117, -0.0006908]",3.4242,817,-0.0700
+return_vs_benchmark,"[-0.02148, -0.01117]",4.3088,817,0.1378
+return_vs_benchmark,"[-0.0321, -0.02148]",3.6145,817,-0.0253
+return_vs_benchmark,"[-0.04488, -0.0321]",3.5203,817,-0.0474
+return_vs_benchmark,"[-0.06266, -0.04488]",5.8332,817,0.4960
+return_vs_benchmark,"[-0.159, -0.06266]",5.9460,818,0.5225
+return_vs_benchmark,"[0.01087, 0.02407]",2.4593,817,-0.2967
+return_vs_benchmark,"[0.02407, 0.04296]",2.4593,817,-0.2967
+return_vs_benchmark,"[0.04296, 0.1478]",0.0000,818,-0.8746
+pension_deposit_stopped_flag,=0,0.8369,4677,-0.1038
+pension_deposit_stopped_flag,NULL,0.7914,9145,0.0067
+pension_deposit_stopped_flag,otro,0.0000,92,1.9265
+meetings_cancelled_by_client,=0,0.0055,4162,-0.0854
+meetings_cancelled_by_client,=1,1.7344,1026,0.5643
+meetings_cancelled_by_client,NULL,0.0000,8440,-0.0875
+meetings_cancelled_by_client,"[2, 3]",1.8097,205,0.5926
+meetings_cancelled_by_client,"[3, 9]",3.2078,81,1.1181
+trustee_change_flag,=0,0.0000,4185,-0.0676
+trustee_change_flag,NULL,0.0567,9523,-0.0269
+trustee_change_flag,otro,2.0300,206,1.3899
+fixed_income_maturity_not_reinvested,=0,0.0465,1756,-0.3655
+fixed_income_maturity_not_reinvested,=1,0.1974,857,0.5236
+fixed_income_maturity_not_reinvested,NULL,0.1083,10255,-0.0015
+fixed_income_maturity_not_reinvested,"[0.00927, 0.1981]",0.0000,105,-0.6393
+fixed_income_maturity_not_reinvested,"[0.1981, 0.2887]",0.0017,104,-0.6295
+fixed_income_maturity_not_reinvested,"[0.2887, 0.3626]",0.1591,105,0.2980
+fixed_income_maturity_not_reinvested,"[0.3626, 0.425]",0.0818,104,-0.1576
+fixed_income_maturity_not_reinvested,"[0.425, 0.485]",0.1591,105,0.2980
+fixed_income_maturity_not_reinvested,"[0.485, 0.5487]",0.1797,105,0.4195
+fixed_income_maturity_not_reinvested,"[0.5487, 0.6254]",0.0818,104,-0.1576
+fixed_income_maturity_not_reinvested,"[0.6254, 0.7101]",0.1378,104,0.1728
+fixed_income_maturity_not_reinvested,"[0.7101, 0.8047]",0.1101,105,0.0094
+fixed_income_maturity_not_reinvested,"[0.8047, 0.9735]",0.0801,105,-0.1676
+business_payroll_stopped_flag,=0,0.0000,3418,-0.0648
+business_payroll_stopped_flag,=1,3.2854,205,1.1045
+business_payroll_stopped_flag,NULL,0.1394,10291,-0.0152
+relationship_dissatisfaction_flag,=0,1.0524,3899,-0.0382
+relationship_dissatisfaction_flag,NULL,1.0359,9843,-0.0193
+relationship_dissatisfaction_flag,otro,0.0000,172,1.1614
+tenure_years,"[0.06, 2.47]",3.2788,1389,0.2088
+tenure_years,"[11.13, 13.49]",1.9552,1390,0.0011
+tenure_years,"[13.49, 17.35]",1.3752,1389,-0.0900
+tenure_years,"[17.35, 50]",0.0000,1397,-0.3058
+tenure_years,"[2.47, 3.75]",3.4824,1388,0.2408
+tenure_years,"[3.75, 4.97]",1.8502,1395,-0.0154
+tenure_years,"[4.97, 6.3]",1.2037,1388,-0.1169
+tenure_years,"[6.3, 7.665]",2.5364,1397,0.0923
+tenure_years,"[7.665, 9.3]",2.2694,1390,0.0504
+tenure_years,"[9.3, 11.13]",0.8231,1391,-0.1766
