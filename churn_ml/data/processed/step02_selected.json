@@ -1,0 +1,31 @@
+{
+  "variant": "sin compuestos",
+  "vars": [
+    "banker_change_6m_flag",
+    "client_reply_rate",
+    "share_of_wallet",
+    "transfer_to_competitor_pct_90d",
+    "repeat_complaint_flag",
+    "contact_gap_ratio",
+    "recurring_deposit_change_pct",
+    "return_vs_benchmark",
+    "cash_pct_of_portfolio_chg",
+    "complaint_age_days",
+    "meetings_cancelled_by_client",
+    "positions_liquidated_pct"
+  ],
+  "signs": {
+    "banker_change_6m_flag": "+",
+    "client_reply_rate": "−",
+    "share_of_wallet": "−",
+    "transfer_to_competitor_pct_90d": "+",
+    "repeat_complaint_flag": "+",
+    "contact_gap_ratio": "+",
+    "recurring_deposit_change_pct": "−",
+    "return_vs_benchmark": "−",
+    "cash_pct_of_portfolio_chg": "+",
+    "complaint_age_days": "+",
+    "meetings_cancelled_by_client": "+",
+    "positions_liquidated_pct": "+"
+  }
+}

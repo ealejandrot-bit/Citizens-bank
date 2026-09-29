@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **0** · G0 cerrado ("usa defaults", 2026-09-29) · bloque en curso: pasos 1–3 (G1).
-- Tests: 4 / 4 PASS (paso 00).
+- Último paso completado: **2** · G0 cerrado ("usa defaults", 2026-09-29) · bloque en curso: pasos 1–3 (G1).
+- Tests: 9 / 9 PASS (pasos 00–02).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -29,6 +29,17 @@ usuario · `[DEF-default]` default aplicado.
 - **D0.2 · Protección de modelos anteriores.** 130 archivos de `churn_scorecard/outputs/model/` y `scorecard/outputs/`
   registrados con sha256 en `data/inherited/previous_models_sha256.json`; `tests/test_step00.py` falla si alguno cambia
   o desaparece [DATA].
+
+- **D1.1 · Duplicados por grupo.** La regla por pares encadenaba eliminaciones (se perdía toda la familia de salidas de
+  AUM). Se usan grupos con |ρ| > 0.95 en todos sus pares (enlace completo), uno por grupo con mayor IV: salen 8
+  (p. ej. `relationship_value` y `log_rv` frente a `aum`; variables `_peer` frente a su base); pool = 62 [DATA].
+- **D2.1 · Eliminación hacia atrás con regla 1-SE.** "No caer más de 1 sd" se aplica como 1 error estándar de la
+  diferencia pareada por fold (1 sd de los folds, ~0.02, permitiría quitar casi todo) [DEF-default].
+- **D2.2 · Sin compuestos.** Con compuestos: 12 variables, PR-AUC CV 0.3584; sin compuestos: 12 variables, 0.3584;
+  diferencia < 1 sd ⟹ variante sin compuestos (I-2) [DATA]. Variables: `banker_change_6m_flag`, `client_reply_rate`,
+  `share_of_wallet`, `transfer_to_competitor_pct_90d`, `repeat_complaint_flag`, `contact_gap_ratio`,
+  `recurring_deposit_change_pct`, `return_vs_benchmark`, `cash_pct_of_portfolio_chg`, `complaint_age_days`,
+  `meetings_cancelled_by_client`, `positions_liquidated_pct`.
 
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
