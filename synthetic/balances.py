@@ -59,10 +59,14 @@ def simulate_series(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict, seeds: S
     e -= np.where(in_ep, (delta * k_dep)[:, None], 0.0)
     e += np.where(is_shock, np.log1p(-shock_size)[:, None], 0.0)
     # Mudanza del banco principal (evento común, D-17): traslado de saldo en el mes del evento.
-    move_m = M - 1 + np.floor(exit_ev["move_day"].fillna(0).to_numpy() / 30.44).astype(int)
+    # Convención de meses del Excel: el mes m ≤ 0 cubre (30.44·(m−1), 30.44·m]; el mes 0 = últimos 30 días.
+    # Tramos mensuales iguales en log: Π(1 − s_t) = 1 − share.
+    move_m = M - 1 + exit_ev["move_month"].to_numpy()
+    k_tr = exit_ev["deposit_tranches"].to_numpy()
     dep_share = exit_ev["deposit_transfer_share"].fillna(0).to_numpy()
-    is_move_dep = exit_ev["deposit_transfer"].to_numpy()[:, None] & (j[None, :] == move_m[:, None])
-    e += np.where(is_move_dep, np.log1p(-dep_share)[:, None], 0.0)
+    is_move_dep = exit_ev["deposit_transfer"].to_numpy()[:, None] & (j[None, :] >= move_m[:, None]) & \
+        (j[None, :] < (move_m + k_tr)[:, None])
+    e += np.where(is_move_dep, (np.log1p(-dep_share) / np.maximum(k_tr, 1))[:, None], 0.0)
     e[:, 0] = 0.0  # el incremento j es el cambio de j−1 a j
     after = np.cumsum(e[:, ::-1], axis=1)[:, ::-1] - e  # Σ_{k>j} e_k
     deposit = base["deposit_balance"].to_numpy()[:, None] * np.exp(-after)
@@ -84,7 +88,7 @@ def simulate_series(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict, seeds: S
     w = hurdle("s1.withdrawal", s1["withdrawal_p"], s1["withdrawal_median"])
     w += np.where(in_ep, 1 - np.exp(-(delta * k_aum)[:, None]), 0.0)
     w += np.where(is_shock & shock_aum[:, None], shock_size[:, None], 0.0)
-    acats_m = M - 1 + np.floor(exit_ev["acats_day"].fillna(0).to_numpy() / 30.44).astype(int)
+    acats_m = M - 1 + np.ceil(exit_ev["acats_day"].fillna(0).to_numpy() / 30.44).astype(int)
     aum_share = exit_ev["aum_transfer_share"].fillna(0).to_numpy()
     is_acats = exit_ev["aum_transfer"].to_numpy()[:, None] & (j[None, :] == acats_m[:, None])
     w += np.where(is_acats, aum_share[:, None], 0.0)
@@ -105,6 +109,7 @@ def simulate_series(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict, seeds: S
     avail = j[None, :] >= M - hist[:, None]
     return {"deposit": deposit, "aum": aum, "contrib": contrib_usd, "withdraw": withdraw_usd,
             "twr": twr, "avail": avail, "inv": inv,
+            "episode_k_dep": k_dep, "episode_k_aum": k_aum, "shock_aum": shock_aum,
             "truth": pd.DataFrame({"household_id": base["household_id"], "s1_p_episode": p_ep,
                                    "s1_episode": episode, "s1_episode_len": np.where(episode, ep_len, 0),
                                    "s1_episode_delta": np.where(episode, delta, np.nan),

@@ -244,6 +244,59 @@ episodios (intercepto −4.0, pendiente 1.4, δ 12%) para volver a la banda "Hig
 - Seguía abierto que el ruido del Paso 1 se estimaba incluyendo hogares con mudanza (curtosis 255);
   ahora se excluyen y ν̂ ≈ 6 otra vez.
 
+## Paso 3 · Transfers (variables 7, 8, 21, 22, 23, 24, 25)
+
+**D-18 · Transferencias simuladas una por una y cuadradas con el saldo.**
+~3.2 millones de transacciones en 18 meses:
+- **Salidas con origen en eventos ya simulados** y con el monto exacto que movió la serie del
+  Paso 1: mudanza (depósitos al banco competidor en 2–6 tramos mensuales; ACATS del 80% de los
+  hogares con inversión, 0–120 días después, a un broker en el 70% de los casos), episodios (45% es
+  gasto y no genera transferencia; el resto va a banco competidor, broker o destino habitual) y
+  choques (compra de casa a title/escrow, o IRS excluido).
+- **Ruido:** envíos de fondo a 1–6 destinos habituales (0.5% del saldo al mes en ~4 envíos) y
+  destinos nuevos esporádicos (2% por mes, mediana $15k).
+- **Pagos excluidos por el Excel:** billers, IRS estimado trimestral (30% del ingreso), donaciones
+  recurrentes y préstamos con Citizens. Sin la exclusión, la alerta de #7 pasaría de 6.5% a 8.8%.
+- **Entradas externas:** cierran mes a mes la identidad
+  ΔD = ingresos (Paso 2) + internos AUM→depósitos + entradas − salidas − tarjeta − otros débitos.
+  Cuadra al centavo; 44% de los meses necesita débitos no explicados (tarjeta extra o cheques).
+- **Catálogo sintético:** 111 instituciones con nombres genéricos y 1–3 ABA cada una, con dígito
+  verificador válido. La ABA es fija por cuenta destino, y #24 agrupa por institución: 516 hogares
+  cambian de HHI al agruparlos.
+- **Pisos PB aplicados** ($50k por destino nuevo y $10k mensual de línea base) como parámetros.
+  Los dos mejoran la precisión frente a los del Excel: lift 4.28 vs 3.20 en #8, y 2.36 vs 1.79 en #25.
+
+Ajustes que este paso obligó a hacer en pasos previos (todos revalidados):
+- **Mudanza por tramos** (2–6 meses): una relación PB no se muda en un día. Sin tramos, la ventana
+  de 60 días de #7 veía solo un tercio de las mudanzas.
+- **Volatilidad del saldo PB: 12% mensual** (antes 5%). Con 5%, el saldo era un espejo perfecto de
+  las transferencias y las variables de saldo superaban "High". Con 12%, `net_deposit_flow_pct_90d`
+  alerta al 28% con el umbral ilustrativo de −15%: **el umbral debería recalibrarse** (el 10% más
+  bajo está en −38%).
+- **Convención de meses única:** el mes 0 son los últimos 30 días (antes la mudanza usaba floor).
+- **#23 solo wires/ACH:** los datos del Excel para #23 son "incoming and outgoing wires / ACH";
+  el ACATS cuenta en #7 por la definición base de transferencia externa.
+- **#8 en ventana de 90 días como principal:** a 30 días, con piso de $50k, es muy raro (2%) y su IV
+  mediano es 0.08. El Excel lista ambas ventanas; la de 30 días se conserva.
+- **#25 tiene forma de U:** riesgo alto al empezar la mudanza (> +100%) y al terminarla (≈ −100%
+  frente a una línea base inflada por los tramos previos). Se valida con IV, lift y forma, no con
+  tendencia lineal.
+- **Tolerancia de ±0.03 a las bandas de IV en este grupo:** el Excel aclara que la fuerza es un
+  "expert prior, to be validated with IV / SHAP", y aquí el mismo dinero se mide en bruto (#7) y
+  en neto (#23). Medianas en 20 semillas:
+
+| Variable | Excel | IV mediano (p10–p90) | Alerta | Lift |
+|---|---|---|---|---|
+| external_transfer_pct_of_balance_60d | Very high | 0.292 (0.26–0.33) | 6.5% | 4.9× |
+| new_external_destinations_90d | High | 0.264 (0.23–0.32) | 5.9% | 4.4× |
+| transfer_to_competitor_pct_90d | High | 0.295 (0.27–0.35) | 5.0% | 6.1× |
+| external_transfer_acceleration | High | 0.202 (0.18–0.23) | 4.3% | 4.8× |
+| net_external_flow_pct_90d | High | 0.254 (0.23–0.28) | 5.1% | 5.0× |
+| external_destination_concentration | High | 0.225 (0.20–0.26) | 6.0% | 4.5× |
+| outflow_vs_baseline_pct | High | 0.112 (0.08–0.13) | 7.6% | 2.4× |
+
+El AUC combinado de las 17 variables de los Pasos 1–3 es 0.656; el techo sigue en 0.851.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

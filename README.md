@@ -27,6 +27,9 @@ scripts/build_step1.py      Construye, valida y escribe el Paso 1 (+ 20 semillas
 synthetic/recurring.py      Paso 2: transacciones recurrentes + algoritmo de detección → variables 3, 4, 5, 6, 19, 20
 synthetic/validate_step2.py Validación del Paso 2 (detector, exclusiones, bono, calibración, fuga)
 scripts/build_step2.py      Construye, valida y escribe el Paso 2 (+ 20 semillas de referencia)
+synthetic/transfers.py      Paso 3: transferencias externas, catálogo sintético, identidad contable → 7, 8, 21–25
+synthetic/validate_step3.py Validación del Paso 3 (identidad, exclusiones, ABA/HHI, pisos PB, calibración, fuga)
+scripts/build_step3.py      Construye, valida y escribe el Paso 3 (+ 20 semillas de referencia)
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
@@ -40,6 +43,7 @@ python scripts/extract_catalog.py   # catálogo de variables
 python scripts/build_step0.py       # genera data/synthetic/step0_*.csv + manifiesto
 python scripts/build_step1.py       # genera data/synthetic/step1_*.csv + manifiesto
 python scripts/build_step2.py       # genera data/synthetic/step2_*.csv + manifiesto
+python scripts/build_step3.py       # genera data/synthetic/step3_*.csv + catálogo + manifiesto (~2.5 min)
 python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
@@ -55,4 +59,5 @@ salida, así que si un rebuild da otro hash, algo cambió.
 | 0 | Población, latentes, target, ingresos | Construido y validado (200 pruebas) |
 | 1 | Balances & AUM: variables 1, 2, 17, 18 | Construido y validado (54 pruebas, 20 semillas) |
 | 2 | Recurring deposits & flows: variables 3, 4, 5, 6, 19, 20 | Construido y validado (71 pruebas, 20 semillas) |
-| 3–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |
+| 3 | Transfers: variables 7, 8, 21, 22, 23, 24, 25 | Construido y validado (71 pruebas, 20 semillas) |
+| 4–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |

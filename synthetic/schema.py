@@ -68,3 +68,23 @@ STEP2_COLUMNS: dict[str, tuple[str, str]] = {
     "net_deposit_flow_pct_90d": ("fracción", "#6 · net_deposit_flow_90d ÷ saldo promedio (alerta ≤ −15%)"),
     "business_payroll_stopped_flag": ("0/1", "#20 · la nómina del negocio no corrió en 60d; NULL sin negocio / patrón"),
 }
+
+# Paso 3 · Transfers (variables 7, 8, 21, 22, 23, 24, 25 del Excel)
+STEP3_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "external_transfer_amount_60d": (USD, "#7 · transferencias externas (wire, ACH, ACATS) 60d, sin excluidos"),
+    "external_transfer_pct_of_balance_60d": ("fracción", "#7 · ÷ saldo promedio (depósitos + cash en inversión) (alerta > 15%)"),
+    "external_transfer_pct_of_balance_30d": ("fracción", "#7 · versión 30d"),
+    "new_external_destinations_30d": ("entero", "#8 · destinos nuevos en 30d (acumulado ≥ $50k, ausentes 12m previos)"),
+    "new_external_destinations_90d": ("entero", "#8 · versión 90d (principal, D-18)"),
+    "transfer_to_competitor_bank_amount_90d": (USD, "#21 · enviado a bancos del catálogo de competidores, 90d"),
+    "transfer_to_competitor_pct_90d": ("fracción", "#21 · ÷ saldo promedio (alerta > 10%)"),
+    "external_transfer_acceleration": ("fracción", "#22 · [(A1 − A2) − (A2 − A3)] ÷ saldo promedio 90d"),
+    "external_outflow_pct_30d": ("fracción", "#22 · A1 ÷ saldo (condición de alerta: > 5%)"),
+    "net_external_flow_30d": (USD_SIGNED, "#23 · entradas − salidas externas, 30d"),
+    "net_external_flow_90d": (USD_SIGNED, "#23 · entradas − salidas externas, 90d"),
+    "net_external_flow_pct_90d": ("fracción", "#23 · ÷ saldo promedio (alerta ≤ −15%)"),
+    "external_destination_concentration": ("fracción", "#24 · HHI por institución (no por ABA), 90d"),
+    "external_outflow_pct_90d": ("fracción", "#24 · salidas 90d ÷ saldo (condición de alerta: > 10%)"),
+    "outflow_vs_baseline_pct": ("fracción", "#25 · salidas último mes ÷ promedio mensual meses −7..−1 (piso $10k) − 1"),
+}

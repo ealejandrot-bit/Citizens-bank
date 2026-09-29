@@ -2,7 +2,7 @@
   "step": 0,
   "master_seed": 20260928,
   "currency": "USD",
-  "params_sha256": "e329f24de5976e00d2f942d969d14ff1d414ef8ba2aa0b0ec74c7f8fb8c3f18d",
+  "params_sha256": "469ed3a6c246d3fa52aa0cffe072052f2e22ff2435a89a4671146d9d0f0ede87",
   "streams": [
     "income.bonus",
     "income.business",

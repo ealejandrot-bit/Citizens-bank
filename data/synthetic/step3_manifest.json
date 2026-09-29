@@ -1,8 +1,8 @@
 {
-  "step": 2,
+  "step": 3,
   "master_seed": 20260928,
   "currency": "USD",
-  "params_sha256": "469ed3a6c246d3fa52aa0cffe072052f2e22ff2435a89a4671146d9d0f0ede87",
+  "params_sha256": "727d8cc187ee4a44a6c5e0668766ecf5758a8b7d5ca041d34ed1911883844261",
   "streams": [
     "exit.acats_lag",
     "exit.aum_share",
@@ -123,23 +123,30 @@
     "s2.retirement",
     "s2.retirement_day",
     "s2.retirement_reported",
+    "s3.aba_pick",
+    "s3.background",
+    "s3.cash_share",
+    "s3.catalog",
+    "s3.episode",
+    "s3.excluded",
+    "s3.incoming",
+    "s3.move",
+    "s3.one_off",
+    "s3.payees",
+    "s3.shock",
     "target.exclusion",
     "target.hard",
     "target.soft",
     "target.soft_loss"
   ],
   "outputs": {
-    "step2_recurring.csv": {
+    "step3_transfers.csv": {
       "rows": 20000,
-      "sha256": "8cd4e3891c90c3aba7aa2e2e870ed66343709fe228509305ea2368fc74552029"
+      "sha256": "671fef49fb2b1472a172c47cfd19a135d7d4d8f1f738cad1ed1be68819898020"
     },
-    "step2_transactions.csv": {
-      "rows": 768662,
-      "sha256": "ded0135b1d02242c99973e7176c2ab9e10ca9c3616d77f2ea6e61c6398589cbb"
-    },
-    "step2_events.csv": {
-      "rows": 20000,
-      "sha256": "f741d4168f75d5325487d7b34de5e54378210253a6c103ae610a49c7c49e05df"
+    "step3_transactions.csv": {
+      "rows": 3205274,
+      "sha256": "d0971e360e9837e8dc6d69c5646ee95cf374bf9ba171dde1e380b41fd4b3c40c"
     }
   },
   "checks_passed": true

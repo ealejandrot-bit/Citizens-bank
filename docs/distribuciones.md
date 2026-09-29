@@ -1,6 +1,6 @@
 # Distribuciones por variable
 
-Estado: **Pasos 0, 1 y 2 construidos y validados** (variables 1–6, 17–20). El resto es una
+Estado: **Pasos 0 a 3 construidos y validados** (variables 1–8, 17–25). El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
@@ -91,7 +91,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 19 | pension_deposit_stopped_flag | Bernoulli-logit, tasa base ≈ 2%; incluye muertes (excluidas del target) | O | = 1: ≈ 2% | sin pensión |
 | 20 | business_payroll_stopped_flag | Bernoulli-logit, tasa base ≈ 4% | O | = 1: ≈ 4% | sin negocio vinculado |
 
-### Paso 3 · Transfers (desde la serie de transferencias externas)
+### Paso 3 · Transfers — CONSTRUIDO sobre transacciones simuladas y cuadradas con el saldo (ver decisiones D-18 y docs/reports/step3_report.md; lo de abajo era la propuesta original) (desde la serie de transferencias externas)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|

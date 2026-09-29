@@ -10,6 +10,7 @@ from .exit_events import draw_exit_move
 from .population import build_population
 from .recurring import build_step2
 from .seeds import SeedManager
+from .transfers import build_step3
 
 
 def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
@@ -21,4 +22,6 @@ def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
         out["f1"], out["sim1"] = build_step1(out["base"], out["truth"], cfg, seeds, out["exit"])
     if upto >= 2:
         out["f2"], out["sim2"] = build_step2(out["base"], out["truth"], out["sim1"], cfg, seeds, out["exit"])
+    if upto >= 3:
+        out["f3"], out["sim3"] = build_step3(out["base"], out["truth"], cfg, seeds, out["exit"], out["sim1"], out["sim2"])
     return out

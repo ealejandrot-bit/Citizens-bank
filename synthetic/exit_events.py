@@ -26,10 +26,16 @@ def draw_exit_move(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict, seeds: Se
     aum_t = move & inv & (seeds.rng("exit.aum_transfer").random(n) < em["aum_transfer_p"])
     aum_share = seeds.rng("exit.aum_share").uniform(*em["aum_transfer_share"], n)
     lag = np.floor(seeds.rng("exit.acats_lag").uniform(*em["acats_lag_days"], n))
+    # Traslado por tramos mensuales consecutivos desde el mes de la mudanza, sin pasar de t.
+    lo, hi = em["deposit_tranches"]
+    k = seeds.rng("exit.deposit_tranches").integers(lo, hi + 1, n)
+    move_month = np.ceil(day / 30.44).astype(int)  # mes 0 = últimos 30 días
+    k_eff = np.minimum(k, 1 - move_month)
     return pd.DataFrame({
         "household_id": base["household_id"].to_numpy(),
         "p_move": p_move, "move": move, "move_day": np.where(move, day, np.nan),
         "deposit_transfer": dep_t, "deposit_transfer_share": np.where(dep_t, dep_share, np.nan),
+        "move_month": np.where(move, move_month, 0), "deposit_tranches": np.where(dep_t, k_eff, 0),
         "aum_transfer": aum_t, "aum_transfer_share": np.where(aum_t, aum_share, np.nan),
         "acats_day": np.where(aum_t, np.minimum(day + lag, 0), np.nan),
     })

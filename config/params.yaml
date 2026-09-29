@@ -161,9 +161,10 @@ exit_move:
   # Traslado de saldos al banco nuevo (dólares que salen de la serie del Paso 1).
   deposit_transfer_p: 0.90                 # [Supuesto]
   deposit_transfer_share: [0.30, 0.90]     # [Supuesto] fracción del saldo de depósitos
-  aum_transfer_p: 0.60                     # [Supuesto] ACATS, entre hogares con inversiones
+  deposit_tranches: [2, 6]                 # [Supuesto] tramos mensuales consecutivos desde el mes de la mudanza (D-18)
+  aum_transfer_p: 0.80                     # [Calibrado] ACATS, entre hogares con inversiones (D-18)
   aum_transfer_share: [0.20, 0.80]         # [Supuesto] fracción del AUM
-  acats_lag_days: [0, 30]                  # [Supuesto] el ACATS llega después del traslado de depósitos
+  acats_lag_days: [0, 120]                 # [Calibrado] el ACATS llega semanas o meses después (D-18)
 
 # ---------------------------------------------------------------------------
 # Paso 1 · Balances & AUM (series mensuales → variables 1, 2, 17, 18)
@@ -177,7 +178,7 @@ step1:
   min_balance_for_pct: 10_000              # [Excel · Parameters] saldo mínimo para %.
   # Depósitos: incrementos log mensuales = μ + σ · t(ν) estandarizada.
   deposit_drift_monthly: 0.002             # [Supuesto]
-  deposit_sigma_monthly: 0.05              # [Supuesto]
+  deposit_sigma_monthly: 0.12              # [Calibrado] volatilidad del saldo PB (D-18)
   # Mercado común a todos los hogares (una draw por mes): μ + σ · t(ν) estandarizada.
   market_mu_monthly: 0.006                 # [Supuesto] ≈ 7% anual.
   market_sigma_monthly: 0.040              # [Supuesto] ≈ 14% anual.
@@ -275,7 +276,75 @@ step2:
     salary_deposit_stopped_flag:    {alert: "= 1",      rate: [0.02, 0.08], iv: [0.30, 0.50], strength: Very high, iv_base: applicable, driver: propensity}
     recurring_deposit_stopped_flag: {alert: "= 1",      rate: [0.03, 0.10], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: propensity}
     recurring_deposit_change_pct:   {alert: "<= -0.40", rate: [0.03, 0.12], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
-    # Sale de la serie de depósitos del Paso 1: con el umbral del Excel alerta ≈ 10%.
-    net_deposit_flow_pct_90d:       {alert: "<= -0.15", rate: [0.06, 0.22], iv: [0.10, 0.30], strength: High, iv_base: all, driver: factor}
+    # Sale de la serie de depósitos del Paso 1 (volatilidad PB 12% mensual + mudanza → motor mixto).
+    # Con el umbral ilustrativo del Excel (−15%) alerta ≈ 28%: hallazgo para recalibrar el umbral (D-18).
+    net_deposit_flow_pct_90d:       {alert: "<= -0.15", rate: [0.06, 0.32], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
     pension_deposit_stopped_flag:   {alert: "= 1",      rate: [0.01, 0.06], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: propensity}
     business_payroll_stopped_flag:  {alert: "= 1",      rate: [0.02, 0.08], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: factor}
+
+# ---------------------------------------------------------------------------
+# Paso 3 · Transfers (variables 7, 8, 21, 22, 23, 24, 25)
+# ---------------------------------------------------------------------------
+# Transferencias externas simuladas una por una (18 meses). Las salidas vienen de la
+# mudanza (evento común), los episodios y choques del Paso 1, transferencias de fondo
+# y destinos nuevos esporádicos; las entradas cierran la identidad contable del saldo
+# del Paso 1. También se simulan los pagos que el Excel excluye (billers, IRS,
+# donaciones recurrentes, préstamos con Citizens) para probar que la exclusión funciona.
+step3:
+  history_days: 548
+  # Pisos Private Banking (el Excel propone $1,000 y $10,000; D-18).
+  outflow_baseline_floor_monthly: 10_000
+  new_destination_min_cumulative: 50_000
+  lookback_new_destination_days: 365
+  # Catálogo sintético de instituciones (sin nombres reales). Competidores = bancos;
+  # brokers / wealth managers van en catálogo aparte [Excel · #21].
+  institutions: {private_bank: 15, national_bank: 6, regional_bank: 25, digital_bank: 10,
+                 broker_wealth: 20, credit_union: 10, title_escrow: 15, other: 10}
+  aba_per_institution: [1, 3]
+  competitor_types: [private_bank, national_bank, regional_bank, digital_bank]
+  # Cash dentro de cuentas de inversión (denominador de #7): Beta(2, 18) ≈ 10% del AUM.
+  investment_cash_share_beta: [2.0, 18.0]
+  # Destinos habituales del hogar (cuentas propias, familia, broker).
+  regular_payees_poisson: 1.5              # nº = 1 + Poisson
+  regular_payee_types: {national_bank: 0.35, regional_bank: 0.15, broker_wealth: 0.25, digital_bank: 0.10,
+                        credit_union: 0.05, other: 0.10}
+  # Fondo: fracción mensual del saldo que sale a destinos habituales (compensada con entradas).
+  background_transfers_per_month: 4
+  background_monthly_share_median: 0.005   # [Calibrado]
+  background_monthly_share_sigma: 0.50
+  background_amount_sigma: 0.40
+  # Ruido: destino nuevo esporádico (contratista, colegiatura, compra puntual).
+  one_off_p_month: 0.02                    # [Calibrado]
+  one_off_amount_median: 15_000            # [Supuesto]
+  one_off_amount_sigma: 1.0
+  one_off_types: {title_escrow: 0.20, other: 0.40, regional_bank: 0.15, national_bank: 0.15, broker_wealth: 0.10}
+  shock_real_estate_p: 0.60                # choque del Paso 1: compra de casa (title/escrow); si no, IRS (excluido)
+  # Episodio del Paso 1: a dónde va el dinero. "spending" = la caída del saldo es gasto
+  # (tarjeta, cheques): no genera transferencia externa y el AUM retirado pasa a depósitos.
+  episode_destination: {spending: 0.45, competitor_bank: 0.22, broker: 0.23, existing_payee: 0.10}
+  acats_to_broker_p: 0.70                  # el resto va al brazo wealth del banco nuevo
+  # Pagos excluidos por el Excel.
+  billers_per_month: 3
+  biller_amount_median: 2_500
+  biller_amount_sigma: 1.0
+  estimated_tax_rate: 0.30                 # IRS: pagos estimados trimestrales ≈ 30% del ingreso / 4
+  donation_p: 0.30
+  donation_monthly_median: 2_000
+  loan_payment_median: 8_000               # hogares con crédito ancla (pago a Citizens)
+  card_spending_share_of_income: [0.20, 0.50]   # débitos internos (tarjeta, cheques)
+  incoming_transfers_per_month: [1, 3]
+
+  # Las bandas de IV son priors expertos del Excel ("to be validated with IV / SHAP"). En este
+  # grupo el mismo dinero se mide en bruto (#7) y en neto (#23), así que se acepta una
+  # tolerancia de ±0.03 alrededor de la banda (D-18); fuera de ella, falla.
+  iv_tolerance: 0.03
+  targets:
+    external_transfer_pct_of_balance_60d: {alert: "> 0.15", rate: [0.04, 0.16], iv: [0.30, 0.50], strength: Very high, iv_base: all, driver: mixed}
+    new_external_destinations_90d:        {alert: ">= 1",   rate: [0.02, 0.15], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    transfer_to_competitor_pct_90d:       {alert: "> 0.10", rate: [0.03, 0.14], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    external_transfer_acceleration:       {alert: "accel",  rate: [0.02, 0.12], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+    net_external_flow_pct_90d:            {alert: "<= -0.15", rate: [0.04, 0.20], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    external_destination_concentration:   {alert: "hhi",    rate: [0.02, 0.15], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+    # Forma en U (D-18): riesgo alto al inicio de la mudanza (> +100%) y al terminarla (≈ −100%
+    # frente a una línea base inflada por los tramos previos). Se valida con IV y lift, no con tendencia lineal.
+    outflow_vs_baseline_pct:              {alert: "> 1.0",  rate: [0.03, 0.15], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed, shape: u}
