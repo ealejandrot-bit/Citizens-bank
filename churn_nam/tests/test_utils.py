@@ -9,9 +9,11 @@ from config import HEADER, MissingParameterError, P, get, need
 from report import render
 
 
-def test_need_null_detiene():
-    with pytest.raises(MissingParameterError, match="gate.delta_pr_auc"):
-        need("gate.delta_pr_auc", fase=6)
+def test_need_null_detiene(monkeypatch):
+    # parámetro null inyectado solo para el test (el ejemplo original, gate.delta_pr_auc, ya lo llenó el usuario)
+    monkeypatch.setitem(config.CFG, "_test", {"param_null": None})
+    with pytest.raises(MissingParameterError, match="_test.param_null"):
+        need("_test.param_null", fase=6)
 
 
 def test_need_valor_y_clave_inexistente():
