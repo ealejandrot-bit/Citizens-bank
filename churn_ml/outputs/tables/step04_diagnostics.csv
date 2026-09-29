@@ -1,0 +1,3 @@
+modelo,error máx. aditividad,% interacción global
+EBM,1.7763568394002505e-15,0.0
+XGBoost,9.462237358093262e-07,17.905519485473633

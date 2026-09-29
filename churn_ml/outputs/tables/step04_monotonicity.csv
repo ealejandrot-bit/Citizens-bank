@@ -1,0 +1,13 @@
+variable,restricción,bins,violaciones en f(x) EBM,ICE EBM,PDP EBM,ICE XGBoost,PDP XGBoost
+banker_change_6m_flag,1,2,0,0,0,0,0
+client_reply_rate,-1,159,0,0,0,0,0
+share_of_wallet,-1,1022,0,0,0,0,0
+transfer_to_competitor_pct_90d,1,1022,0,0,0,0,0
+repeat_complaint_flag,1,2,0,0,0,0,0
+contact_gap_ratio,1,293,0,0,0,0,0
+recurring_deposit_change_pct,-1,1022,0,0,0,0,0
+return_vs_benchmark,-1,1022,0,0,0,0,0
+cash_pct_of_portfolio_chg,1,1022,0,0,0,0,0
+complaint_age_days,1,121,0,0,0,0,0
+meetings_cancelled_by_client,1,9,0,0,0,0,0
+positions_liquidated_pct,1,1022,0,0,0,0,0

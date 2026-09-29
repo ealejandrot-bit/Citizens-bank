@@ -1,0 +1,10 @@
+modelo,corte,percentil dev,score ≤
+EBM,Crítico/Alto,4.0,444.0
+EBM,Alto/Vigilancia,20.0,519.0
+EBM,Vigilancia/Estable,76.0,578.0
+XGBoost,Crítico/Alto,5.0,462.0
+XGBoost,Alto/Vigilancia,23.0,522.0
+XGBoost,Vigilancia/Estable,78.0,584.0
+EBM a igual % que M1,Crítico/Alto,4.035009642486278,444.0
+EBM a igual % que M1,Alto/Vigilancia,21.36181575433912,521.0
+EBM a igual % que M1,Vigilancia/Estable,71.28764278296988,573.0

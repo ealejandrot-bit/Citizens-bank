@@ -1,0 +1,7 @@
+regla,destino,movidos dev,precisión %,movidos / tramo %,cumple,decisión
+banker_change_6m_flag = 1,Crítico,1538,23.08192457737321,281.17001828153565,False,Alto
+banker_change_6m_flag = 1,Alto,461,13.882863340563992,20.92600998638221,True,Alto
+complaint_escalated_flag = 1,Crítico,543,21.915285451197054,99.26873857404021,False,Alto
+complaint_escalated_flag = 1,Alto,290,14.13793103448276,13.16386745347254,True,Alto
+transfer_to_competitor_pct_90d ≥ 10%,Crítico,230,31.30434782608696,42.04753199268739,False,eliminada
+transfer_to_competitor_pct_90d ≥ 10%,Alto,36,2.7777777777777777,1.6341352700862462,False,eliminada

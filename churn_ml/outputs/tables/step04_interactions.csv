@@ -1,0 +1,13 @@
+variable,% interacción en |φ| XGBoost,> 20%
+recurring_deposit_change_pct,41.66774,True
+share_of_wallet,23.549969,True
+cash_pct_of_portfolio_chg,23.081745,True
+meetings_cancelled_by_client,20.846228,True
+positions_liquidated_pct,17.545668,False
+transfer_to_competitor_pct_90d,17.134266,False
+complaint_age_days,16.710417,False
+return_vs_benchmark,16.042767,False
+banker_change_6m_flag,15.824323,False
+contact_gap_ratio,14.111285,False
+repeat_complaint_flag,13.7224655,False
+client_reply_rate,13.524633,False
