@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **9b** · G0–G3 cerrados (2026-09-29) · bloque en curso: pasos 10–12 (G4).
-- Tests: 32 / 32 PASS (pasos 00–09b).
+- Último paso completado: **10** · G0–G3 cerrados (2026-09-29) · bloque en curso: pasos 10–12 (G4).
+- Tests: 35 / 35 PASS (pasos 00–10).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -92,6 +92,13 @@ usuario · `[DEF-default]` default aplicado.
   0.304 vs EBM 0.305; EBM − A-lite +0.042 (IC95 +0.013 a +0.069), M1 − A-lite +0.041; EBM − M1 +0.001 (IC95 −0.028 a
   +0.030) [DATA]. Target A: EBM 0.209, M1 0.191, A-lite 0.153 [DATA]. A-lite captura algo más de RV de eventos en el top
   10% (21.4% vs 20.3% M1 y 19.6% EBM con B) [DATA]. Subconjunto pequeño: IC amplios.
+
+- **D10.1 · Uso conjunto.** Acuerdo de tramo M1–EBM 82.9%; hogares Crítico/Alto solo del M1: 277 (tasa 16.3%); solo
+  del EBM: 139 (13.0%) [DATA]. Lente política (tramo primero, luego p×RV), captura de RV de eventos al 10% de hogares:
+  M1 48.9%, M1 + orden EBM 49.4%, M1 + alerta EBM 48.9%, EBM 48.0% ⟹ empate (< 1 pp) ⟹ M1 solo (regla previa) [DATA].
+  Hallazgo: ordenar por p×RV global (sin tramo primero) captura ~59–61% del RV que se va al 10% con cualquier modelo, a
+  cambio de menos eventos (18–21% vs 28%) [DATA]: la regla de prioridad pesa más que el modelo; es decisión de negocio.
+  En el subconjunto justo A-lite: su política captura 24.9% del RV al 10% (Crítico+Alto de A-lite = 13% de hogares).
 
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
