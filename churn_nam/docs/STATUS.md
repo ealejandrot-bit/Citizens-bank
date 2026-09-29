@@ -1,9 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **3 · fase 1 (target y población)** terminada: 19,473 hogares tras exclusiones (123 churn_excluded + 404
-  antigüedad < 1). Siguiente: PASO 4 = fase 2 tras "go".
-- Tests: 9 passed, 1 skipped.
+- Paso actual: **4 · fase 2 (data quality)** terminada; decisiones propuestas pendientes del usuario. Siguiente: PASO 5 =
+  fase 3 tras "go".
+- Tests: 12 passed (test_leakage ya activo sobre features_p02.parquet).
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -24,6 +24,14 @@
 | gate.delta_pr_auc, gate.delta_lift_at_5 | 6 (pre-registro) y 10 |
 | scorecard.pdo, s0, o0, odds_convention, score_min, score_max | 12 |
 | ews.alerts_per_month | 13 (umbral) |
+
+## Decisiones pendientes de la fase 2 (propuestas, no aplicadas)
+- Rangos extremos (23 variables, 0 con valores imposibles): conservar todas las filas; para el NAM, transformación por
+  cuantiles de las entradas (sin recorte).
+- Excepciones al gatillo: pension (60 faltan aunque aplica; 130 con dato aunque no aplica), salary (200 faltan aunque
+  aplica), business payroll (52): propuesta = "dato aunque no aplica" → no aplica (como M1); "falta aunque aplica" → sin dato.
+- Missing "sin regla" (6 variables): indicador de missing propio (p. ej. client_reply_rate faltante tiene +9.7 pp de churn).
+- Missing "ruido" (4 variables, ≤ 1.5%): valor neutro sin indicador.
 
 ## Preguntas abiertas al usuario
 - Marco de comparación consistente con A-lite como referencia (ver resumen de la fase 0): target principal, forma de

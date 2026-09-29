@@ -1,0 +1,13 @@
+indicador,definición,% con 1,coincide con dato presente %
+app_business_payroll_stopped_flag,1 si has_linked_business = True (la variable aplica),26.426333898218047,99.73296359061264
+app_trustee_change_flag,1 si has_trust = True (la variable aplica),31.85949776613773,100.0
+app_pension_deposit_stopped_flag,1 si has_pension_stream = True (la variable aplica),34.06254814358342,99.02429004262312
+app_salary_deposit_stopped_flag,1 si has_payroll_stream = True (la variable aplica),53.90027217172495,98.97293688697171
+app_return_vs_benchmark,1 si has_advisory = True (la variable aplica),60.221845632414116,99.99486468443486
+app_aum,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
+app_aum_outflow_pct_90d,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
+app_investment_redemption_pct,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
+app_aum_vs_baseline_pct,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
+app_cash_pct_of_portfolio_chg,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
+app_positions_liquidated_pct,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
+app_aum_outflow_90d,1 si has_investments = True (la variable aplica),85.68274020438555,100.0
