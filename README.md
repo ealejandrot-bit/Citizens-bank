@@ -1,5 +1,8 @@
 # Client Pulse · Base sintética
 
+**Base final:** `data/synthetic/client_pulse_synthetic.csv` (20,000 hogares × 62 columnas, las 37
+variables del Excel + target). Resumen de cada variable en `docs/reports/final_report.md`.
+
 Base sintética a nivel hogar con las 37 variables de `docs/Client_Pulse_37_Variables.xlsx`,
 para prototipar el score de attrition de Citizens Private Bank (scorecard → ML → neural).
 Se construye por pasos, validando la distribución y las semillas de cada uno.
@@ -43,6 +46,9 @@ scripts/build_step6.py      Construye, valida y escribe el Paso 6 (+ 20 semillas
 synthetic/complaints.py     Paso 7: quejas (categoría, SLA, escalamiento, reapertura) y Assistant → 14, 15, 33, 36
 synthetic/validate_step7.py Validación del Paso 7
 scripts/build_step7.py      Construye, valida y escribe el Paso 7 (+ 20 semillas de referencia)
+synthetic/composite.py      Paso 8: multi-señal (umbrales del Excel) y buró → 16, 37
+synthetic/validate_step8.py Validación del Paso 8 y de la base final
+scripts/build_step8.py      Paso 8 + base final consolidada + reporte final de las 37 variables
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
@@ -61,11 +67,13 @@ python scripts/build_step4.py       # genera data/synthetic/step4_*.csv + manifi
 python scripts/build_step5.py       # genera data/synthetic/step5_*.csv + manifiesto
 python scripts/build_step6.py       # genera data/synthetic/step6_*.csv + manifiesto
 python scripts/build_step7.py       # genera data/synthetic/step7_*.csv + manifiesto
+python scripts/build_step8.py       # base final (client_pulse_synthetic*.csv) + docs/reports/final_report.md
 python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
 
-Los CSV no se versionan: se regeneran de forma idéntica desde la semilla. El
+Los CSV intermedios no se versionan: se regeneran de forma idéntica desde la semilla. La base final
+principal sí está en el repositorio. El
 manifiesto (`data/synthetic/step0_manifest.json`) guarda el SHA-256 esperado de cada
 salida, así que si un rebuild da otro hash, algo cambió.
 
@@ -81,4 +89,6 @@ salida, así que si un rebuild da otro hash, algo cambió.
 | 5 | Relationship & closures: variables 10, 29, 30, 31, 32 | Construido y validado (56 pruebas, 20 semillas) |
 | 6 | Banker: variables 11, 12, 13, 35 | Construido y validado (40 pruebas, 20 semillas) |
 | 7 | Complaints & voice of client: variables 14, 15, 33, 36 | Construido y validado (38 pruebas, 20 semillas) |
-| 8 | External & composite: variables 16, 37 | Pendiente |
+| 8 | External & composite: variables 16, 37 + base final | Construido y validado (24 pruebas, 10 semillas) |
+
+**Las 37 variables están construidas y validadas.**

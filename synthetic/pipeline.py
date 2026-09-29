@@ -15,6 +15,7 @@ from .investments import build_step4
 from .relationship import build_step5
 from .banker import build_step6
 from .complaints import build_step7
+from .composite import build_step8
 
 
 def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
@@ -36,4 +37,6 @@ def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
         out["f6"], out["sim6"] = build_step6(out["base"], out["truth"], cfg, seeds, out["exit"])
     if upto >= 7:
         out["f7"], out["sim7"] = build_step7(out["base"], out["truth"], cfg, seeds, out["exit"])
+    if upto >= 8:
+        out["f8"], out["sim8"] = build_step8(out, cfg, seeds)
     return out

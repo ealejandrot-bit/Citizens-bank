@@ -430,6 +430,30 @@ El AUC combinado de 31 variables es 0.757; el techo sigue en 0.851.
   alto (3–4×). Tiene sentido: pocas quejas, muy informativas. El AUC combinado de 35 variables es
   0.761; el techo sigue en 0.851.
 
+## Paso 8 · External & composite (variables 16, 37) y base final
+
+**D-23 · Multi-señal desde los umbrales del Excel; buró con interruptor legal.**
+- **#16:** por cada uno de los 7 grupos, ¿alguna variable supera su umbral ilustrativo del Excel?
+  (#26 exige además un monto material ≥ $100k.) El conteo va de 0 a 7 y el flag es ≥ 3. El churn
+  crece de forma monótona: 2.8% con 0 grupos, 6.8% con 3, 19.9% con 5 y 44.8% con 7. Su IV (0.64) supera
+  al de cualquier variable sola, como se espera de una compuesta, y tiene banda propia [0.30, 0.80].
+- **#37:** hipoteca o HELOC nueva con otro acreedor en 6 meses. Fuentes: mudanza (40% de quienes se
+  mudan), compra de casa del Paso 3 financiada fuera de Citizens (Citizens financia el 60% si hay
+  crédito ancla y el 25% si no) y refinanciamiento (0.8%, ruido). Es NULL sin propósito permisible
+  (5%). Con `step8.legal_cleared: false` queda NULL para todos (FCRA), y así está probado.
+
+**Hallazgo para Citizens: varios umbrales ilustrativos del Excel son laxos para PB.** Con ellos, el
+24% de los hogares queda con ≥ 3 grupos en alerta. Los que más activan grupos:
+`net_deposit_flow_pct_90d ≤ −15%` (28%), `share_of_wallet < 30%` (27%), `client_reply_rate < 50%`
+(26%) y `return_vs_benchmark ≤ −3 pp` (32% de las cuentas advisory). El Excel ya prevé recalibrarlos
+con WoE/IV. Esta base permite hacerlo antes de tener los datos reales.
+
+**Base final:** `data/synthetic/client_pulse_synthetic.csv` (20,000 × 62: atributos del hogar, las
+37 variables en su columna principal —mapa en `synthetic/schema.py → EXCEL_PRIMARY`— y el target).
+La versión completa (101 columnas, con todas las ventanas y montos) se regenera con
+`scripts/build_step8.py`. El AUC combinado de las 37 variables es 0.762, frente a un techo de 0.851.
+Resumen por variable en `docs/reports/final_report.md`.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

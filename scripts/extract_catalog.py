@@ -54,7 +54,8 @@ BUILT = {"aum_outflow", "deposit_balance_change_pct", "aum_vs_baseline_pct", "de
          "cash_pct_of_portfolio_chg", "return_vs_benchmark", "positions_liquidated_pct",
          "products_closed", "accounts_closed", "share_of_wallet", "share_of_wallet_change", "trustee_change_flag",
          "banker_change_6m_flag", "contact_gap_ratio", "client_reply_rate", "meetings_cancelled_by_client",
-         "complaint_escalated_flag", "complaint_age_days", "repeat_complaint_flag", "relationship_dissatisfaction_flag"}
+         "complaint_escalated_flag", "complaint_age_days", "repeat_complaint_flag", "relationship_dissatisfaction_flag",
+         "multi_signal_flag", "bureau_new_mortgage_elsewhere"}
 
 COLS = {
     "#": "id", "Priority": "priority", "Group": "group", "Variable": "variable",

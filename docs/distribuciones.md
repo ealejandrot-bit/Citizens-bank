@@ -1,6 +1,7 @@
 # Distribuciones por variable
 
-Estado: **Pasos 0 a 7 construidos y validados** (variables 1–15, 17–36). El resto es una
+Estado: **las 37 variables construidas y validadas** (Pasos 0 a 8). Las tablas de abajo son la
+propuesta original; lo construido está en `docs/decisiones.md` y `docs/reports/final_report.md`. El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)

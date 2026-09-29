@@ -531,3 +531,23 @@ step7:
     complaint_age_days:                {alert: "> 30", rate: [0.005, 0.06], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
     repeat_complaint_flag:             {alert: "= 1",  rate: [0.01, 0.08], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
     relationship_dissatisfaction_flag: {alert: "= 1",  rate: [0.005, 0.06], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+
+# ---------------------------------------------------------------------------
+# Paso 8 · External & composite (variables 16, 37)
+# ---------------------------------------------------------------------------
+step8:
+  # #16: grupos del Excel con alguna variable sobre su umbral de alerta; flag si ≥ 3 de 7.
+  multi_signal_min_groups: 3
+  material_not_reinvested_usd: 100_000     # "> 50% and material amount" (#26)
+  # #37 buró: hipoteca / HELOC nueva con otro acreedor en 6 meses.
+  legal_cleared: true                      # interruptor: false → la variable queda NULL (FCRA)
+  permissible_purpose_p: 0.95              # revisión de cuenta existente con registro de propósito permisible
+  move_mortgage_elsewhere_p: 0.40          # [Calibrado] propensión: el banco nuevo ofrece hipoteca
+  home_purchase_financed_p: 0.60           # compra de casa del Paso 3 financiada
+  citizens_lender_p: {anchor: 0.60, no_anchor: 0.25}   # si financia, con Citizens (no cuenta) o con otro
+  refinance_elsewhere_p_6m: 0.008          # [Calibrado] ruido
+  iv_tolerance: 0.03
+  targets:
+    # Compuesta de 35 variables: se espera más IV que cualquier variable sola (banda propia).
+    multi_signal_count:            {alert: ">= 3", rate: [0.03, 0.30], iv: [0.30, 0.80], strength: High (compuesta), iv_base: all, driver: mixed}
+    bureau_new_mortgage_elsewhere: {alert: "= 1",  rate: [0.005, 0.06], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}

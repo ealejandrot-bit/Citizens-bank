@@ -136,3 +136,47 @@ STEP7_COLUMNS: dict[str, tuple[str, str]] = {
     "complaints_12m": ("entero", "nº de quejas en 12m (contexto)"),
     "relationship_dissatisfaction_flag": ("0/1", "#36 · insatisfacción detectada por el Assistant y confirmada por una persona (30d); NULL fuera del piloto"),
 }
+
+# Paso 8 · External & composite (variables 16, 37 del Excel)
+STEP8_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "multi_signal_count": ("entero", "#16 · nº de grupos del Excel (0–7) con alguna variable sobre su umbral de alerta"),
+    "multi_signal_flag": ("0/1", "#16 · ≥ 3 grupos en alerta"),
+    "group_alert_balances": ("0/1", "#16 · alerta en Balances & AUM"),
+    "group_alert_recurring": ("0/1", "#16 · alerta en Recurring deposits & flows"),
+    "group_alert_transfers": ("0/1", "#16 · alerta en Transfers"),
+    "group_alert_investments": ("0/1", "#16 · alerta en Investments"),
+    "group_alert_relationship": ("0/1", "#16 · alerta en Relationship & closures"),
+    "group_alert_banker": ("0/1", "#16 · alerta en Banker"),
+    "group_alert_complaints": ("0/1", "#16 · alerta en Complaints & voice of client"),
+    "bureau_new_mortgage_elsewhere": ("0/1", "#37 · hipoteca / HELOC nueva con otro acreedor en 6m; NULL sin propósito permisible o sin aprobación legal"),
+}
+
+# Columna principal de cada variable del Excel en la base final (id del Excel → columna).
+EXCEL_PRIMARY: dict[int, tuple[str, str]] = {
+    1: ("aum_outflow", "aum_outflow_pct_90d"), 2: ("deposit_balance_change_pct", "deposit_balance_change_pct_90d"),
+    3: ("salary_deposit_stopped_flag", "salary_deposit_stopped_flag"),
+    4: ("recurring_deposit_stopped_flag", "recurring_deposit_stopped_flag"),
+    5: ("recurring_deposit_change_pct", "recurring_deposit_change_pct"), 6: ("net_deposit_flow", "net_deposit_flow_pct_90d"),
+    7: ("external_transfer_pct_of_balance", "external_transfer_pct_of_balance_60d"),
+    8: ("new_external_destinations", "new_external_destinations_90d"),
+    9: ("investment_redemption_pct", "investment_redemption_pct"), 10: ("products_closed", "products_closed_180d"),
+    11: ("banker_change_6m_flag", "banker_change_6m_flag"), 12: ("contact_gap_ratio", "contact_gap_ratio"),
+    13: ("client_reply_rate", "client_reply_rate"), 14: ("complaint_escalated_flag", "complaint_escalated_flag"),
+    15: ("complaint_age_days", "complaint_age_days"), 16: ("multi_signal_flag", "multi_signal_flag"),
+    17: ("aum_vs_baseline_pct", "aum_vs_baseline_pct"), 18: ("deposit_balance_vs_6m_avg_pct", "deposit_balance_vs_6m_avg_pct"),
+    19: ("pension_deposit_stopped_flag", "pension_deposit_stopped_flag"),
+    20: ("business_payroll_stopped_flag", "business_payroll_stopped_flag"),
+    21: ("transfer_to_competitor_bank_amount", "transfer_to_competitor_pct_90d"),
+    22: ("external_transfer_acceleration", "external_transfer_acceleration"), 23: ("net_external_flow", "net_external_flow_pct_90d"),
+    24: ("external_destination_concentration", "external_destination_concentration"),
+    25: ("outflow_vs_baseline_pct", "outflow_vs_baseline_pct"),
+    26: ("fixed_income_maturity_not_reinvested", "fixed_income_maturity_not_reinvested"),
+    27: ("cash_pct_of_portfolio_chg", "cash_pct_of_portfolio_chg"), 28: ("return_vs_benchmark", "return_vs_benchmark"),
+    29: ("accounts_closed", "accounts_closed_90d"), 30: ("share_of_wallet", "share_of_wallet"),
+    31: ("share_of_wallet_change", "share_of_wallet_change"), 32: ("trustee_change_flag", "trustee_change_flag"),
+    33: ("repeat_complaint_flag", "repeat_complaint_flag"), 34: ("positions_liquidated_pct", "positions_liquidated_pct"),
+    35: ("meetings_cancelled_by_client", "meetings_cancelled_by_client"),
+    36: ("relationship_dissatisfaction_flag", "relationship_dissatisfaction_flag"),
+    37: ("bureau_new_mortgage_elsewhere", "bureau_new_mortgage_elsewhere"),
+}
