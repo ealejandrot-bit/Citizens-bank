@@ -153,3 +153,38 @@ p5 ≤ 0.58).
 **D7.3 · Hallazgo: la estructura no separa riesgo.** Tasa hard 6.04% / 6.08% / 5.95% por cluster (χ² p = 0.98), en
 línea con el paso 6 (has_*, edad, antigüedad, RV: todos despreciables). En esta base el churn lo explican las señales
 de comportamiento, no el perfil. Se espera que cluster no pase IV ≥ 0.02; si no pasa, sale por evidencia.
+
+## 2026-09-29 · Paso 8
+
+**D8.1 · Correlación y VIF sobre rangos.** Spearman por pares con dato en ambas (mín. 200). VIF diagnóstico sobre
+rangos normalizados (missing → mediana); el VIF que decide es el de WoE (paso 10).
+- Descartado: Pearson / VIF sobre valores crudos (colas de hasta 6,390× dominan la covarianza).
+**D8.2 · Información incremental por par** = ΔAUC (CV, 5 folds de `cv_r1`) de una logística con las dos variables vs
+la mejor sola. Δ < 0.005 → redundantes. Ninguna se elimina aquí: la elección de representante es del paso 10.
+**D8.3 · PCA solo diagnóstico.** No entra en selección ni en modelo (pierde interpretabilidad y monotonicidad).
+
+## 2026-09-29 · Paso 9
+
+**D9.1 · Tamaño mínimo de bin diferenciado (desvío del brief).** El brief fija ≥ 5% de población por bin. Con esa regla,
+8 flags con RR ≥ 3 en el paso 6 quedarían fusionados en un solo bin (IV ≈ 0): `salary_deposit_stopped_flag` (1.9% de
+hogares, 77 eventos, RR 5.6), `repeat_complaint_flag` (3.7%), `bureau_new_mortgage_elsewhere` (3.7%),
+`recurring_deposit_stopped_flag` (3.8%), `trustee_change_flag` (1.4%), `business_payroll_stopped_flag` (1.4%),
+`pension_deposit_stopped_flag` (0.7%), `relationship_dissatisfaction_flag` (1.2%). Regla adoptada: 5% en continuas;
+1% en binarias, conteos y variables infladas en su mínimo; **≥ 30 eventos por bin en todas** (el mínimo que da un
+WoE estimable). Pensión (27 eventos) e insatisfacción (26) no alcanzan ni así → IV 0 en el scorecard; pasan a
+candidatas de override (paso 12), donde se evalúa su precisión.
+- Descartado: 5% para todo (pierde las señales más fuertes); sin mínimo de población (bins de 30 eventos y < 1%
+  inestables).
+**D9.2 · Estabilidad de WoE.** Bins fijos de desarrollo, WoE recalculado en los 25 conjuntos de entrenamiento de la CV
+5×5. Inestable = sd > 0.25 y signo distinto al de la mediana en > 20% de los folds → se elimina el corte con el
+vecino de WoE más cercano. Resultado: 0 bins inestables; sd máx. 0.098 (`complaint_age_days`).
+**D9.3 · Bins especiales pequeños.** "sin dato" con < 30 eventos se fusiona con "no aplica" si existe; si el grupo
+sigue con < 30 eventos → WoE = 0 (neutral): no hay datos para asignar riesgo y un WoE de 5–10 eventos es ruido.
+Costo: se pierde la señal de missing en variables con poco "sin dato" (p. ej. `banker_change_6m_flag` sin dato:
+75 hogares, 9 eventos, 12%).
+**D9.4 · `log_relationship_value` no se bina** (mismo WoE que `relationship_value`).
+**D9.5 · Búsqueda de pre-binning.** `optbinning` con `min_prebin_size` = 1% no encontró cortes en
+`positions_liquidated_pct` (87% en cero, empates). Se prueban 1%, 2% y 5% y se queda el de mayor IV; todos cumplen las
+mismas restricciones (monotonía, 30 eventos, tamaño). `positions_liquidated_pct` pasa de IV 0 a 0.146.
+- Riesgo: leve optimismo del IV por elegir el máximo de 3; se controla con la estabilidad entre folds y con la
+  validación en holdout (paso 13).

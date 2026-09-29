@@ -16,6 +16,8 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 5. [Auditoría de features y derivadas](#5-auditoría-de-features-y-derivadas)
 6. [Análisis univariado](#6-análisis-univariado)
 7. [Segmentación](#7-segmentación)
+8. [Correlación y diagnóstico de estructura](#8-correlación-y-diagnóstico-de-estructura)
+9. [Binning, WoE e IV](#9-binning-woe-e-iv)
 
 ---
 
@@ -546,3 +548,185 @@ Perfiles (K = 3, desarrollo) [DATA-SINT]:
 **Decisiones y alternativas descartadas** · D7.1–D7.3
 - K = 3 por regla previa. Descartados GMM (BIC no acotado con binarias) y k-prototypes (alternativa válida,
   no necesaria con esta estabilidad).
+
+---
+
+## 8. Correlación y diagnóstico de estructura
+
+**Objetivo**
+- Localizar redundancia entre señales antes de seleccionar: qué pares cuentan lo mismo y cuáles aportan
+  información incremental.
+
+**Por qué**
+- Dos variables casi idénticas en una logística reparten el peso de forma inestable y pueden invertir signos. Se
+  identifican aquí; la elección del representante es del paso 10, con IV y VIF sobre WoE.
+
+**Método**
+- Spearman por pares (mín. 200 con dato en ambas) sobre 38 variables: 37 señales + `share_of_wallet` (+ derivada).
+- Información incremental por par: AUC en CV (5 folds de `cv_r1`) de una logística sobre rangos normalizados con
+  indicador de missing, con cada variable sola vs las dos. ΔAUC < 0.005 → redundantes (D8.2).
+- VIF diagnóstico sobre rangos normalizados (D8.1). PCA sobre rangos estandarizados, solo diagnóstico (D8.3).
+
+**Código** · `src/08_structure.py`
+
+**Salida** · `outputs/tables/08_spearman.csv`, `08_high_corr_pairs.csv`, `08_vif.csv`, `08_pca_variance.csv`,
+`08_pca_loadings.csv`, `08_pca_dominant.csv`
+
+![Spearman entre señales](outputs/figures/08_spearman_heatmap.png)
+
+Pares |ρ| > 0.6 y pares esperados del brief [DATA-SINT] (desarrollo):
+
+| Var A | Var B | ρ | AUC A | AUC B | AUC A+B | ΔAUC | Más informativa | Lectura |
+|:--|:--|--:|--:|--:|--:|--:|:--|:--|
+| `aum_outflow_pct_90d` | `aum_outflow_to_rv_90d` | 0.998 | 0.580 | 0.571 | 0.580 | 0.000 | pct | redundantes |
+| `aum_outflow_90d` | `aum_outflow_to_rv_90d` | 0.980 | 0.578 | 0.571 | 0.580 | 0.002 | monto | redundantes |
+| `aum_outflow_90d` ★ | `aum_outflow_pct_90d` | 0.978 | 0.578 | 0.580 | 0.581 | 0.001 | pct | redundantes |
+| `deposit_balance_vs_6m_avg_pct` | `net_deposit_flow_pct_90d` | 0.906 | 0.623 | 0.610 | 0.622 | −0.001 | vs 6m | redundantes |
+| `deposit_balance_change_pct_90d` ★ | `deposit_balance_vs_6m_avg_pct` | 0.881 | 0.619 | 0.623 | 0.623 | 0.000 | vs 6m | redundantes |
+| `transfer_to_competitor_bank_amount_90d` ★ | `transfer_to_competitor_pct_90d` | 0.814 | 0.608 | 0.614 | 0.613 | 0.000 | pct | redundantes |
+| `deposit_balance_change_pct_90d` | `net_deposit_flow_pct_90d` | 0.800 | 0.619 | 0.610 | 0.620 | 0.001 | change | redundantes |
+| `recurring_deposit_stopped_flag` | `salary_deposit_stopped_flag` | 0.767 | 0.545 | 0.547 | 0.553 | 0.006 | salary | incremental |
+| `aum_outflow_pct_90d` | `aum_vs_baseline_pct` | −0.766 | 0.580 | 0.591 | 0.590 | −0.002 | vs baseline | redundantes |
+| `net_deposit_flow_pct_90d` | `net_external_flow_pct_90d` | 0.754 | 0.610 | 0.602 | 0.609 | −0.002 | depósitos | redundantes |
+| `pension_deposit_stopped_flag` | `recurring_deposit_stopped_flag` | 0.749 | 0.525 | 0.545 | 0.559 | 0.014 | recurring | incremental |
+| `deposit_balance_vs_6m_avg_pct` | `share_of_wallet_change` | 0.713 | 0.623 | 0.620 | 0.629 | 0.006 | vs 6m | incremental |
+| `deposit_balance_change_pct_90d` | `share_of_wallet_change` | 0.671 | 0.619 | 0.620 | 0.628 | 0.008 | SOW change | incremental |
+| `aum_outflow_to_rv_90d` | `investment_redemption_pct` | 0.656 | 0.571 | 0.563 | 0.585 | 0.014 | outflow/RV | incremental |
+| `fixed_income_maturity_not_reinvested` | `investment_redemption_pct` | 0.644 | 0.529 | 0.563 | 0.575 | 0.012 | redemption | incremental |
+| `share_of_wallet` ★ | `share_of_wallet_change` | 0.318 | 0.630 | 0.620 | 0.650 | 0.020 | SOW | incremental |
+| `external_transfer_pct_of_balance_60d` ★ | `net_external_flow_pct_90d` | −0.170 | 0.620 | 0.602 | 0.622 | 0.002 | ext. transfer | redundantes |
+
+★ = par esperado del brief. Tabla completa (23 pares) en `08_high_corr_pairs.csv`.
+
+- **21 pares con |ρ| > 0.6**, en tres bloques: salida de AUM (monto, %, relativo a RV, vs baseline), deterioro de
+  depósitos (cambio 90d, vs 6m, flujo neto, flujo externo neto) y flujos recurrentes (salario, pensión, recurring).
+- De los 5 pares esperados, 3 son redundantes (ΔAUC ≤ 0.001: el % domina al monto; "vs 6m" domina al cambio 90d).
+  `share_of_wallet` vs su cambio tiene ρ = 0.32 y es el par con más información incremental (ΔAUC +0.020): nivel y
+  tendencia miden cosas distintas. `external_transfer_pct_of_balance_60d` vs `net_external_flow_pct_90d` tiene
+  ρ = −0.17: no están asociados como suponía el brief (el flujo neto incluye entradas).
+- VIF > 5 (diagnóstico) solo dentro de los bloques: `aum_outflow_pct_90d` 28.7, `aum_outflow_90d` 18.4,
+  `aum_outflow_to_rv_90d` 15.0, `deposit_balance_vs_6m_avg_pct` 11.9, `net_deposit_flow_pct_90d` 8.5,
+  `transfer_to_competitor_*` 5.6–5.9, `deposit_balance_change_pct_90d` 5.0. El resto < 3.6.
+
+PCA diagnóstico [DATA-SINT]:
+
+![PCA scree](outputs/figures/08_pca_scree.png)
+
+| PC | Varianza % | Variables dominantes | AUC del PC |
+|:--|--:|:--|--:|
+| PC1 | 18.4 | salida de AUM (+), depósitos vs 6m (−), flujo externo neto (−) | 0.664 |
+| PC2 | 7.1 | redención, salida de AUM, depósitos vs 6m | 0.528 |
+| PC3 | 6.6 | transferencias a competidores, transferencias externas, recurring detenido | 0.607 |
+| PC4 | 5.0 | salidas vs baseline, transferencias a competidores | 0.585 |
+| PC5 | 4.3 | cash %, posiciones liquidadas, renta fija no reinvertida | 0.528 |
+| PC6 | 4.1 | quejas escaladas, repetidas, antigüedad de queja | 0.521 |
+
+- Estructura difusa: PC1 explica 18.4%, hacen falta 20 componentes para el 80% y 11 tienen autovalor > 1. Hay un
+  factor común de "salida de dinero" (PC1) y el resto son dimensiones casi independientes (quejas, banquero,
+  ingresos). Esto favorece un scorecard con diversidad de dimensiones sobre uno dominado por un bloque.
+
+**QC** · 5 PASS · 1 WARN · 0 FAIL
+- Solo desarrollo; matriz simétrica con diagonal 1; los 5 pares esperados evaluados; ninguna variable eliminada;
+  varianza PCA suma 100%. WARN: 8 variables con VIF > 5 en rangos (se resuelve en el paso 10 sobre WoE).
+
+**Decisiones y alternativas descartadas** · D8.1–D8.3
+- Spearman / VIF sobre rangos; descartado Pearson sobre crudos. PCA fuera del modelo.
+
+---
+
+## 9. Binning, WoE e IV
+
+**Objetivo**
+- Transformar cada candidata en bins monótonos, estables y con volumen suficiente, y medir su poder con IV.
+
+**Por qué**
+- El WoE hace la relación lineal en el logit, trata el missing como información y hace los puntos del scorecard
+  legibles por bin. Es el paso que más decide la calidad del modelo.
+
+**Método y fórmulas**
+- `optbinning` (solver CP), `monotonic_trend="auto_asc_desc"`, ≥ 30 eventos por bin, diferencia mínima de tasa
+  0.5 pp; pre-binning con la mejor de 3 opciones (D9.5).
+- Tamaño mínimo: 5% de población en continuas, 1% en binarias / conteos / infladas en cero (D9.1, desvío del brief).
+- Missing: bins "no aplica" y "sin dato" (D5.1); < 30 eventos → fusión o WoE neutral (D9.3).
+- WoE_b = ln(%buenos_b / %malos_b); IV = Σ_b (%buenos_b − %malos_b)·WoE_b (WoE > 0 = menos churn).
+- Clases IV: < 0.02 fuera · 0.02–0.10 débil · 0.10–0.30 medio · 0.30–0.50 fuerte · > 0.50 sospechoso.
+- Estabilidad: WoE por bin en los 25 conjuntos de entrenamiento de la CV 5×5; inestable (sd > 0.25 y signo
+  cambiante en > 20%) → fusión con el vecino (D9.2).
+- 56 candidatas: 55 del paso 5 (sin `log_relationship_value`, D9.4) + `cluster`.
+
+**Código** · `src/09_binning.py`, `src/woe.py`
+
+**Salida** · `outputs/tables/09_woe_iv.csv` (tabla completa por bin), `09_iv_summary.csv`, `09_unstable_merges.csv`
+(vacía); `outputs/models/09_binning.pkl`
+
+IV por variable [DATA-SINT] (desarrollo; 38 de 56 pasan IV ≥ 0.02):
+
+| Variable | Dimensión | IV | Clase | Bins (+ especiales) | Tendencia | Tasa mín–máx % |
+|:--|:--|--:|:--|:--|:--|:--|
+| `banker_change_6m_flag` | banquero | 0.479 | fuerte | 2 + 1 | ↑ | 4.0–17.4 |
+| `transfer_to_competitor_pct_90d` | externalización | 0.466 | fuerte | 4 + 1 | ↑ | 4.5–30.0 |
+| `external_transfer_pct_of_balance_60d` | externalización | 0.424 | fuerte | 3 + 1 | ↑ | 4.5–24.5 |
+| `products_closed_180d` | productos | 0.394 | fuerte | 4 + 1 | ↑ | 4.8–39.4 |
+| `transfer_to_competitor_bank_amount_90d` | externalización | 0.389 | fuerte | 4 + 1 | ↑ | 4.6–25.6 |
+| `net_external_flow_pct_90d` | externalización | 0.367 | fuerte | 3 + 1 | ↓ | 4.7–24.9 |
+| `deposit_balance_vs_6m_avg_pct` | saldos | 0.349 | fuerte | 5 + 1 | ↓ | 3.5–21.6 |
+| `aum_vs_baseline_pct` | salida de activos | 0.341 | fuerte | 3 + 1 | ↓ | 4.5–22.1 |
+| `deposit_balance_change_pct_90d` | saldos | 0.314 | fuerte | 5 + 1 | ↓ | 4.2–20.2 |
+| `client_reply_rate` | banquero | 0.305 | fuerte | 4 + 1 | ↓ | 2.0–6.6 (sin dato 8.7) |
+| `share_of_wallet` | nivel | 0.286 | medio | 7 | ↓ | 3.3–18.3 |
+| `net_deposit_flow_pct_90d` | saldos | 0.285 | medio | 6 + 1 | ↓ | 4.0–20.7 |
+| `aum_outflow_to_rv_90d` | salida de activos | 0.267 | medio | 3 + 1 | ↑ | 5.0–21.8 |
+| `aum_outflow_pct_90d` | salida de activos | 0.266 | medio | 3 + 1 | ↑ | 4.8–20.9 |
+| `new_external_destinations_90d` | externalización | 0.257 | medio | 2 + 1 | ↑ | 5.0–21.6 |
+| `share_of_wallet_change` | productos | 0.247 | medio | 5 + 1 | ↓ | 3.6–15.7 |
+| `external_transfer_acceleration` | externalización | 0.241 | medio | 2 + 1 | ↑ | 5.2–22.2 |
+| `aum_outflow_90d` | salida de activos | 0.225 | medio | 4 + 1 | ↑ | 4.8–19.1 |
+| `accounts_closed_90d` | productos | 0.224 | medio | 3 + 1 | ↑ | 5.4–33.7 |
+| `recurring_deposit_change_pct` | ingresos | 0.222 | medio | 4 + 1 | ↓ | 4.7–18.8 |
+| `recurring_deposit_stopped_flag` | ingresos | 0.203 | medio | 2 + 1 | ↑ | 5.3–23.7 |
+| `contact_gap_ratio` | banquero | 0.169 | medio | 7 | ↑ | 3.3–10.6 |
+| `salary_deposit_stopped_flag` | ingresos | 0.156 | medio | 2 + 1 | ↑ | 5.2–29.4 |
+| `investment_redemption_pct` | salida de activos | 0.148 | medio | 3 + 1 | ↑ | 5.0–14.6 |
+| `positions_liquidated_pct` | salida de activos | 0.146 | medio | 3 + 1 | ↑ | 5.3–21.9 |
+| `repeat_complaint_flag` | fricción | 0.141 | medio | 2 | ↑ | 5.5–20.6 |
+| `complaint_escalated_flag` | fricción | 0.137 | medio | 2 | ↑ | 5.4–17.3 |
+| `bureau_new_mortgage_elsewhere` | externalización | 0.125 | medio | 2 + 1 | ↑ | 5.4–19.2 |
+| `complaint_age_days` | fricción | 0.122 | medio | 3 | ↑ | 5.6–23.2 |
+| `cash_pct_of_portfolio_chg` | salida de activos | 0.117 | medio | 3 + 1 | ↑ | 5.0–13.5 |
+| `outflow_vs_baseline_pct` | externalización | 0.107 | medio | 2 + 1 | ↑ | 5.5–16.1 |
+| `return_vs_benchmark` | rendimiento | 0.087 | débil | 5 + 1 | ↓ | 3.1–9.9 |
+| `external_destination_concentration` | externalización | 0.070 | débil | 4 + 1 | ↑ | 4.4–8.2 |
+| `meetings_cancelled_by_client` | banquero | 0.055 | débil | 3 + 1 | ↑ | 5.5–11.9 |
+| `trustee_change_flag` | productos | 0.047 | débil | 2 + 1 | ↑ | 5.5–19.5 |
+| `fixed_income_maturity_not_reinvested` | salida de activos | 0.041 | débil | 3 + 1 | ↑ | 3.8–8.8 |
+| `tenure_years` | estructura | 0.034 | débil | 5 | ↓ | 3.3–7.5 |
+| `business_payroll_stopped_flag` | ingresos | 0.031 | débil | 2 + 1 | ↑ | 5.2–15.6 |
+
+Fuera (IV < 0.02; 18): `aum` 0.010, `recurring_income_monthly` 0.008, `has_credit_anchor` 0.005, `relationship_value`
+0.005, `age_primary` 0.003, `segment` 0.003, `deposit_balance` 0.003, `history_months` 0.002,
+`pension_deposit_stopped_flag` 0.002, `relationship_dissatisfaction_flag` 0.000, `cluster` y los otros 7 `has_*` 0.000.
+
+![Tasa por bin](outputs/figures/09_bins_rate.png)
+
+Lectura:
+- **Ninguna variable > 0.50**: no hay sospecha de fuga por IV. La más alta (`banker_change_6m_flag`, 0.479) es un
+  evento de los 6 meses previos a T0 (ventana sin solape con el outcome).
+- **Diversidad**: hay variables fuertes o medias en las 8 dimensiones de señal salvo rendimiento (0.087, débil).
+- **Monotonicidad**: 100% de las variables con ≥ 2 bins son monótonas en la dirección esperada del paso 2; no hubo
+  que re-binnear por negocio.
+- **Estabilidad**: 0 bins inestables; sd máx. del WoE entre folds 0.098 (`complaint_age_days`).
+- **Umbrales visibles**: la mayoría de las continuas terminan con 2–3 bins, con el riesgo concentrado en la cola
+  (p. ej. `transfer_to_competitor_pct_90d` ≥ 7.3% del saldo: 30.0% de churn vs 4.5–6.1% en el resto).
+- **`segment` (IV 0.003) entra forzado** por diseño (brief, calibración por segmento en el paso 14), no por poder.
+- **Pensión e insatisfacción quedan en IV ≈ 0** porque sus flags tienen 27 y 26 eventos (< 30); se evalúan como
+  override en el paso 12 (D9.1).
+- **`cluster` y estructura fuera** por evidencia, como anticipaban los pasos 6–7.
+
+**QC** · 8 PASS · 0 WARN · 0 FAIL
+- Solo desarrollo; bins suman 100% de hogares y 840 eventos por variable; ≥ 30 eventos en todo bin con dato;
+  bins especiales < 30 eventos con WoE neutral; 0 variables no monótonas; 0 bins inestables; 0 IV > 0.50.
+
+**Decisiones y alternativas descartadas** · D9.1–D9.5
+- Tamaño mínimo 5% / 1% según tipo de variable (desvío del brief, con evidencia). Descartados 5% para todo y sin
+  mínimo.
+- WoE neutral para missing con < 30 eventos; búsqueda de pre-binning entre 3 tamaños.

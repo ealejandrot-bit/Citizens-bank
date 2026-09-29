@@ -1,0 +1,2 @@
+| variable   | iteración   | bin inestable   | sd WoE   | corte eliminado   |
+|------------|-------------|-----------------|----------|-------------------|
