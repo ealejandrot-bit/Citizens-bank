@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **4** · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 30 / 30 PASS (pasos 00–04).
+- Último paso completado: **9** · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Tests: 49 / 49 PASS (pasos 00–09).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -66,6 +66,35 @@ usuario · `[DEF-default]` default aplicado.
 - **D4.1 · Split.** Estratificado por clase (hard / soft ≥ θ / indeterminado / no evento) × segmento. La versión
   inicial estratificada solo por B dejó A desbalanceada (6.22% vs 5.48%, test de ±0.5 pp fallido) y se corrigió sin
   relajar el umbral. Dev 13,631 (B 13,482 / 1,871 eventos; A 817) · val 5,842 (B 5,779 / 803; A 351) [DATA].
+
+- **D5.1 · Señales derivadas y missing.** 15 derivadas del SPEC (`common.DERIVED`) y razón de missing `<var>__miss`
+  (ok / no_aplica / sin_dato) para 34 variables; 134 valores de pensión sin `has_pension_stream` → "no aplica" [DATA].
+  Peer-relative = valor − mediana de dev de su celda segmento × quintil de RV (celdas de 151 a 2,575 hogares de dev)
+  [DATA]; no es imputación. `competitor_x_new_destinations` hereda la razón de `new_external_destinations_90d` (D9.2).
+- **D6.1 · Univariado.** 47 de 69 candidatas con IV ≥ 0.02 o RR significativo; 0 sospechas de fuga con B; 0
+  discrepancias de signo [DATA]. Con A, `multi_signal_count` tiene IV 0.665 en dev (> 0.50) [DATA]: compuesto ya fuera
+  del campeón (D0.5, D.12); en el challenger pasa por el filtro de fuga del paso 10 con target B.
+- **D7.1 · Clustering sin edad.** El cluster es candidato a predictor; incluir `age_primary` reintroduciría la edad
+  excluida por G1-3. Variables: `segment_uhnw`, `tenure_years`, `log_rv`, 8 `has_*`. K = 4 (regla fijada antes de ver
+  resultados: tamaño ≥ 5%, ARI bootstrap ≥ 0.80, mayor silhouette); ARI 0.869; χ² cluster × y_B p = 0.153 [DATA].
+- **D7.2 · UHNW con target B.** 175 eventos B en UHNW (122 en dev) [DATA] superan el mínimo de 100 del SPEC (pensado
+  para A, 79). Se mantiene I-7 (libro único con `segment_uhnw`) [DEF-default]; pregunta G2-2.
+- **D8.1 · Redundancia.** 58 pares con |ρ| > 0.6: 42 redundantes (ΔAUC < 0.005 al agregar la otra) y 16 con
+  información incremental [DATA]. Nada se elimina en el paso 8; decide el paso 10. VIF sobre rangos infinito por
+  identidades de construcción (RV = AUM + depósitos, `aum_share` + `deposit_share` = 1, base vs `_peer`).
+- **D9.1 · Bins de negocio en binarias (desvío del SPEC).** Con `min_bin_size` = 5% los flags con < 5% de hogares en 1
+  se fusionan y pierden la señal (p. ej. `complaint_age_days` quedaba con IV 0 [DATA]). Binarias → bins {0, 1} si ambos
+  tienen ≥ 30 eventos (se mantiene el mínimo de eventos del SPEC). Pregunta G2-1.
+- **D9.1b · Variables infladas en su mínimo.** Si ≥ 70% de los hogares con dato están en el mínimo: bins "= mínimo" /
+  "> mínimo" (y "≥ 2" en conteos desde 0), siempre ≥ 30 eventos por bin. 8 variables; p. ej. `products_closed_180d`
+  IV 0.208 vs 0.000 por cuantiles [DATA]. Pregunta G2-1.
+- **D9.2 · Missing sin razón.** `competitor_x_new_destinations` tenía 204 NaN en dev sin razón de missing y el test de
+  suma de bins lo detectó (quedaban fuera de la tabla). Corrección: razón heredada (paso 5) y, en `woe.py`, todo NaN sin
+  razón va a "sin_dato". Pasos 5–9 re-ejecutados; tests en verde.
+- **D9.3 · Especiales pequeños.** Un bin "sin dato" con < 30 eventos se une a "no aplica" si existe; si el grupo sigue
+  con < 30 eventos, WoE = 0 (neutral).
+- **D9.5 · Pre-binning.** Se prueban `min_prebin_size` 1% / 2% / 5% y se queda el de mayor IV (todas cumplen las
+  restricciones); el pre-binning CART no encuentra cortes con muchos empates.
 
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].

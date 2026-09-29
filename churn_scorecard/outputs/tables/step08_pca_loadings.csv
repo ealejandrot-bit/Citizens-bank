@@ -1,0 +1,22 @@
+bloque,variable,loading PC1,loading PC2
+depósitos,deposit_balance_change_pct_90d,0.4771684391731394,-0.024629073835010853
+depósitos,deposit_balance_vs_6m_avg_pct,0.5047344955219835,-0.027836254003099196
+depósitos,net_deposit_flow_pct_90d,0.5069132038366306,-0.03489240358420284
+depósitos,net_deposit_flow_pct_90d_peer,0.5067891104243563,-0.034904282345208815
+depósitos,recurring_deposit_change_pct,0.061295766726685345,0.9980895565685415
+salidas de AUM,aum_outflow_90d,0.4605379559152142,-0.16948268568373928
+salidas de AUM,aum_outflow_pct_90d,0.46883403785562294,-0.1694501435876395
+salidas de AUM,aum_outflow_pct_90d_peer,0.4688340378556231,-0.16945014358763935
+salidas de AUM,investment_redemption_pct,0.38109447099475874,0.33002185635645104
+salidas de AUM,positions_liquidated_pct,0.1672081288219552,0.6234565631208614
+salidas de AUM,aum_vs_baseline_pct,-0.403769347756746,0.15338251573051478
+salidas de AUM,cash_pct_of_portfolio_chg,0.10987647929651517,0.6266659469178351
+externalización,external_transfer_pct_of_balance_60d,0.3953200613444868,-0.20240647079681037
+externalización,new_external_destinations_90d,0.41188124009181193,0.44097560528288327
+externalización,transfer_to_competitor_pct_90d,0.4018280780795715,-0.3923904360611379
+externalización,transfer_to_competitor_bank_amount_90d,0.4002616946075565,-0.39735845371071643
+externalización,external_transfer_acceleration,0.12251746415653066,0.16166321871046344
+externalización,net_external_flow_pct_90d,-0.25966947726706735,-0.25719990448815155
+externalización,external_destination_concentration,0.04404640908282202,0.3910491610191834
+externalización,outflow_vs_baseline_pct,0.2917480041349628,-0.21062748266983164
+externalización,competitor_x_new_destinations,0.4276738408395609,0.40390341807810315

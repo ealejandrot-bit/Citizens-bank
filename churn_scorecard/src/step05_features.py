@@ -56,6 +56,7 @@ F["n_products_held"] = F[HAS].astype(int).sum(axis=1)
 aum_out0 = F.aum_outflow_pct_90d.where(F.has_investments, 0.0)   # sin inversiones: no hay AUM que sacar
 F["outflow_x_contact_gap"] = aum_out0 * F.contact_gap_ratio
 F["competitor_x_new_destinations"] = F.transfer_to_competitor_pct_90d * F.new_external_destinations_90d
+F["competitor_x_new_destinations__miss"] = F["new_external_destinations_90d__miss"]   # hereda la razón del factor con missing
 for c in ["client_reply_rate", "meetings_cancelled_by_client", "relationship_dissatisfaction_flag", "fixed_income_maturity_not_reinvested"]:
     F[f"ind_sin_dato_{c}"] = F[c].isna().astype(int)
 
