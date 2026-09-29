@@ -13,6 +13,8 @@ config/params.yaml          Todos los parámetros y la semilla maestra (con su o
 synthetic/seeds.py          SeedManager: un flujo aleatorio independiente por nombre
 synthetic/population.py     Paso 0: hogares, factores latentes, target
 synthetic/schema.py         Diccionario de columnas con unidad (montos en USD)
+synthetic/stats_tests.py    Pruebas estadísticas (ajuste, colas, curtosis, sesgo, duplicados, semilla)
+config/validation.yaml      Criterios: α, semillas de referencia, máximos y bandas de negocio (USD)
 synthetic/validate.py       Chequeos por paso (el build falla si alguno no pasa)
 scripts/extract_catalog.py  Excel → data/catalog/variables_catalog.csv
 scripts/build_step0.py      Construye, valida y escribe el Paso 0
@@ -27,7 +29,8 @@ docs/reports/               Reporte de cada paso
 pip install -r requirements.txt
 python scripts/extract_catalog.py   # catálogo de variables
 python scripts/build_step0.py       # genera data/synthetic/step0_*.csv + manifiesto
-python -m pytest                    # tests de semillas y reproducibilidad
+python scripts/stats_step0.py       # 196 pruebas estadísticas + 200 semillas de referencia (~1 min)
+python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
 
 Los CSV no se versionan: se regeneran de forma idéntica desde la semilla. El

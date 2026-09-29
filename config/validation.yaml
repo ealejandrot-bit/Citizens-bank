@@ -1,0 +1,37 @@
+# Criterios de las pruebas estadísticas (scripts/stats_step0.py).
+# Las bandas de negocio son supuestos de plausibilidad para Private Banking en EE. UU.
+# (USD) y deben validarse con Citizens igual que los parámetros de generación.
+
+alpha: 0.01                 # Nivel de las pruebas, tras corrección Benjamini-Hochberg (FDR).
+reference_seeds: 200        # Semillas de referencia (bootstrap paramétrico). Con K semillas el p empírico mínimo es 2/(K+1).
+t_study:                    # Estudio de grados de libertad de la t-Student (Pasos 1+).
+  nus: [4, 5, 6, 8]
+  n: 20000
+  replicas: 60
+
+# Máximos plausibles: un valor por encima indica un error de generación.
+max_plausible_usd:
+  relationship_value: 2_000_000_000
+  deposit_balance: 2_000_000_000
+  aum: 2_000_000_000
+  salary_base_annual: 10_000_000
+  bonus_annual: 15_000_000
+  pension_monthly: 100_000
+  dividend_annual: 60_000_000
+  business_distribution_annual: 50_000_000
+  recurring_income_monthly: 5_000_000
+
+# Bandas de negocio para medias y medianas (ni muy bajas ni muy altas).
+business_bands:
+  relationship_value_mean: [5_000_000, 15_000_000]
+  relationship_value_median: [3_000_000, 8_000_000]
+  deposit_share_mean: [0.20, 0.45]           # entre hogares con inversiones
+  salary_base_annual_median: [250_000, 600_000]
+  bonus_to_salary_mean: [0.30, 0.80]
+  pension_monthly_median: [5_000, 15_000]
+  dividend_yield_mean: [0.015, 0.025]
+  recurring_income_monthly_median: [15_000, 60_000]
+  age_primary_mean: [55, 65]
+  tenure_years_mean: [6, 12]
+  hard_churn_6m_rate: [0.03, 0.10]
+  soft_churn_3m_rate: [0.05, 0.15]

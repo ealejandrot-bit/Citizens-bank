@@ -12,7 +12,7 @@ Nunca sale del target. Se usan cinco familias:
 |---|---|---|
 | **Bernoulli-logit** | Flags binarios | P(flag = 1) = logit⁻¹(a + b·z). `a` fija la tasa base, `b` la fuerza predictiva |
 | **Hurdle** (valla) | Montos y % que muchas veces valen 0 | Parte 1: ¿ocurre? (Bernoulli-logit). Parte 2: ¿cuánto? (LogNormal o Beta, con mediana desplazada por z) |
-| **Log-ratio t-Student** | Cambios % contra un periodo previo | ln(1 + x) ~ t(ν = 4)·σ + μ(z). Acota x > −100% y da colas pesadas, como en datos bancarios reales |
+| **Log-ratio t-Student** | Cambios % contra un periodo previo | ln(1 + x) ~ t(ν = 6)·σ + μ(z). Acota x > −100% y da colas pesadas con curtosis finita y estable (ver decisiones D-11: ν = 4 tiene curtosis infinita) |
 | **Conteo** | Número de productos, destinos, reuniones | Binomial negativa con media exp(a + b·z) (sobredispersión) o Binomial(n, p(z)) |
 | **Derivada** | Variables que el Excel define a partir de otras | Se calcula con la fórmula del Excel sobre series simuladas; no tiene distribución propia |
 
@@ -75,8 +75,8 @@ hogares elegibles que cruza el umbral del Excel.
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|
 | 1 | aum_outflow | Hurdle: P(>0) ≈ 35% · % de AUM ~ LogNormal (mediana 2%), tope 100% | O | > 10%: ≈ 8% | sin inversiones |
-| 2 | deposit_balance_change_pct | Derivada de la serie de saldo; ln(1+x) ~ t(4), σ ≈ 0.15 | O | ≤ −25%: ≈ 10% | saldo previo < $10k |
-| 17 | aum_vs_baseline_pct | Derivada de la serie de AUM ex-mercado; log-ratio t(4) | O | ≤ −20%: ≈ 8% | sin inversiones o < 6m de historia |
+| 2 | deposit_balance_change_pct | Derivada de la serie de saldo; ln(1+x) ~ t(6), σ ≈ 0.15 | O | ≤ −25%: ≈ 10% | saldo previo < $10k |
+| 17 | aum_vs_baseline_pct | Derivada de la serie de AUM ex-mercado; log-ratio t(6) | O | ≤ −20%: ≈ 8% | sin inversiones o < 6m de historia |
 | 18 | deposit_balance_vs_6m_avg_pct | Derivada de la misma serie que #2 (ρ esperado ≈ 0.7 con #2) | O | ≤ −30%: ≈ 8% | saldo base < $10k |
 
 ### Paso 2 · Recurring deposits & flows
@@ -85,8 +85,8 @@ hogares elegibles que cruza el umbral del Excel.
 |---|---|---|---|---|---|
 | 3 | salary_deposit_stopped_flag | Bernoulli-logit, tasa base ≈ 4% | O (+N leve) | = 1: ≈ 4% | sin nómina |
 | 4 | recurring_deposit_stopped_flag | Derivada: OR de los cortes por flujo (nómina, pensión, dividendos, otros ≥ 10% del ingreso) | O | = 1: ≈ 6% | sin flujos recurrentes |
-| 5 | recurring_deposit_change_pct | Si algún flujo se cortó: −(peso del flujo) + ruido; si no: log-ratio t(4), σ ≈ 0.10 | O | ≤ −40%: ≈ 6% | sin flujos recurrentes |
-| 6 | net_deposit_flow | Derivada de la serie (créditos − débitos); en % ~ t(3) con media −β·O | O | pct ≤ −15%: ≈ 10% | — |
+| 5 | recurring_deposit_change_pct | Si algún flujo se cortó: −(peso del flujo) + ruido; si no: log-ratio t(6), σ ≈ 0.10 | O | ≤ −40%: ≈ 6% | sin flujos recurrentes |
+| 6 | net_deposit_flow | Derivada de la serie (créditos − débitos); en % ~ t(6) con media −β·O | O | pct ≤ −15%: ≈ 10% | — |
 | 19 | pension_deposit_stopped_flag | Bernoulli-logit, tasa base ≈ 2%; incluye muertes (excluidas del target) | O | = 1: ≈ 2% | sin pensión |
 | 20 | business_payroll_stopped_flag | Bernoulli-logit, tasa base ≈ 4% | O | = 1: ≈ 4% | sin negocio vinculado |
 
@@ -119,7 +119,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 10 | products_closed | Binomial(nº de productos, p(O, S)); requiere agregar nº de productos | O + S | ≥ 1: ≈ 7% | — |
 | 29 | accounts_closed | #10 + cuentas extra ~ Poisson, menos consolidaciones internas | O + S | ≥ 1: ≈ 9% | — |
 | 30 | share_of_wallet | Beta (media ≈ 0.45), tope 1; fuente de estimación categórica (declarada / proveedor / modelo) con ruido distinto | O (inversa) | < 30%: ≈ 30% | — |
-| 31 | share_of_wallet_change | Normal(−β·O, 4pp) con colas t(4) | O | ≤ −10pp: ≈ 6% | — |
+| 31 | share_of_wallet_change | Normal(−β·O, 4pp) con colas t(6) | O | ≤ −10pp: ≈ 6% | — |
 | 32 | trustee_change_flag | Bernoulli-logit, tasa base ≈ 2%; incluye sucesiones por muerte | O + S | = 1: ≈ 2% | sin trust |
 
 ### Paso 6 · Banker

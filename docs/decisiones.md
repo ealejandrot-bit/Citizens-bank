@@ -75,6 +75,48 @@ Citizens es un banco de EE. UU.: todos los montos son dólares nominales, sin co
 `synthetic/schema.py` y el build falla si aparece una columna sin declarar. Las
 referencias también son de EE. UU.: ACH/SEC, ABA/SWIFT, Social Security, IRS, CFPB/OCC, FCRA.
 
+**D-10 · Validación estadística** (`scripts/stats_step0.py`, reporte en
+`docs/reports/step0_stats_report.md`). 196 pruebas, todas OK con α = 0.01 y corrección
+Benjamini-Hochberg:
+- **Bondad de ajuste:** cada columna contra la distribución y los parámetros con que se generó.
+  Se usa KS y Cramér-von Mises sobre la PIT, χ² para edad y frecuencia de pago, y binomial
+  exacta para las banderas. Como no se estima ningún parámetro, los gl son los nominales:
+  χ² gl = celdas − 1; Hosmer-Lemeshow gl = grupos − 2; Mardia asimetría gl = p(p+1)(p+2)/6 = 10;
+  independencia gl = (r−1)(c−1); Jarque-Bera gl = 2.
+- **Colas y curtosis:** se exige cola pesada en escala USD (curtosis de exceso > 0 significativa;
+  patrimonio ≈ 376). Tras normalizar por PIT, la curtosis debe ser 0 (Anscombe-Glynn, Jarque-Bera).
+  La curtosis de log(patrimonio) coincide con la teórica de la Normal truncada. Se agregan
+  L-momentos e índice de Hill, más robustos que la curtosis clásica.
+- **Dinero:** sin negativos, sin infinitos, al centavo, bajo máximos plausibles; medias iguales a las
+  teóricas (prueba t) y dentro de bandas de negocio PB (`config/validation.yaml`).
+- **Sesgo:** 30 independencias por diseño (Spearman), target independiente de atributos sin efecto
+  diseñado (χ²), y efectos diseñados con el signo correcto.
+- **Duplicados y variedad:** 0 filas duplicadas, 0 pares casi idénticos (distancia mínima entre
+  vecinos 0.035 d.e.; p1 = 0.17), 303 combinaciones de banderas. Las repeticiones de montos
+  coinciden con lo esperado por redondear al centavo (pensión: 15 observadas vs 15.2 esperadas).
+- **Semilla:** la semilla de producción no es atípica frente a 200 semillas de referencia
+  (percentiles 15–92 en las 10 métricas clave). Los p-valores KS entre semillas son uniformes,
+  así que el generador no tiene sesgo sistemático.
+
+**D-11 · Grados de libertad de la t-Student: ν = 6 en lugar de 4.**
+El estudio de 60 réplicas × 20,000 muestra que con ν = 4 la curtosis teórica es infinita: la
+muestral va de 6 a 43 entre réplicas (CV 2.0). Así la curtosis no se puede validar y dos semillas
+darían colas muy distintas. Con ν = 5 sigue siendo inestable (CV 0.45). Con ν = 6 queda estable
+(teórica 3, CV 0.20) y conserva colas pesadas. La máxima verosimilitud recupera ν sin sesgo (< 1%)
+en todos los casos, así que si Citizens entrega datos reales, ν se estima de ellos.
+
+**Hallazgos pendientes de decisión** (no son fallas estadísticas; son de plausibilidad de negocio):
+1. **Hogares grandes solo con depósitos.** La probabilidad de no tener inversiones no depende del
+   patrimonio (15% en HNW y UHNW). Hay 183 hogares de más de $30M solo en depósitos, y uno de
+   $782M que concentra el 0.4% del libro. Por eso la media de depósitos de esta semilla queda en el
+   percentil 99.8 (no se rechaza tras BH). Propuesta: que la probabilidad caiga con el patrimonio.
+2. **Bonos muy chicos.** 1.5 × Beta(1.5, 3) produce bonos casi nulos: 123 menores a $10k y 265 menores
+   al 5% del sueldo. Propuesta: una masa de "sin bono" (≈ 25%, p. ej. médicos o abogados socios)
+   y, para el resto, un bono con piso de 10% del sueldo.
+3. **Cola del patrimonio.** La LogNormal da un índice de Hill de 2.4 en el top 1%. La riqueza real
+   suele tener una cola Pareto más pesada (α ≈ 1.5). Si importa el peso de los UHNW en el AUM
+   churn, se puede usar una cola Pareto por encima de $30M.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |
