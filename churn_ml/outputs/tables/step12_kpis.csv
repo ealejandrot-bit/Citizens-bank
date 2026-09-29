@@ -1,0 +1,8 @@
+dimensión,KPI,línea base [DATA],umbral / acción [DEF],frecuencia
+Challenger vs operativo,ΔPR-AUC EBM − M1 en cada snapshot con resultados,+0.015 (val),≥ +0.03 sostenido en 2 ciclos ⟹ reabrir la decisión de reemplazo (tabla H-2),semestral
+Discriminación EBM,Gini,0.406,caída > 15% relativo ⟹ redesarrollo,mensual
+Calibración EBM,pendiente Platt b en el último snapshot con resultados,0.878 (val),fuera de 0.8–1.2 dos ciclos ⟹ recalibración,mensual
+Crítico EBM (G3-3),esperada vs observada en Crítico,61.3% vs 53.3%,re-calibrar con el próximo snapshot; publicar la tasa observada,mensual
+Estabilidad,PSI dev→val por tramo,0.0008,> 0.25 sostenido ⟹ redesarrollo,mensual
+Deriva de explicación,participación de |f_j| por variable,ver step07_importance_stability.csv,cambio de puesto de las 3 primeras ⟹ revisión,trimestral
+Prioridad (hallazgo D10.1),captura de RV de eventos al 10%: tramo primero vs p×RV global,48.9% vs 58.8% (M1),decisión de negocio; medir con el control 12.5% del M1,trimestral

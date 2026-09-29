@@ -1,0 +1,6 @@
+id,limitación
+L1–L7,Heredadas del M1: sin OOT; señales sin timestamps; compuestos sin regla; dataset sintético; UHNW pequeño; sin digital ni eventos de vida; causalidad no identificable.
+L8,El EBM sobrestima Crítico en val (61% esperado vs 53% observado); se corrige con el próximo snapshot (no se reusa val).
+L9,"A-lite se desarrolló con otro split y otro target: comparación justa solo en 1,737 hogares (IC amplios)."
+L10,"El paso 10 usa val después de validar: la elección entre reglas de uso conjunto tiene un leve optimismo (regla fijada antes, D10.1)."
+L11,La probabilidad del M1 fue calibrada sobre val (paso 14 del M1): su Brier y b en val le favorecen en la comparación.

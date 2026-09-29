@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **11** · G0–G3 cerrados (2026-09-29) · bloque en curso: pasos 10–12 (G4).
-- Tests: 36 / 36 PASS (pasos 00–11).
+- Último paso completado: **12** · G0–G3 cerrados (2026-09-29) · G4 abierto, esperando respuesta.
+- Tests: 38 / 38 PASS (pasos 00–12).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -106,6 +106,10 @@ usuario · `[DEF-default]` default aplicado.
   deja menos en Estable (20.7% vs 24.9%) pero no sube más a Crítico+Alto [DATA]. A-lite (justo) marca 10.9% del desgaste
   silencioso en Crítico+Alto (marca solo 13% de hogares) [DATA]. El desgaste silencioso sigue siendo el punto ciego común.
 
+- **D12.1 · Rol y cierre.** M1 1.0.0 sigue operativo; EBM (ML 1.0.0) como challenger en monitoreo con reapertura de
+  la decisión de reemplazo si ΔPR-AUC ≥ +0.03 dos ciclos; A-lite para comunicación ejecutiva; XGBoost retirado.
+  Manifiesto con sha256; modelos anteriores verificados intactos (130 archivos) [DATA]. Limitaciones propias L8–L11.
+
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
   sub-representado; L6 sin dimensión digital ni eventos de vida; L7 causalidad no identificable.
@@ -125,4 +129,4 @@ usuario · `[DEF-default]` default aplicado.
 - "sí documenta, y vamos al que sigue" → se documenta y se sigue al paso 10.
 
 ## Preguntas abiertas
-- Ninguna. Las de G4 se abrirán al cerrar el paso 12.
+- G4-1 a G4-3 en `reports/gate_4.md`.

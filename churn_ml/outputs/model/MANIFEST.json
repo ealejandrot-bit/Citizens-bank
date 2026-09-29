@@ -1,0 +1,25 @@
+{
+  "versión": "ML 1.0.0",
+  "modelo": "EBM monotónico sin interacciones (12 variables, sin compuestos)",
+  "rol": "challenger en monitoreo; M1 1.0.0 operativo",
+  "semilla": 42,
+  "python": "3.11.15",
+  "librerías": {
+    "pandas": "3.0.6",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.1",
+    "interpret-core": "0.7.8",
+    "xgboost": "3.2.0",
+    "lightgbm": "4.7.0",
+    "shap": "0.51.0",
+    "optuna": "5.0.0"
+  },
+  "archivos": {
+    "step03_choice.pkl": "b605418f93aaebc31b7f966b95861d349e930728f58c828a000843539f8af577",
+    "step04_ebm.pkl": "18bc1e06cabf78f1c87723c30b12befabcc43d6acd7236938d5ae1a386bee124",
+    "step04_xgb.json": "cd634d87c0d35faf316cd981701f36714db06d726b11079d80f126c6b39aa3a2",
+    "step05_calibrators.pkl": "8a30108029af873774aff1923ae0b0725442b492379eca96f26e1f03496cb6b2",
+    "step06_scaling.pkl": "a20a7458e7eddec6692cad34cd32d04eedc72ffec5a1e2b9854d8ef2485f03fa"
+  },
+  "modelos anteriores intactos": true
+}

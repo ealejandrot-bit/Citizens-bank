@@ -1,0 +1,10 @@
+,M1 · scorecard,EBM (ML),A-lite,XGBoost
+Variables,8,12,5,12
+Forma,puntos por bin (WoE),puntos por bin (EBM aditivo),puntos por bin (WoE),árboles + SHAP
+"Gini · val completo (5,779)",0.390,0.406,— (70% en su desarrollo),0.403
+PR-AUC · val completo,0.328,0.343,—,0.344
+"PR-AUC · subconjunto justo (1,737)",0.304,0.305,0.262,0.297
+Precisión top 5% · justo,49.4%,49.4%,40.2%,46.0%
+Criterios H-2 de reemplazo cumplidos,— (referencia),6 de 8,no evaluado (otro target),4 de 8
+Razones por cliente estables (top 1),91.7% (M1 paso 11),85.0%,—,81.5%
+Rol recomendado,modelo operativo,challenger en monitoreo,comunicación ejecutiva,retirado
