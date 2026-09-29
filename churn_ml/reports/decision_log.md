@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **2** · G0 cerrado ("usa defaults", 2026-09-29) · bloque en curso: pasos 1–3 (G1).
-- Tests: 9 / 9 PASS (pasos 00–02).
+- Último paso completado: **3** · G1 abierto, esperando respuesta · G0 cerrado ("usa defaults", 2026-09-29) · bloque cerrado: pasos 1–3 (G1).
+- Tests: 11 / 11 PASS (pasos 00–03).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -41,6 +41,13 @@ usuario · `[DEF-default]` default aplicado.
   `recurring_deposit_change_pct`, `return_vs_benchmark`, `cash_pct_of_portfolio_chg`, `complaint_age_days`,
   `meetings_cancelled_by_client`, `positions_liquidated_pct`.
 
+- **D3.1 · Algoritmo.** XGBoost (prof. 2, 110 árboles) PR-AUC CV 0.3630 vs LightGBM (prof. 3, 115 árboles) 0.3645;
+  diferencia ≤ 1 sd (0.019) ⟹ el más simple: XGBoost [DATA]. 3 semillas estables (0.3629–0.3637). En los mismos 5
+  folds de r1: campeón M1 0.3424, EBM 0.3645, RF 0.3570, XGBoost 0.3617, LightGBM 0.3647 [DATA].
+- **D3.2 · Early stopping de LightGBM.** La primera corrida detenía LightGBM en 5 árboles (el early stopping miraba el
+  logloss por defecto, que empeora con los pesos de clase; b = 13.6) [DATA]. Corregido a PR-AUC y paso 3 re-ejecutado;
+  XGBoost no cambia.
+
 ## Limitaciones registradas
 - Heredadas de M1: L1 sin OOT; L2 señales sin timestamps; L3 compuestos sin regla; L4 dataset sintético; L5 UHNW
   sub-representado; L6 sin dimensión digital ni eventos de vida; L7 causalidad no identificable.
@@ -50,4 +57,4 @@ usuario · `[DEF-default]` default aplicado.
   protección de modelos anteriores [DEF] (D0.2).
 
 ## Preguntas abiertas
-- Ninguna. Las de G1 se abrirán al cerrar el paso 3.
+- G1-1 a G1-3 en `reports/gate_1.md`.
