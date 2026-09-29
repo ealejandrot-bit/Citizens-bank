@@ -1,0 +1,9 @@
+id,limitación
+L1,Sin OOT ni cohortes ni PSI temporal: un solo snapshot 2025-12-31. La validación es una partición aleatoria del mismo periodo.
+L2,Señales pre-ingenierizadas por el proveedor sin timestamps auditables; se asume que todas son as-of T0.
+L3,`multi_signal_count` / `_flag` sin regla documentada: fuera del campeón; solo en el challenger de referencia.
+L4,Dataset sintético: no representa una cartera real; nada de lo estimado se presenta como resultado de un banco.
+L5,UHNW sub-representado: 53 eventos B en val; solo métricas globales y lectura descriptiva por tramo.
+L6,"Sin dimensión digital ni eventos de vida (fallecimiento, liquidity event): no hay overrides por esas causas."
+L7,Causalidad y efecto de la propia intervención no identificables: arquetipos descriptivos; efecto solo medible con el control aleatorio.
+L8,Pesos de clase balanceados con intercepto corregido; la probabilidad publicada depende de la calibración Platt sobre val.

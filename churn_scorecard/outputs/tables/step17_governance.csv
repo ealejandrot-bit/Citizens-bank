@@ -1,0 +1,7 @@
+rol,responsable (propuesto),responsabilidad
+Dueño del modelo,Wealth / banca privada (negocio),"aprueba cortes, overrides y playbook"
+Desarrollo,equipo de modelos,"código, tablas, reportes, recalibración"
+Validación independiente,MRM (SR 11-7 o equivalente),revisa este documento antes del uso; revalidación anual
+Monitoreo,equipo de modelos + MRM,tablero mensual de KPIs y disparadores
+Cumplimiento,legal / fair lending,confirma exclusión de edad y buró (G1-3) y uso de datos
+Cambios,comité de modelos,cambios de variables o cortes = cambio material; recalibración Platt = cambio no material documentado

@@ -1,0 +1,13 @@
+dimensión,KPI,línea base [DATA],umbral / acción [DEF],frecuencia
+Discriminación,Gini (val),0.390,caída > 15% relativo vs línea base ⟹ redesarrollo,mensual
+Discriminación,PR-AUC (val),0.328,seguimiento,mensual
+Calibración,pendiente Platt b,0.854,fuera de 0.8–1.2 dos ciclos ⟹ recalibración,mensual
+Calibración,media p calibrada vs tasa observada,13.90% vs 13.90%,brecha > 1 pp dos ciclos ⟹ recalibración,mensual
+Estabilidad,PSI del score,0.0034,0.10–0.25 vigilar; > 0.25 sostenido ⟹ redesarrollo,mensual
+Estabilidad,PSI de variables (máx.),0.0027,> 0.25 en una variable ⟹ revisar su fuente,mensual
+Tramos,tasa Crítico / Alto / Vigilancia / Estable (val),55.6% / 21.1% / 11.1% / 5.8%,pérdida de monotonía o lift Crítico/Estable < 5x ⟹ revisar cortes,trimestral
+Operación,precisión en Crítico (val),55.6%,seguimiento; FP por evento capturado 0.80,mensual
+Operación,captura top 10% (val),27.9% eventos · 25.8% RV,seguimiento,mensual
+Valor (G3-2),"Σ p·RV / Σ RV de eventos, quintil superior de RV",0.85,< 0.85 dos ciclos ⟹ probar ajuste por log_rv,trimestral
+Segmento (G3-3),UHNW en Alto: observada vs esperada,31.6% vs 19.4% (24 eventos),revisión prioritaria del banquero; recalibrar UHNW si ≥ 100 eventos acumulados,trimestral
+Efecto de la acción (G3-4),churn tratados vs control en Alto,control 12.5% = 595 hogares,efecto mínimo detectable 4.9 pp,a 6 meses

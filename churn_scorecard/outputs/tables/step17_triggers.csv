@@ -1,0 +1,6 @@
+disparador,condición [DEF SPEC / G3],acción
+Recalibración,"b fuera de 0.8–1.2 en dos ciclos, o media p vs tasa > 1 pp en dos ciclos",re-estimar Platt con el último snapshot con outcome; cortes de score sin cambio
+Redesarrollo,"PSI del score > 0.25 sostenido, o Gini −15% relativo vs línea base",repetir pasos 5–14 con nuevos datos (y OOT si ya hay 2+ snapshots)
+Revisión de variable,PSI > 0.25 en una variable o cambio de definición del proveedor,revisar la fuente; bin neutral temporal si la variable se cae
+Revisión de overrides,precisión de una regla < 12% en dos ciclos,eliminar la regla
+Cola de valor,quintil superior de RV con Σ p·RV / Σ RV de eventos < 0.85 dos ciclos,probar interacción con log_rv (paso 14)

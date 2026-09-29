@@ -199,6 +199,7 @@ GOV = {"Crítico": "banquero + líder de equipo, contacto ≤ 5 días hábiles",
        "Vigilancia": "seguimiento en revisión mensual", "Estable": "gestión normal"}
 ms["gobernanza [DEF-default paso 16]"] = ms.tramo.map(GOV)
 save_table(ms, "step12_master_scale")
+save_table(ms, "step12_master_scale_households")          # nombre del entregable (SPEC J)
 ms_model = master(dvf.assign(tramo=dvf.tramo_modelo))
 save_table(ms_model, "step12_master_scale_pre_override")
 msrv = ms[["tramo", "% RV", "captura RV de eventos %"]].copy()

@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **16** · G0–G3 cerrados (G0–G1 "usa defaults"; G2–G3 respuestas del usuario, 2026-09-29) · bloque en curso: pasos 15–17 (G4).
-- Tests: 80 / 80 PASS (pasos 00–16).
+- Último paso completado: **17** · G4 abierto, esperando respuesta · G0–G3 cerrados (G0–G1 "usa defaults"; G2–G3 respuestas del usuario, 2026-09-29) · bloque cerrado: pasos 15–17 (G4).
+- Tests: 84 / 84 PASS (pasos 00–17).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -177,10 +177,20 @@ usuario · `[DEF-default]` default aplicado.
   competidor $2.1M, cambio de banquero 66%, queja escalada 26%; 69% en Crítico); desgaste silencioso 44.1% (señales
   cercanas a quienes se quedan; 21% en Estable) [DATA]. Mezcla estable en val (33.1% / 19.3% / 47.6%).
 
+- **D17.1 · Monitoreo y entregable.** Línea base de KPIs = validación; disparadores del SPEC (b fuera de 0.8–1.2 dos
+  ciclos ⟹ recalibración; PSI > 0.25 sostenido o Gini −15% ⟹ redesarrollo) más los de G3 (quintil superior de RV,
+  UHNW en Alto, control 12.5%). Modelos serializados con `outputs/model/MANIFEST.json` (versión 1.0.0, sha256,
+  librerías). `reports/model_document.md` consolida los pasos 0–17 (el paso 17 se resume en el cuerpo).
+
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].
 - **L2** Señales pre-ingenierizadas sin timestamps auditables; se asume as-of T0.
+- **L3** Compuestos del proveedor sin regla documentada (fuera del campeón).
 - **L4** Dataset sintético: nada se presenta como resultado de un banco real.
+- **L5** UHNW sub-representado (53 eventos B en val): solo métricas globales.
+- **L6** Sin dimensión digital ni eventos de vida.
+- **L7** Causalidad y efecto de la intervención no identificables (arquetipos descriptivos; control aleatorio 12.5%).
+- **L8** Probabilidad publicada depende de la calibración Platt sobre val (pesos balanceados en estimación).
 
 ## G0 · respuesta del usuario (2026-09-29)
 - "usa defaults" → I-1 a I-10 y G0-a con su default, marcados [DEF-default] en la tabla de parámetros.
@@ -200,4 +210,4 @@ usuario · `[DEF-default]` default aplicado.
 - "1. keep all three. 2. don't adjust 3. no separe 4. 12.5%" → G3-1 a G3-4 [DEF].
 
 ## Preguntas abiertas
-- Ninguna. Las de G4 se abrirán al cerrar el paso 17.
+- G4-1 a G4-3 en `reports/gate_4.md`.
