@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **13** · G0, G1, G2 cerrados · bloque en curso: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 71 / 71 PASS (pasos 00–13).
+- Último paso completado: **14** · G3 abierto, esperando respuesta · G0, G1, G2 cerrados · bloque cerrado: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Tests: 75 / 75 PASS (pasos 00–14).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -152,6 +152,16 @@ usuario · `[DEF-default]` default aplicado.
   53 eventos (solo global). Target A: AUC val 0.743 [DATA]. 9 de 9 criterios cumplidos. El Gini de val (0.390) queda
   también por debajo del de la CV anidada (0.429) [DATA]: se reporta, sin re-ajustar (holdout tocado una vez).
 
+- **D14.1 · Platt.** a = −0.272, b = 0.854 (IC95 0.770–0.938), dentro de 0.8–1.2. Isotónica no mejora: diferencia de
+  Brier +0.0005 (IC95 0.0000–0.0010) → Platt, según la regla fijada antes de ver resultados [DATA]. Media calibrada =
+  tasa observada en val (13.90%) y dev 13.79% vs 13.88% [DATA]. Los 4 tramos quedan dentro de Wilson 90% en val.
+- **D14.2 · Cola alta de RV.** En el quintil superior de RV el modelo subestima: tasa 15.5% vs p 13.7%; Σ p·RV = 0.85
+  × Σ RV de eventos [DATA]. Agregar log_rv a la calibración: LR 2.75, p = 0.097 (no significativo al 5%) [DATA]. Default:
+  sin interacción, monitoreo del quintil superior (pregunta G3-2).
+- **D14.3 · UHNW.** En Alto, UHNW observa 31.6% vs 19.4% esperado (24 eventos, fuera de Wilson 90%); el resto de tramos
+  UHNW dentro [DATA]. Sin calibración propia por pocos eventos (L5); pregunta G3-3. Control aleatorio en Alto: con
+  12.5% (595 hogares) el efecto mínimo detectable es 4.9 pp (24% relativo) [DATA].
+
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].
 - **L2** Señales pre-ingenierizadas sin timestamps auditables; se asume as-of T0.
@@ -172,4 +182,4 @@ usuario · `[DEF-default]` default aplicado.
   corregido por prior, subestima el decil superior (34.8% vs 42.1%) [DATA]. El campeón se calibra en el paso 14.
 
 ## Preguntas abiertas
-- Ninguna. Las de G3 se abrirán al cerrar el paso 14.
+- G3-1 a G3-4 en `reports/gate_3.md`.
