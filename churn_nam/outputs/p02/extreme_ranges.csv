@@ -14,7 +14,6 @@ deposit_balance,1358.28,88388.1604,1551432.87,32631776.03679996,419923774.57,0,1
 relationship_value,1000062.5,1050417.9228,4851852.77,92366106.8003997,903973258.11,0,913,4.6885431109741695,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 aum,113383.25,590513.8147999999,3700541.74,71684412.22039989,773011257.6699998,0,799,4.788732394366197,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 outflow_vs_baseline_pct,-1.0,-1.0,-0.45343241,84.21456346279771,6390.50417491,0,668,3.4303907975145074,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
-multi_signal_count,0.0,0.0,1.0,6.0,7.0,0,629,3.2301134904739897,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 net_external_flow_pct_90d,-6.29119774,-0.9714492259999999,0.08097111,0.5322571703999998,3.97700673,0,606,3.112001232475736,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 recurring_income_monthly,0.0,0.0,30881.62,313875.8731999981,2000229.77,0,604,3.101730601345453,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 contact_gap_ratio,0.0,0.0,0.26666667,3.336444440799987,12.16666667,0,603,3.096595285780311,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
@@ -23,14 +22,14 @@ deposit_balance_change_pct_90d,-0.97553951,-0.6357027507999999,-0.0103476,0.5237
 tenure_years,1.0,1.23,7.79,29.288399999999964,50.0,0,40,0.20541262260565912,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 deposit_balance_vs_6m_avg_pct,-0.99669039,-0.7655482343,-0.019000799999999998,0.554111764399997,4.53167019,0,19,0.09759605506472159,"conservar (extremo real); NAM: transformación por cuantiles, sin recorte"
 history_months,11.0,14.0,24.0,24.0,24.0,0,0,0.0,conservar
-complaint_age_days,0.0,0.0,0.0,78.27999999999884,364.0,0,0,0.0,conservar
+client_reply_rate,0.0,0.0,0.66666667,1.0,1.0,0,0,0.0,conservar
 new_external_destinations_90d,0.0,0.0,0.0,2.0,3.0,0,0,0.0,conservar
 products_closed_180d,0.0,0.0,0.0,3.0,6.0,0,0,0.0,conservar
-client_reply_rate,0.0,0.0,0.66666667,1.0,1.0,0,0,0.0,conservar
-return_vs_benchmark,-0.15895978,-0.10269734,-0.010756035,0.0907483425,0.15569844,0,0,0.0,conservar
+complaint_age_days,0.0,0.0,0.0,78.27999999999884,364.0,0,0,0.0,conservar
 external_destination_concentration,0.17100781,0.2290338,0.51575154,1.0,1.0,0,0,0.0,conservar
 fixed_income_maturity_not_reinvested,0.0,0.0,0.11297477,1.0,1.0,0,0,0.0,conservar
-positions_liquidated_pct,0.0,0.0,0.0,0.18704802559999986,0.42665465,0,0,0.0,conservar
+return_vs_benchmark,-0.15895978,-0.10269734,-0.010756035,0.0907483425,0.15569844,0,0,0.0,conservar
 share_of_wallet,7.702e-05,0.0535083864,0.45925368,1.0,1.0,0,0,0.0,conservar
 accounts_closed_90d,0.0,0.0,0.0,4.0,12.0,0,0,0.0,conservar
 meetings_cancelled_by_client,0.0,0.0,0.0,3.0,9.0,0,0,0.0,conservar
+positions_liquidated_pct,0.0,0.0,0.0,0.18704802559999986,0.42665465,0,0,0.0,conservar

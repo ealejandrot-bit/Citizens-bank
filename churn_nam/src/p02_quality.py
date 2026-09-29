@@ -28,6 +28,8 @@ raw = pd.read_excel(P.raw, sheet_name=get("paths.sheet"))
 pop = pd.read_parquet(P.processed / "population.parquet")
 df = raw.merge(pop[["household_id", "y_any"]], on="household_id")          # solo población de la fase 1
 FORB = set(get("leakage.forbidden")) | set(get("leakage.excluded_regulatory"))
+if get("leakage.multi_signal_count") == "exclude":                        # decisión del usuario (fase 3)
+    FORB |= {"multi_signal_count", "multi_signal_flag"}
 FEAT = [c for c in raw.columns if c not in FORB and c != "segment"]
 HAS = [c for c in raw.columns if c.startswith("has_")]
 y = df.y_any.to_numpy()

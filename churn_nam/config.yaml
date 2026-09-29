@@ -14,7 +14,8 @@ paths:
   alite: ../scorecard                                # solo lectura
 
 target:
-  primary: B                   # hard ∪ (soft con value_lost/RV ≥ theta); decidido: mismo split que M1/M2 (usuario, 2026-09-29)
+  primary: A                   # hard_churn_6m (target de A-lite); decisión del usuario 2026-09-29
+  secondary: B                 # hard ∪ (soft con value_lost/RV ≥ theta), target de M1/M2; se reporta siempre
   theta: 0.25                  # heredado de M1 (I-1)
   exclude_churn_excluded: true # heredado de M1 (I-4)
   exclude_tenure_lt: 1.0       # heredado de M1 (I-8)
@@ -28,7 +29,7 @@ splits:
 leakage:
   forbidden: [value_lost_6m, hard_churn_6m, soft_churn_3m, churn_excluded, household_id, snapshot_date]
   excluded_regulatory: [age_primary, bureau_new_mortgage_elsewhere]   # G1-3 de M1
-  multi_signal_count: null     # include | exclude | challenger_only
+  multi_signal_count: exclude  # decisión del usuario 2026-09-29 (regla no documentada, L3; sin aporte en M2)
 
 class_weights: [none, balanced]
 
@@ -41,7 +42,20 @@ nam:
   ensemble_members: null
   monotone_method: positive_weights   # pesos ≥ 0 + activaciones monótonas ⟹ violación = 0 por construcción
 
+comparison:
+  reference_model: A-lite      # modelo más importante (usuario 2026-09-29)
+  alite_mode: frozen           # scores originales de ../scorecard, sin re-estimar (usuario 2026-09-29)
+  alite_fair_subset: true      # comparaciones con A-lite solo en test ∩ holdout de A-lite (fuera de su desarrollo)
+
+quality:                       # decisiones de la fase 2 (usuario 2026-09-29)
+  keep_all_rows: true
+  nam_input_transform: quantile
+  trigger_present_not_applicable: no_aplica     # dato aunque no aplica → no aplica (como M1)
+  trigger_missing_applicable: sin_dato          # falta aunque aplica → sin dato
+  missing_indicator_for: sin_regla              # indicador propio para missing "sin regla"; "ruido" = valor neutro
+
 gate:
+  reference: A-lite            # gate final: NAM vs A-lite (usuario 2026-09-29)
   delta_pr_auc: null           # ΔPR-AUC mínimo NAM − champion (test, pooled)
   delta_lift_at_5: null        # Δlift@5% mínimo
   bootstrap_reps: 2000
@@ -50,11 +64,11 @@ calibration:
   methods: [platt, isotonic]
   select_by: ece
 
-scorecard:
-  pdo: null
-  s0: null
-  o0: null
-  odds_convention: null        # good:bad | bad:good
+scorecard:                     # misma escala que M1 y A-lite (usuario 2026-09-29)
+  pdo: 40
+  s0: 600
+  o0: 20
+  odds_convention: "good:bad"
   score_min: null
   score_max: null
 

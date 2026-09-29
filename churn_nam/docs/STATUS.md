@@ -1,9 +1,8 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **4 · fase 2 (data quality)** terminada; decisiones propuestas pendientes del usuario. Siguiente: PASO 5 =
-  fase 3 tras "go".
-- Tests: 12 passed (test_leakage ya activo sobre features_p02.parquet).
+- Paso actual: **5 · fase 3 (leakage)** terminada. Siguiente: PASO 6 = fase 4 (features y monotonía) tras "go".
+- Tests: 13 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -14,18 +13,21 @@
 | 2026-09-29 | Mismo split que M1/M2 (test ya mirado 2 veces: se declara tercera mirada) |
 | 2026-09-29 | "go" al PASO 1 = aprobación de los borradores y de PyTorch (torch 2.14.0 instalado en .venv) |
 | 2026-09-29 | Objetivo: todos los métodos en la forma más consistente posible y comparados; el más importante es A-lite |
+| 2026-09-29 | multi_signal_count / multi_signal_flag: exclude (fuera de todos los modelos) |
+| 2026-09-29 | Target principal A (hard 6M, el de A-lite); B se reporta siempre |
+| 2026-09-29 | A-lite: solo el original congelado (comparación justa en test ∩ holdout de A-lite) |
+| 2026-09-29 | Aceptadas: decisiones de la fase 2; gate final NAM vs A-lite; escala 600 @ 20:1, PDO 40, odds buenos:malos |
 
 ## Parámetros en null (config.yaml) y fase que bloquean
 | parámetro | fase |
 |---|---|
 | splits.validation_frac_of_dev | 6 |
-| leakage.multi_signal_count | 3 |
-| nam.hidden_units, epochs_max, learning_rate, weight_decay, dropout, ensemble_members | 9 |
 | gate.delta_pr_auc, gate.delta_lift_at_5 | 6 (pre-registro) y 10 |
-| scorecard.pdo, s0, o0, odds_convention, score_min, score_max | 12 |
+| nam.hidden_units, epochs_max, learning_rate, weight_decay, dropout, ensemble_members | 9 |
+| scorecard.score_min, score_max | 12 |
 | ews.alerts_per_month | 13 (umbral) |
 
-## Decisiones pendientes de la fase 2 (propuestas, no aplicadas)
+## Decisiones de la fase 2 (aceptadas por el usuario el 2026-09-29; se aplican al construir features en la fase 4)
 - Rangos extremos (23 variables, 0 con valores imposibles): conservar todas las filas; para el NAM, transformación por
   cuantiles de las entradas (sin recorte).
 - Excepciones al gatillo: pension (60 faltan aunque aplica; 130 con dato aunque no aplica), salary (200 faltan aunque
@@ -34,9 +36,8 @@
 - Missing "ruido" (4 variables, ≤ 1.5%): valor neutro sin indicador.
 
 ## Preguntas abiertas al usuario
-- Marco de comparación consistente con A-lite como referencia (ver resumen de la fase 0): target principal, forma de
-  A-lite (congelado vs re-estimado con su receta), referencia del gate y escala del scorecard.
-- Ninguna otra. `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
+- Ninguna. Observación: con A-lite congelado, toda comparación contra A-lite (incluido el gate) se hace en ≈ 1,737
+  hogares del test fuera de su desarrollo (≈ 106 eventos A): poca potencia estadística; se verá en la fase 6 (EPV). `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
 
 ## Preguntas abiertas al dueño del dato
 1. ¿Por qué 123 hogares tienen `churn_excluded` = True y targets vacíos? (se excluyen; motivo desconocido)

@@ -1,0 +1,1 @@
+{"title": "Fase 3 · Leakage", "order": ["summary.json", "leakage_table.csv"], "notes": {"leakage_table.csv": "AUC orientada = máx(AUC, 1 − AUC); IV por deciles con missing como bin; umbrales de sospecha de M1 (AUC > 0.85 o IV > 0.50)."}}
