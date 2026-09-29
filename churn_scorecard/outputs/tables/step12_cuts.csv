@@ -1,0 +1,4 @@
+corte,percentil dev (peor score),score ≤
+Crítico / Alto,4.0,445.0
+Alto / Vigilancia,21.0,517.0
+Vigilancia / Estable,71.0,573.0

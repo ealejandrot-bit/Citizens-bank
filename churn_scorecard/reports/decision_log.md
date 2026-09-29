@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **11** · G0, G1, G2 cerrados · bloque en curso: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 60 / 60 PASS (pasos 00–11).
+- Último paso completado: **12** · G0, G1, G2 cerrados · bloque en curso: pasos 12–14 (G3) · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Tests: 67 / 67 PASS (pasos 00–12).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -128,6 +128,23 @@ usuario · `[DEF-default]` default aplicado.
   de RV de eventos en el decil 1 (0.335 vs 0.284) [DATA]. Interacciones > 20% de |φ| en 10 de 16 variables (24.0%
   global) [DATA]: documentadas, sin restricción (el challenger no se promueve). Default: campeón a pasos 12–14;
   challenger como referencia, evaluado una vez en validación en el paso 13. Pregunta G2-4.
+
+- **D12.1 · Probabilidad pre-calibración.** Los tramos se definen por score (orden) en dev; la probabilidad mostrada en
+  el paso 12 es la del modelo con intercepto corregido. Platt sobre validación (paso 14) cambia la probabilidad, no el
+  orden ni los cortes.
+- **D12.2 · Eventos mínimos por tramo en dev.** "≥ 30 eventos por tramo en validación" se traduce a ≥ 70 en dev
+  (30 × 1,871/803) para diseñar sin mirar validación; se verifica en validación en el paso 13. Tramos elegidos por
+  mayor IV de tramo entre 3,085 configuraciones factibles: Crítico 4% · Alto 17% · Vigilancia 50% · Estable 29% de dev
+  (score ≤ 445 / 517 / 573) [DATA].
+- **D12.3 · Overrides.** Precisión medida en los hogares que el override mueve (no en todos los que tienen la señal).
+  Ninguna regla llega a Crítico sin superar 30% del tramo; `banker_change_6m_flag`, `complaint_escalated_flag` y
+  `transfer_to_competitor_pct_90d ≥ 10%` → Alto (precisión 13.5% / 17.3% / 14.9%); `trustee_change_flag` eliminada
+  (11.7%) [DATA]. Cada regla ≤ 30% del tramo, pero la unión mueve 848 hogares = 36.3% del Alto del modelo [DATA]:
+  pregunta G3.
+- **D12.4 · Bandas.** Cortes por eventos acumulados dentro de cada tramo con ≥ 70 eventos por banda en dev; quedan 6
+  bandas (CCC/D, B, BB, BBB, AA, AAA); Estable no alcanza para 3 bandas [DATA].
+- **D12.5 · Bins no observados en dev.** Hogares con antigüedad < 1 (fuera de población) tienen "sin dato" en 4
+  variables que en dev no lo tenían: 0 puntos (neutral), fila explícita en el lookup [DATA].
 
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].

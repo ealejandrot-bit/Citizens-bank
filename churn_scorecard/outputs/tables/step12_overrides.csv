@@ -1,0 +1,9 @@
+regla,destino probado,hogares activos dev,movidos dev,precisión movidos %,movidos / tramo destino %,umbral precisión %,cumple precisión,cumple ≤ 30%,decisión
+banker_change_6m_flag = 1,Crítico,1977,1522,23.653088042049937,279.7794117647059,25.0,False,False,Alto
+banker_change_6m_flag = 1,Alto,1977,415,13.493975903614459,17.76541095890411,12.0,True,True,Alto
+complaint_escalated_flag = 1,Crítico,714,594,25.589225589225588,109.19117647058823,25.0,True,False,Alto
+complaint_escalated_flag = 1,Alto,714,392,17.346938775510203,16.78082191780822,12.0,True,True,Alto
+transfer_to_competitor_pct_90d ≥ 10%,Crítico,651,296,37.16216216216216,54.41176470588235,25.0,True,False,Alto
+transfer_to_competitor_pct_90d ≥ 10%,Alto,651,74,14.864864864864865,3.1678082191780823,12.0,True,True,Alto
+trustee_change_flag = 1,Crítico,186,127,22.83464566929134,23.34558823529412,25.0,False,True,eliminada
+trustee_change_flag = 1,Alto,186,77,11.688311688311687,3.296232876712329,12.0,False,True,eliminada
