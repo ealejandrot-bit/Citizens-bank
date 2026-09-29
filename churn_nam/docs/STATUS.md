@@ -3,7 +3,7 @@
 ## Estado
 - Paso actual: **7 · fase 5 (EDA)** terminada. Siguiente: PASO 8 = fase 6 (diseño de validación), bloqueada hasta que el
   usuario llene gate.delta_pr_auc, gate.delta_lift_at_5 y splits.validation_frac_of_dev.
-- Tests: 19 passed.
+- Tests: 18 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
