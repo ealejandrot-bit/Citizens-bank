@@ -4,7 +4,7 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **12** · G0–G3 cerrados (2026-09-29) · G4 abierto, esperando respuesta.
+- Último paso completado: **12** · proyecto cerrado (ML 1.0.0) · G0–G4 cerrados (2026-09-29).
 - Tests: 38 / 38 PASS (pasos 00–12).
 
 ## Parámetros vigentes
@@ -33,6 +33,9 @@ usuario · `[DEF-default]` default aplicado.
 | XGBoost | retirado tras el paso 9 (documentado; cumple 4 de 8 criterios H-2) | [DEF-default] G3-2 |
 | Crítico del EBM | sobrestima en val: documentar, re-calibrar con el próximo snapshot con resultados; publicar tasa observada | [DEF-default] G3-3 |
 | A-lite | incluido en la comparativa (paso 9b) y en el uso conjunto (paso 10) | [DEF] G3 |
+| Roles finales | M1 operativo; EBM challenger en monitoreo; A-lite ejecutivo; XGBoost retirado | [DEF-default] G4-1 |
+| Regla de prioridad p×RV | propuesta al negocio como piloto con el control 12.5% del M1 | [DEF-default] G4-2 |
+| Versión | ML 1.0.0 cerrada; siguiente: Modelo 3 (redes neuronales) | [DEF-default] G4-3 |
 
 ## Decisiones
 - **D0.1 · Herencia por copia.** 16 archivos de `churn_scorecard/` copiados a `data/inherited/` con sha256 idéntico al
@@ -128,5 +131,8 @@ usuario · `[DEF-default]` default aplicado.
 - "me encanta, pero incluye en la comparativa A-lite" → G3-1 a G3-3 [DEF-default]; A-lite agregado (paso 9b, D9b.1).
 - "sí documenta, y vamos al que sigue" → se documenta y se sigue al paso 10.
 
+## G4 · respuesta del usuario (2026-09-29)
+- "yes default" → G4-1 a G4-3 [DEF-default]. Versión ML 1.0.0 cerrada.
+
 ## Preguntas abiertas
-- G4-1 a G4-3 en `reports/gate_4.md`.
+- Ninguna con el usuario; las del equipo de datos en `reports/model_document.md` §6.
