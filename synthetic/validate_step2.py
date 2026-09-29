@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from .metrics import cochran_armitage, woe_table
+from .metrics import cochran_armitage, logit_wald, woe_table
 import copy
 
 from .recurring import compute_variables
@@ -167,6 +167,15 @@ def check_step2(feats, sim2, sim1, feats1, base, truth, cfg, calib_refs=None):
         else:
             out.append({"sección": sec, "prueba": f"ε por diseño ({t['driver']}): {var}", "ok": True, "p": None,
                         "detalle": f"ρ = {r:+.4f} (precursor directo de salida, D-14)"})
+    # Generador: los eventos de motor "factor" dependen solo de z_outflow (coef ε ≈ 0).
+    z = truth["z_outflow"].to_numpy()
+    for evn, mask in [("partial", np.ones(len(base), bool)), ("business_move", base["has_linked_business"].to_numpy())]:
+        lw = logit_wald(ev[evn].to_numpy()[mask].astype(float), np.column_stack([z[mask], eps[mask]]), ["z", "eps"])
+        add(sec, f"evento {evn} ⟂ ε dado z_outflow (Wald)", None,
+            f"coef ε = {lw.loc['eps', 'coef']:+.3f} ± {lw.loc['eps', 'se']:.3f}", p=lw.loc["eps", "p"])
+    for evn in ["job_change", "retire", "leave", "business_sale"]:
+        r, pv = stats.spearmanr(ev[evn].astype(float), truth["risk_index"])
+        add(sec, f"ruido {evn} ⟂ índice de riesgo", None, f"ρ = {r:+.4f}", p=pv)
     el = ~base["churn_excluded"].to_numpy()
     y = base.loc[el, "hard_churn_6m"].astype(int).to_numpy()
     X = pd.concat([feats1[list(cfg["step1"]["targets"])], feats[list(s2["targets"])].astype(float)], axis=1).loc[el]

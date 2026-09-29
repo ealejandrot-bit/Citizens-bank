@@ -2,8 +2,13 @@
   "step": 1,
   "master_seed": 20260928,
   "currency": "USD",
-  "params_sha256": "e329f24de5976e00d2f942d969d14ff1d414ef8ba2aa0b0ec74c7f8fb8c3f18d",
+  "params_sha256": "8dcd3d52890ea42a2a206e2c854667ee7061a3064aac3acd58c9ecbc4712d7c5",
   "streams": [
+    "exit.acats_lag",
+    "exit.aum_share",
+    "exit.aum_transfer",
+    "exit.deposit_share",
+    "exit.deposit_transfer",
     "income.bonus",
     "income.business",
     "income.dividend_yield",
@@ -43,6 +48,8 @@
     "s1.shock_size",
     "s1.withdrawal.occurs",
     "s1.withdrawal.size",
+    "s2.move",
+    "s2.move_day",
     "target.exclusion",
     "target.hard",
     "target.soft",
@@ -51,15 +58,15 @@
   "outputs": {
     "step1_balances.csv": {
       "rows": 20000,
-      "sha256": "a3147da674c3feb19abc2e26913f4f7da80ef826575799f39d6827123751dd27"
+      "sha256": "3bcd70a662a94c15987328b81a7e5d0bda162849273874714fd9c712946f6941"
     },
     "step1_series.csv": {
       "rows": 480000,
-      "sha256": "7ee788871df2c261c075d2aac0fcaa5e0944f0b6de28ac16d73b8daa191bcf06"
+      "sha256": "74f64f6a55a6c3b8dd6b3af7c7f48da21f9e6840da8066bbf8d0c770cbdb33d1"
     },
     "step1_truth.csv": {
       "rows": 20000,
-      "sha256": "f6d6df0933e5ba400ec3f2fab930f5e064b10ff908fb02a00e85e5f85bfa5377"
+      "sha256": "ffeb3d51d49331c11d5261ebc21044534e60293fbbd30e237e801d25567683f3"
     }
   },
   "checks_passed": true

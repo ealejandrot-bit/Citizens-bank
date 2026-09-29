@@ -12,6 +12,8 @@ columnas con unidades está en `synthetic/schema.py` y al final de cada reporte.
 config/params.yaml          Todos los parámetros y la semilla maestra (con su origen)
 synthetic/seeds.py          SeedManager: un flujo aleatorio independiente por nombre
 synthetic/population.py     Paso 0: hogares, factores latentes, target
+synthetic/exit_events.py    Evento común: mudanza del banco principal (Pasos 1+)
+synthetic/pipeline.py       Orden de construcción (un solo lugar para scripts y tests)
 synthetic/schema.py         Diccionario de columnas con unidad (montos en USD)
 synthetic/stats_tests.py    Pruebas estadísticas (ajuste, colas, curtosis, sesgo, duplicados, semilla)
 config/validation.yaml      Criterios: α, semillas de referencia, máximos y bandas de negocio (USD)
@@ -51,6 +53,6 @@ salida, así que si un rebuild da otro hash, algo cambió.
 | Paso | Contenido | Estado |
 |---|---|---|
 | 0 | Población, latentes, target, ingresos | Construido y validado (200 pruebas) |
-| 1 | Balances & AUM: variables 1, 2, 17, 18 | Construido y validado (50 pruebas, 20 semillas) |
-| 2 | Recurring deposits & flows: variables 3, 4, 5, 6, 19, 20 | Construido y validado (65 pruebas, 20 semillas) |
+| 1 | Balances & AUM: variables 1, 2, 17, 18 | Construido y validado (54 pruebas, 20 semillas) |
+| 2 | Recurring deposits & flows: variables 3, 4, 5, 6, 19, 20 | Construido y validado (71 pruebas, 20 semillas) |
 | 3–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |

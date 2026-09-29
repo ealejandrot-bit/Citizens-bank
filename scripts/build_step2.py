@@ -21,12 +21,10 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from synthetic.balances import build_step1  # noqa: E402
 from synthetic.metrics import woe_table  # noqa: E402
-from synthetic.population import build_population  # noqa: E402
-from synthetic.recurring import build_step2, transactions_long  # noqa: E402
+from synthetic.pipeline import build as build_pipeline  # noqa: E402
+from synthetic.recurring import transactions_long  # noqa: E402
 from synthetic.schema import STEP2_COLUMNS  # noqa: E402
-from synthetic.seeds import SeedManager  # noqa: E402
 from synthetic.validate_step2 import calibration, check_step2  # noqa: E402
 
 OUT = ROOT / "data" / "synthetic"
@@ -39,11 +37,8 @@ def sha256(path: Path) -> str:
 
 
 def build(cfg, seed):
-    seeds = SeedManager(seed)
-    base, truth = build_population(cfg, seeds)
-    f1, sim1 = build_step1(base, truth, cfg, seeds)
-    f2, sim2 = build_step2(base, truth, sim1, cfg, seeds)
-    return seeds, base, truth, f1, sim1, f2, sim2
+    o = build_pipeline(cfg, seed, upto=2)
+    return o["seeds"], o["base"], o["truth"], o["f1"], o["sim1"], o["f2"], o["sim2"]
 
 
 def main() -> int:

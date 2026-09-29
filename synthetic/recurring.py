@@ -105,7 +105,7 @@ def last_credit(dates, amounts=None, bonus_cap=None):
 # ---------------------------------------------------------------------------
 # Simulación
 # ---------------------------------------------------------------------------
-def simulate_streams(base, truth, cfg, seeds: SeedManager) -> dict:
+def simulate_streams(base, truth, cfg, seeds: SeedManager, exit_ev: pd.DataFrame) -> dict:
     s2 = cfg["step2"]
     n, H = len(base), s2["history_days"]
     cal = Calendar(pd.Timestamp(cfg["snapshot_date"]), H)
@@ -195,13 +195,13 @@ def simulate_streams(base, truth, cfg, seeds: SeedManager) -> dict:
 
     # --- Eventos -------------------------------------------------------------------
     ev = pd.DataFrame({"household_id": base["household_id"]})
-    risk = truth["risk_index"].to_numpy()
-    p_move = special.expit(s2["move_intercept"] + s2["move_slope"] * risk)
-    move = bern("s2.move", p_move)
-    r_day = np.floor(uni("s2.move_day", -s2["move_window_days"], 0))
+    # Mudanza del banco principal: evento común sorteado una vez (exit_events.py).
+    p_move = exit_ev["p_move"].to_numpy()
+    move = exit_ev["move"].to_numpy()
+    r_day = exit_ev["move_day"].fillna(0).to_numpy()
     p_part = special.expit(s2["partial_intercept"] + s2["partial_slope"] * z_out)
     partial_ev = bern("s2.partial", p_part)
-    part_day = np.floor(uni("s2.partial_day", -s2["move_window_days"], 0))
+    part_day = np.floor(uni("s2.partial_day", -cfg["exit_move"]["move_window_days"], 0))
     ev["p_move"], ev["move"], ev["move_day"] = p_move, move, np.where(move, r_day, np.nan)
     ev["p_partial"], ev["partial"], ev["partial_day"] = p_part, partial_ev, np.where(partial_ev, part_day, np.nan)
 
@@ -266,11 +266,12 @@ def simulate_streams(base, truth, cfg, seeds: SeedManager) -> dict:
         d = streams[name]["dates"]
         d[mask[:, None] & (d > day[:, None])] = np.nan
 
-    u = {k: seeds.rng(f"s2.move_{k}").random(n) for k in s2["p_stop_given_move"]}
+    p_stop = cfg["exit_move"]["p_stop_given_move"]
+    u = {k: seeds.rng(f"s2.move_{k}").random(n) for k in p_stop}
     factor = uni("s2.partial_factor", *s2["partial_factor_range"])
     for kind, names in {"payroll": ["payroll", "bonus", "payroll_new"], "pension": ["pension", "pension_new"],
                         "dividend": ["dividend"], "business_distribution": ["business_distribution"]}.items():
-        stopped = move & (u[kind] < s2["p_stop_given_move"][kind])
+        stopped = move & (u[kind] < p_stop[kind])
         ev[f"move_stop_{kind}"] = stopped
         for nm in names:
             stop(nm, stopped, r_day)
@@ -414,7 +415,7 @@ def transactions_long(sim2: dict, base: pd.DataFrame, t: str) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True).sort_values(["household_id", "date"], kind="stable")
 
 
-def build_step2(base, truth, sim1, cfg, seeds):
-    sim2 = simulate_streams(base, truth, cfg, seeds)
+def build_step2(base, truth, sim1, cfg, seeds, exit_ev):
+    sim2 = simulate_streams(base, truth, cfg, seeds, exit_ev)
     feats = compute_variables(sim2, sim1, base, cfg)
     return feats, sim2

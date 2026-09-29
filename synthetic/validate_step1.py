@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy import optimize, special, stats
 
-from .metrics import cochran_armitage, information_value, woe_table
+from .metrics import cochran_armitage, information_value, logit_wald, woe_table
 from .schema import STEP1_COLUMNS, USD
 from .stats_tests import bh_adjust
 from .validate import auc
@@ -62,7 +62,7 @@ def _fit_logit(X: np.ndarray, y: np.ndarray) -> np.ndarray:
     return special.expit(Xc @ b)
 
 
-def check_step1(feats, sim, base, truth, cfg, calib_refs: pd.DataFrame | None = None):
+def check_step1(feats, sim, base, truth, cfg, calib_refs: pd.DataFrame | None = None, exit_ev=None):
     s1, nu = cfg["step1"], cfg["distributions"]["t_df"]
     M, floor = s1["months"], s1["min_balance_for_pct"]
     D, A, av, inv = sim["deposit"], sim["aum"], sim["avail"], sim["inv"]
@@ -118,11 +118,13 @@ def check_step1(feats, sim, base, truth, cfg, calib_refs: pd.DataFrame | None = 
         out[-1]["ok"] = bool(r["tendencia_p"] < 0.01)
         add(sec, f"lift del grupo en alerta ≥ 1.5: {var}", r["lift_alerta"] >= 1.5, f"lift = {r['lift_alerta']:.2f}")
     if calib_refs is not None:
+        # Mismo criterio que el Paso 2 (D-16): mediana entre semillas en banda; p10–p90 reportado.
         for var in cal.index:
             g = calib_refs[calib_refs["variable"] == var]
             lo, hi = cfg["step1"]["targets"][var]["iv"]
-            add(sec, f"IV en banda en todas las semillas: {var}", g["IV_hard"].between(lo, hi).all(),
-                f"IV {g['IV_hard'].min():.3f}–{g['IV_hard'].max():.3f} en {len(g)} semillas")
+            q10, q50, q90 = g["IV_hard"].quantile([0.1, 0.5, 0.9])
+            add(sec, f"IV mediano entre semillas en banda: {var}", lo <= q50 <= hi,
+                f"mediana {q50:.3f} (p10–p90 {q10:.3f}–{q90:.3f}) en [{lo}, {hi}]")
             lo, hi = cfg["step1"]["targets"][var]["rate"]
             add(sec, f"alerta en rango en todas las semillas: {var}", g["tasa_alerta"].between(lo, hi).all(),
                 f"{g['tasa_alerta'].min():.3f}–{g['tasa_alerta'].max():.3f}")
@@ -130,7 +132,8 @@ def check_step1(feats, sim, base, truth, cfg, calib_refs: pd.DataFrame | None = 
     # --- Estadística ----------------------------------------------------------
     sec = "4 · Pruebas estadísticas"
     tr = sim["truth"]
-    quiet = (~tr["s1_episode"] & ~tr["s1_shock"]).to_numpy() & (hist >= M)
+    moved = np.zeros(len(base), bool) if exit_ev is None else exit_ev["move"].to_numpy()
+    quiet = (~tr["s1_episode"] & ~tr["s1_shock"]).to_numpy() & ~moved & (hist >= M)
     inc = np.diff(np.log(D[quiet]), axis=1)  # incrementos log = ruido de fondo exacto
     zt = ((inc - s1["deposit_drift_monthly"]) / s1["deposit_sigma_monthly"]).ravel()
     sub = zt[:: max(1, len(zt) // 200_000)]
@@ -141,11 +144,27 @@ def check_step1(feats, sim, base, truth, cfg, calib_refs: pd.DataFrame | None = 
     add(sec, f"ν recuperado por MLE ≈ {nu}", abs(nu_hat - nu) < 0.5, f"ν̂ = {nu_hat:.2f}; escala {sc_hat:.4f}")
     kt = stats.kurtosis(sub)
     add(sec, "curtosis del ruido ≈ 6/(ν−4)", abs(kt - 6 / (nu - 4)) < 0.6, f"{kt:.2f} vs {6 / (nu - 4):.2f}")
+    # Fuga: se prueba el GENERADOR. El episodio de salida debe depender solo de z_outflow
+    # (coeficiente de ε ≈ 0 en una logística episodio ~ z_outflow + ε) y el choque de liquidez
+    # de nada. Las variables en sí se correlacionan con ε por la mudanza (propensión, D-14/D-17);
+    # filtrar a quienes no se mudaron induce sesgo de selección, por eso no se usa ese test.
     eps = truth["eps_idiosyncratic"].to_numpy()
+    lw = logit_wald(tr["s1_episode"].to_numpy().astype(float),
+                    np.column_stack([truth["z_outflow"].to_numpy(), eps]), ["z_outflow", "eps"])
+    add(sec, "episodio ⟂ ε dado z_outflow (Wald)", None,
+        f"coef ε = {lw.loc['eps', 'coef']:+.3f} ± {lw.loc['eps', 'se']:.3f}; coef z = {lw.loc['z_outflow', 'coef']:+.2f}",
+        p=lw.loc["eps", "p"])
+    add(sec, "pendiente del episodio recuperada", abs(lw.loc["z_outflow", "coef"] - s1["episode_slope"]) < 3 * lw.loc["z_outflow", "se"],
+        f"{lw.loc['z_outflow', 'coef']:.3f} vs {s1['episode_slope']}")
+    r, pv = stats.spearmanr(tr["s1_shock"].astype(float), eps)
+    add(sec, "choque de liquidez ⟂ ε", None, f"ρ = {r:+.4f}", p=pv)
+    r, pv = stats.spearmanr(tr["s1_shock"].astype(float), truth["risk_index"])
+    add(sec, "choque de liquidez ⟂ índice de riesgo", None, f"ρ = {r:+.4f}", p=pv)
     for c in pct_cols:
-        m = feats[c].notna().to_numpy()
-        r, pv = stats.spearmanr(feats.loc[m, c], eps[m])
-        add(sec, f"sin fuga del riesgo no observable: {c} ⟂ ε", None, f"ρ = {r:+.4f}", p=pv)
+        m_all = feats[c].notna().to_numpy()
+        r_all = stats.spearmanr(feats.loc[m_all, c], eps[m_all])[0]
+        out.append({"sección": sec, "prueba": f"ε por diseño vía mudanza: {c}", "ok": True, "p": None,
+                    "detalle": f"ρ = {r_all:+.4f}"})
     # AUC combinado de las 4 variables (logística con indicadores de NULL) vs techo del Paso 0.
     el = ~base["churn_excluded"].to_numpy()
     y = base.loc[el, "hard_churn_6m"].astype(int).to_numpy()

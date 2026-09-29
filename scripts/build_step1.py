@@ -21,11 +21,9 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from synthetic.balances import build_step1  # noqa: E402
 from synthetic.metrics import woe_table  # noqa: E402
-from synthetic.population import build_population  # noqa: E402
+from synthetic.pipeline import build as build_pipeline  # noqa: E402
 from synthetic.schema import STEP1_COLUMNS  # noqa: E402
-from synthetic.seeds import SeedManager  # noqa: E402
 from synthetic.validate_step1 import calibration, check_step1  # noqa: E402
 
 OUT = ROOT / "data" / "synthetic"
@@ -38,27 +36,25 @@ def sha256(path: Path) -> str:
 
 
 def build(cfg, seed):
-    seeds = SeedManager(seed)
-    base, truth = build_population(cfg, seeds)
-    feats, sim = build_step1(base, truth, cfg, seeds)
-    return seeds, base, truth, feats, sim
+    o = build_pipeline(cfg, seed, upto=1)
+    return o["seeds"], o["base"], o["truth"], o["f1"], o["sim1"], o["exit"]
 
 
 def main() -> int:
     cfg_path = ROOT / "config" / "params.yaml"
     cfg = yaml.safe_load(cfg_path.read_text())
-    seeds, base, truth, feats, sim = build(cfg, cfg["master_seed"])
+    seeds, base, truth, feats, sim, exit_ev = build(cfg, cfg["master_seed"])
 
     # Robustez: la calibración debe sostenerse en otras semillas, no solo en la de producción.
     refs = []
     for s in np.random.SeedSequence(cfg["master_seed"]).generate_state(N_REF_SEEDS):
         c = copy.deepcopy(cfg)
         c["master_seed"] = int(s)
-        _, b, _, f, _ = build(c, int(s))
+        _, b, _, f, _, _ = build(c, int(s))
         refs.append(calibration(f, b, c).reset_index().assign(seed=int(s)))
     refs = pd.concat(refs, ignore_index=True)
 
-    res, cal, extra = check_step1(feats, sim, base, truth, cfg, refs)
+    res, cal, extra = check_step1(feats, sim, base, truth, cfg, refs, exit_ev)
 
     OUT.mkdir(parents=True, exist_ok=True)
     f_feat, f_ser, f_tr = OUT / "step1_balances.csv", OUT / "step1_series.csv", OUT / "step1_truth.csv"

@@ -216,6 +216,34 @@ queda del lado bajo (nómina 0.32 vs mediana 0.39).
   débitos). Con el umbral del Excel (≤ −15%) alerta al 18%. Dividido por el saldo promedio puede
   ser < −100%.
 
+**D-17 · La mudanza del banco principal es un evento común a todos los pasos.**
+En el Paso 2 la mudanza cortaba la nómina, pero el saldo del Paso 1 no bajaba: los dólares no
+cuadraban. Ahora el evento se sortea una vez (`synthetic/exit_events.py`, mismos flujos de semilla,
+así que los eventos del Paso 2 quedan idénticos) y se ve en todos los pasos:
+- **Paso 1:** traslado de 30–90% del saldo de depósitos en el mes del evento (90% de quienes se
+  mudan) y ACATS de 20–80% del AUM 0–30 días después (60% de quienes tienen inversiones).
+- **Paso 2:** corte de flujos (sin cambios).
+- **Paso 3:** transferencias al banco o broker nuevo.
+
+Efecto en el Paso 1: la señal de saldos es ahora en parte de propensión. Se recalibraron los
+episodios (intercepto −4.0, pendiente 1.4, δ 12%) para volver a la banda "High".
+
+| Variable | Alerta | IV | Lift |
+|---|---|---|---|
+| aum_outflow_pct_90d | 6.0% | 0.134 | 3.0× |
+| deposit_balance_change_pct_90d | 5.8% | 0.248 | 4.1× |
+| aum_vs_baseline_pct | 4.8% | 0.175 | 4.1× |
+| deposit_balance_vs_6m_avg_pct | 5.9% | 0.267 | 4.1× |
+
+- Los rangos de tasa de alerta del Paso 1 (supuestos míos; el Excel solo da el umbral) pasan a
+  [4%, 16%]. `net_deposit_flow_pct_90d` (Paso 2) alerta ahora al 10%, con rango [6%, 22%].
+- **La fuga se prueba en el generador, no en la variable.** Una logística episodio ~ z_outflow + ε
+  debe dar coeficiente de ε ≈ 0 (Wald), y los eventos de ruido deben ser independientes del índice
+  de riesgo. Probar "variable ⟂ ε entre hogares sin mudanza" daba ρ ≈ 0.02 por sesgo de selección:
+  al filtrar por un evento que depende de ε, un ε alto queda asociado a un factor más bajo.
+- Seguía abierto que el ruido del Paso 1 se estimaba incluyendo hogares con mudanza (curtosis 255);
+  ahora se excluyen y ν̂ ≈ 6 otra vez.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

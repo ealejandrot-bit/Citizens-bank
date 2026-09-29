@@ -1,6 +1,6 @@
 # Paso 2 · Recurring deposits & flows
 
-Semilla `20260928` · 20,000 hogares · 768,662 transacciones en 18 meses · montos en USD · **65 de 65 pruebas OK** (α = 0.01, Benjamini-Hochberg)
+Semilla `20260928` · 20,000 hogares · 768,662 transacciones en 18 meses · montos en USD · **71 de 71 pruebas OK** (α = 0.01, Benjamini-Hochberg)
 
 ## Calibración
 
@@ -9,18 +9,18 @@ Semilla `20260928` · 20,000 hogares · 768,662 transacciones en 18 meses · mon
 | salary_deposit_stopped_flag    | Very high      | propensity | = 1      |         0.036 | 0.323 | applicable |         5.712 |        16.018 |   47.286 |
 | recurring_deposit_stopped_flag | High           | propensity | = 1      |         0.042 | 0.223 | applicable |         4.341 |        16.869 |    7.461 |
 | recurring_deposit_change_pct   | High           | mixed      | <= -0.40 |         0.107 | 0.169 | all        |         2.664 |        10.393 |    7.390 |
-| net_deposit_flow_pct_90d       | High           | factor     | <= -0.15 |         0.181 | 0.164 | all        |         2.359 |        11.145 |    0.287 |
+| net_deposit_flow_pct_90d       | High           | factor     | <= -0.15 |         0.103 | 0.105 | all        |         2.299 |         7.015 |    0.287 |
 | pension_deposit_stopped_flag   | High           | propensity | = 1      |         0.020 | 0.220 | applicable |         5.810 |        10.675 |   65.729 |
 | business_payroll_stopped_flag  | High           | factor     | = 1      |         0.056 | 0.159 | applicable |         3.330 |         8.762 |   73.889 |
 
-AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.653**; techo: 0.851.
+AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.650**; techo: 0.851.
 
 ## Robustez en 20 semillas de referencia
 
 | variable                       |   ('tasa_alerta', 'min') |   ('tasa_alerta', 'median') |   ('tasa_alerta', 'max') |   ('IV', 'min') |   ('IV', 'median') |   ('IV', 'max') |   ('lift_alerta', 'min') |   ('lift_alerta', 'median') |   ('lift_alerta', 'max') |
 |:-------------------------------|-------------------------:|----------------------------:|-------------------------:|----------------:|-------------------:|----------------:|-------------------------:|----------------------------:|-------------------------:|
 | business_payroll_stopped_flag  |                    0.052 |                       0.055 |                    0.060 |           0.096 |              0.191 |           0.280 |                    2.674 |                       3.693 |                    4.400 |
-| net_deposit_flow_pct_90d       |                    0.179 |                       0.182 |                    0.188 |           0.154 |              0.196 |           0.224 |                    2.242 |                       2.449 |                    2.639 |
+| net_deposit_flow_pct_90d       |                    0.100 |                       0.104 |                    0.108 |           0.065 |              0.109 |           0.141 |                    1.917 |                       2.238 |                    2.423 |
 | pension_deposit_stopped_flag   |                    0.017 |                       0.019 |                    0.021 |           0.201 |              0.266 |           0.366 |                    5.422 |                       6.532 |                    7.970 |
 | recurring_deposit_change_pct   |                    0.102 |                       0.107 |                    0.110 |           0.109 |              0.160 |           0.201 |                    2.295 |                       2.636 |                    2.875 |
 | recurring_deposit_stopped_flag |                    0.039 |                       0.041 |                    0.043 |           0.223 |              0.251 |           0.308 |                    4.393 |                       4.677 |                    5.389 |
@@ -71,9 +71,9 @@ AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.653**; techo
 | nómina con ≥ 12m de historia: patrón detectado ≥ 95% | 98.1% |  |  | OK |
 | tipo de flujo detenido ⇔ flag = 1 | {'payroll': 614, 'pension': 106, 'dividend': 46, 'business_distribution': 21} |  |  | OK |
 | recurring_deposit_change_pct ≥ −100% | mín -1.000 (−100% = todos los flujos detenidos) |  |  | OK |
-| net_deposit_flow_pct finito | mín -8.64, p1 -1.59 |  |  | OK |
-| USD± válido: net_deposit_flow_30d | rango $-147,926,144 a $54,517,197 |  |  | OK |
-| USD± válido: net_deposit_flow_90d | rango $-613,531,204 a $57,632,623 |  |  | OK |
+| net_deposit_flow_pct finito | mín -10.46, p1 -1.36 |  |  | OK |
+| USD± válido: net_deposit_flow_30d | rango $-127,041,056 a $54,517,197 |  |  | OK |
+| USD± válido: net_deposit_flow_90d | rango $-503,644,626 a $57,632,623 |  |  | OK |
 | flujo neto 90d = cambio de saldo de la serie del Paso 1 |  |  |  | OK |
 
 ## 4 · Calibración (tasa de alerta, IV, tendencia, lift)
@@ -92,10 +92,10 @@ AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.653**; techo
 | IV recurring_deposit_change_pct (High, base all) | 0.169 en [0.1, 0.3] |  |  | OK |
 | lift del grupo en alerta ≥ 1.5: recurring_deposit_change_pct | lift = 2.66 |  |  | OK |
 | tendencia en la dirección esperada: recurring_deposit_change_pct | z = 10.4 |  |  | OK |
-| tasa de alerta net_deposit_flow_pct_90d | 0.181 en [0.1, 0.22] |  |  | OK |
-| IV net_deposit_flow_pct_90d (High, base all) | 0.164 en [0.1, 0.3] |  |  | OK |
-| lift del grupo en alerta ≥ 1.5: net_deposit_flow_pct_90d | lift = 2.36 |  |  | OK |
-| tendencia en la dirección esperada: net_deposit_flow_pct_90d | z = 11.1 |  |  | OK |
+| tasa de alerta net_deposit_flow_pct_90d | 0.103 en [0.06, 0.22] |  |  | OK |
+| IV net_deposit_flow_pct_90d (High, base all) | 0.105 en [0.1, 0.3] |  |  | OK |
+| lift del grupo en alerta ≥ 1.5: net_deposit_flow_pct_90d | lift = 2.30 |  |  | OK |
+| tendencia en la dirección esperada: net_deposit_flow_pct_90d | z = 7.0 |  |  | OK |
 | tasa de alerta pension_deposit_stopped_flag | 0.020 en [0.01, 0.06] |  |  | OK |
 | IV pension_deposit_stopped_flag (High, base applicable) | 0.220 en [0.1, 0.3] |  |  | OK |
 | lift del grupo en alerta ≥ 1.5: pension_deposit_stopped_flag | lift = 5.81 |  |  | OK |
@@ -110,8 +110,8 @@ AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.653**; techo
 | alerta en rango en todas las semillas: recurring_deposit_stopped_flag | 0.039–0.043 |  |  | OK |
 | IV mediano entre semillas en banda: recurring_deposit_change_pct | mediana 0.160 (p10–p90 0.132–0.183) en [0.1, 0.3] |  |  | OK |
 | alerta en rango en todas las semillas: recurring_deposit_change_pct | 0.102–0.110 |  |  | OK |
-| IV mediano entre semillas en banda: net_deposit_flow_pct_90d | mediana 0.196 (p10–p90 0.173–0.216) en [0.1, 0.3] |  |  | OK |
-| alerta en rango en todas las semillas: net_deposit_flow_pct_90d | 0.179–0.188 |  |  | OK |
+| IV mediano entre semillas en banda: net_deposit_flow_pct_90d | mediana 0.109 (p10–p90 0.085–0.125) en [0.1, 0.3] |  |  | OK |
+| alerta en rango en todas las semillas: net_deposit_flow_pct_90d | 0.100–0.108 |  |  | OK |
 | IV mediano entre semillas en banda: pension_deposit_stopped_flag | mediana 0.266 (p10–p90 0.220–0.317) en [0.1, 0.3] |  |  | OK |
 | alerta en rango en todas las semillas: pension_deposit_stopped_flag | 0.017–0.021 |  |  | OK |
 | IV mediano entre semillas en banda: business_payroll_stopped_flag | mediana 0.191 (p10–p90 0.107–0.251) en [0.1, 0.3] |  |  | OK |
@@ -124,39 +124,45 @@ AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.653**; techo
 | ε por diseño (propensity): salary_deposit_stopped_flag | ρ = +0.1482 (precursor directo de salida, D-14) |  |  | OK |
 | ε por diseño (propensity): recurring_deposit_stopped_flag | ρ = +0.1205 (precursor directo de salida, D-14) |  |  | OK |
 | ε por diseño (mixed): recurring_deposit_change_pct | ρ = -0.0386 (precursor directo de salida, D-14) |  |  | OK |
-| sin fuga del riesgo no observable: net_deposit_flow_pct_90d ⟂ ε | ρ = +0.0089 | 0.21 | 0.421 | OK |
+| sin fuga del riesgo no observable: net_deposit_flow_pct_90d ⟂ ε | ρ = -0.0100 | 0.157 | 0.543 | OK |
 | ε por diseño (propensity): pension_deposit_stopped_flag | ρ = +0.1286 (precursor directo de salida, D-14) |  |  | OK |
-| sin fuga del riesgo no observable: business_payroll_stopped_flag ⟂ ε | ρ = +0.0053 | 0.704 | 0.704 | OK |
-| AUC combinado (Pasos 1 + 2) < AUC techo | 0.653 vs techo 0.851 |  |  | OK |
+| sin fuga del riesgo no observable: business_payroll_stopped_flag ⟂ ε | ρ = +0.0053 | 0.704 | 0.719 | OK |
+| evento partial ⟂ ε dado z_outflow (Wald) | coef ε = +0.037 ± 0.057 | 0.519 | 0.693 | OK |
+| evento business_move ⟂ ε dado z_outflow (Wald) | coef ε = -0.092 ± 0.114 | 0.417 | 0.693 | OK |
+| ruido job_change ⟂ índice de riesgo | ρ = -0.0090 | 0.204 | 0.543 | OK |
+| ruido retire ⟂ índice de riesgo | ρ = +0.0025 | 0.719 | 0.719 | OK |
+| ruido leave ⟂ índice de riesgo | ρ = -0.0054 | 0.443 | 0.693 | OK |
+| ruido business_sale ⟂ índice de riesgo | ρ = -0.0121 | 0.087 | 0.543 | OK |
+| AUC combinado (Pasos 1 + 2) < AUC techo | 0.650 vs techo 0.851 |  |  | OK |
 
 ## Distribuciones
 
-|                                |       count |          mean |            std |               min |               1% |              5% |           25% |          50% |         75% |          95% |            99% |             max |
-|:-------------------------------|------------:|--------------:|---------------:|------------------:|-----------------:|----------------:|--------------:|-------------:|------------:|-------------:|---------------:|----------------:|
-| salary_deposit_stopped_flag    | 10,540.0000 |        0.0368 |         0.1883 |            0.0000 |           0.0000 |          0.0000 |        0.0000 |       0.0000 |      0.0000 |       0.0000 |         1.0000 |          1.0000 |
-| pension_deposit_stopped_flag   |  6,851.0000 |        0.0201 |         0.1405 |            0.0000 |           0.0000 |          0.0000 |        0.0000 |       0.0000 |      0.0000 |       0.0000 |         1.0000 |          1.0000 |
-| recurring_deposit_stopped_flag | 18,507.0000 |        0.0425 |         0.2018 |            0.0000 |           0.0000 |          0.0000 |        0.0000 |       0.0000 |      0.0000 |       0.0000 |         1.0000 |          1.0000 |
-| recurring_deposit_change_pct   | 18,521.0000 |       -0.0713 |         0.3120 |           -1.0000 |          -1.0000 |         -0.8376 |       -0.0836 |      -0.0080 |      0.0192 |       0.3206 |         0.6311 |          3.5607 |
-| net_deposit_flow_30d           | 19,984.0000 | -158,315.5297 | 1,714,974.5989 | -147,926,143.9600 |  -3,269,269.6201 |   -843,401.3850 |  -86,469.0700 |  -5,646.6200 | 32,516.6350 | 257,029.8090 |   902,139.8875 | 54,517,197.3300 |
-| net_deposit_flow_pct_30d       | 19,980.0000 |       -0.0440 |         0.1628 |           -9.4472 |          -0.6406 |         -0.3156 |       -0.0511 |      -0.0069 |      0.0259 |       0.0741 |         0.1192 |          0.4657 |
-| net_deposit_flow_90d           | 19,947.0000 | -642,448.7783 | 7,612,922.1590 | -613,531,204.0800 | -10,987,667.5312 | -2,316,052.2490 | -180,036.4900 | -10,302.8400 | 62,036.8350 | 467,213.3820 | 1,458,434.6238 | 57,632,622.7500 |
-| net_deposit_flow_pct_90d       | 19,943.0000 |       -0.1026 |         0.3553 |           -8.6405 |          -1.5857 |         -0.7368 |       -0.0956 |      -0.0126 |      0.0502 |       0.1361 |         0.2040 |          0.7373 |
-| business_payroll_stopped_flag  |  5,223.0000 |        0.0565 |         0.2309 |            0.0000 |           0.0000 |          0.0000 |        0.0000 |       0.0000 |      0.0000 |       1.0000 |         1.0000 |          1.0000 |
+|                                |       count |          mean |            std |               min |              1% |              5% |           25% |       50% |         75% |          95% |            99% |             max |
+|:-------------------------------|------------:|--------------:|---------------:|------------------:|----------------:|----------------:|--------------:|----------:|------------:|-------------:|---------------:|----------------:|
+| salary_deposit_stopped_flag    | 10,540.0000 |        0.0368 |         0.1883 |            0.0000 |          0.0000 |          0.0000 |        0.0000 |    0.0000 |      0.0000 |       0.0000 |         1.0000 |          1.0000 |
+| pension_deposit_stopped_flag   |  6,851.0000 |        0.0201 |         0.1405 |            0.0000 |          0.0000 |          0.0000 |        0.0000 |    0.0000 |      0.0000 |       0.0000 |         1.0000 |          1.0000 |
+| recurring_deposit_stopped_flag | 18,507.0000 |        0.0425 |         0.2018 |            0.0000 |          0.0000 |          0.0000 |        0.0000 |    0.0000 |      0.0000 |       0.0000 |         1.0000 |          1.0000 |
+| recurring_deposit_change_pct   | 18,521.0000 |       -0.0713 |         0.3120 |           -1.0000 |         -1.0000 |         -0.8376 |       -0.0836 |   -0.0080 |      0.0192 |       0.3206 |         0.6311 |          3.5607 |
+| net_deposit_flow_30d           | 19,984.0000 |  -44,309.3272 | 1,216,892.4683 | -127,041,055.7700 | -1,715,442.3690 |   -410,705.5255 |  -48,239.2675 | -169.5100 | 41,416.1000 | 280,226.3665 |   955,827.9375 | 54,517,197.3300 |
+| net_deposit_flow_pct_30d       | 19,980.0000 |       -0.0130 |         0.1168 |           -9.4472 |         -0.3805 |         -0.1247 |       -0.0331 |   -0.0003 |      0.0296 |       0.0770 |         0.1213 |          0.4657 |
+| net_deposit_flow_90d           | 19,947.0000 | -312,211.6330 | 5,346,661.6089 | -503,644,625.5100 | -6,746,618.1744 | -1,119,382.9920 | -100,326.6650 | -710.2800 | 74,890.4250 | 504,835.4280 | 1,571,640.3796 | 57,632,622.7500 |
+| net_deposit_flow_pct_90d       | 19,943.0000 |       -0.0546 |         0.3642 |          -10.4643 |         -1.3602 |         -0.3568 |       -0.0641 |   -0.0011 |      0.0568 |       0.1399 |         0.2060 |          0.7373 |
+| business_payroll_stopped_flag  |  5,223.0000 |        0.0565 |         0.2309 |            0.0000 |          0.0000 |          0.0000 |        0.0000 |    0.0000 |      0.0000 |       1.0000 |         1.0000 |          1.0000 |
 
 ## Correlación de Spearman (Pasos 1 + 2)
 
 |                                |   aum_outflow_pct_90d |   deposit_balance_change_pct_90d |   aum_vs_baseline_pct |   deposit_balance_vs_6m_avg_pct |   salary_deposit_stopped_flag |   recurring_deposit_stopped_flag |   recurring_deposit_change_pct |   net_deposit_flow_pct_90d |   pension_deposit_stopped_flag |   business_payroll_stopped_flag |
 |:-------------------------------|----------------------:|---------------------------------:|----------------------:|--------------------------------:|------------------------------:|---------------------------------:|-------------------------------:|---------------------------:|-------------------------------:|--------------------------------:|
-| aum_outflow_pct_90d            |                  1.00 |                            -0.38 |                 -0.83 |                           -0.41 |                          0.11 |                             0.07 |                          -0.04 |                      -0.41 |                           0.06 |                            0.21 |
-| deposit_balance_change_pct_90d |                 -0.38 |                             1.00 |                  0.36 |                            0.90 |                         -0.09 |                            -0.07 |                           0.05 |                       0.84 |                          -0.07 |                           -0.17 |
-| aum_vs_baseline_pct            |                 -0.83 |                             0.36 |                  1.00 |                            0.40 |                         -0.09 |                            -0.06 |                           0.04 |                       0.38 |                          -0.05 |                           -0.20 |
-| deposit_balance_vs_6m_avg_pct  |                 -0.41 |                             0.90 |                  0.40 |                            1.00 |                         -0.10 |                            -0.07 |                           0.05 |                       0.93 |                          -0.07 |                           -0.19 |
-| salary_deposit_stopped_flag    |                  0.11 |                            -0.09 |                 -0.09 |                           -0.10 |                          1.00 |                             0.77 |                          -0.28 |                      -0.10 |                           0.57 |                            0.15 |
-| recurring_deposit_stopped_flag |                  0.07 |                            -0.07 |                 -0.06 |                           -0.07 |                          0.77 |                             1.00 |                          -0.21 |                      -0.07 |                           0.73 |                            0.09 |
-| recurring_deposit_change_pct   |                 -0.04 |                             0.05 |                  0.04 |                            0.05 |                         -0.28 |                            -0.21 |                           1.00 |                       0.05 |                          -0.18 |                           -0.07 |
-| net_deposit_flow_pct_90d       |                 -0.41 |                             0.84 |                  0.38 |                            0.93 |                         -0.10 |                            -0.07 |                           0.05 |                       1.00 |                          -0.07 |                           -0.18 |
-| pension_deposit_stopped_flag   |                  0.06 |                            -0.07 |                 -0.05 |                           -0.07 |                          0.57 |                             0.73 |                          -0.18 |                      -0.07 |                           1.00 |                            0.09 |
-| business_payroll_stopped_flag  |                  0.21 |                            -0.17 |                 -0.20 |                           -0.19 |                          0.15 |                             0.09 |                          -0.07 |                      -0.18 |                           0.09 |                            1.00 |
+| aum_outflow_pct_90d            |                  1.00 |                            -0.17 |                 -0.74 |                           -0.19 |                          0.09 |                             0.05 |                          -0.02 |                      -0.19 |                           0.07 |                            0.09 |
+| deposit_balance_change_pct_90d |                 -0.17 |                             1.00 |                  0.19 |                            0.88 |                         -0.16 |                            -0.12 |                           0.06 |                       0.78 |                          -0.14 |                           -0.08 |
+| aum_vs_baseline_pct            |                 -0.74 |                             0.19 |                  1.00 |                            0.22 |                         -0.18 |                            -0.12 |                           0.05 |                       0.17 |                          -0.12 |                           -0.09 |
+| deposit_balance_vs_6m_avg_pct  |                 -0.19 |                             0.88 |                  0.22 |                            1.00 |                         -0.20 |                            -0.14 |                           0.06 |                       0.87 |                          -0.15 |                           -0.09 |
+| salary_deposit_stopped_flag    |                  0.09 |                            -0.16 |                 -0.18 |                           -0.20 |                          1.00 |                             0.77 |                          -0.28 |                      -0.07 |                           0.57 |                            0.15 |
+| recurring_deposit_stopped_flag |                  0.05 |                            -0.12 |                 -0.12 |                           -0.14 |                          0.77 |                             1.00 |                          -0.21 |                      -0.05 |                           0.73 |                            0.09 |
+| recurring_deposit_change_pct   |                 -0.02 |                             0.06 |                  0.05 |                            0.06 |                         -0.28 |                            -0.21 |                           1.00 |                       0.03 |                          -0.18 |                           -0.07 |
+| net_deposit_flow_pct_90d       |                 -0.19 |                             0.78 |                  0.17 |                            0.87 |                         -0.07 |                            -0.05 |                           0.03 |                       1.00 |                          -0.06 |                           -0.06 |
+| pension_deposit_stopped_flag   |                  0.07 |                            -0.14 |                 -0.12 |                           -0.15 |                          0.57 |                             0.73 |                          -0.18 |                      -0.06 |                           1.00 |                            0.09 |
+| business_payroll_stopped_flag  |                  0.09 |                            -0.08 |                 -0.09 |                           -0.09 |                          0.15 |                             0.09 |                          -0.07 |                      -0.06 |                           0.09 |                            1.00 |
 
 ## WoE · salary_deposit_stopped_flag
 
@@ -208,16 +214,16 @@ AUC combinado de las variables de los Pasos 1 + 2 (logística): **0.653**; techo
 
 | row_0                   |   no_evento |   evento |   tasa_evento |     woe |     iv |
 |:------------------------|------------:|---------:|--------------:|--------:|-------:|
-| 00 [-8.641, -0.405]     |  1,721.0000 | 261.0000 |        0.1317 |  0.8562 | 0.1068 |
-| 01 [-0.4047, -0.1298]   |  1,816.0000 | 166.0000 |        0.0838 |  0.3510 | 0.0144 |
-| 02 [-0.1298, -0.07231]  |  1,875.0000 | 107.0000 |        0.0540 | -0.1184 | 0.0013 |
-| 03 [-0.07229, -0.03949] |  1,889.0000 |  93.0000 |        0.0469 | -0.2654 | 0.0063 |
-| 04 [-0.03949, -0.01256] |  1,872.0000 | 110.0000 |        0.0555 | -0.0893 | 0.0008 |
-| 05 [-0.01255, 0.01191]  |  1,888.0000 |  94.0000 |        0.0474 | -0.2542 | 0.0058 |
-| 06 [0.01192, 0.0363]    |  1,892.0000 |  90.0000 |        0.0454 | -0.2996 | 0.0079 |
-| 07 [0.03631, 0.06487]   |  1,887.0000 |  95.0000 |        0.0479 | -0.2432 | 0.0053 |
-| 08 [0.06487, 0.1033]    |  1,887.0000 |  95.0000 |        0.0479 | -0.2432 | 0.0053 |
-| 09 [0.1034, 0.7373]     |  1,895.0000 |  87.0000 |        0.0439 | -0.3349 | 0.0097 |
+| 00 [-10.46, -0.1541]    |  1,735.0000 | 247.0000 |        0.1246 |  0.7931 | 0.0892 |
+| 01 [-0.1541, -0.08458]  |  1,878.0000 | 104.0000 |        0.0525 | -0.1483 | 0.0021 |
+| 02 [-0.08458, -0.04974] |  1,877.0000 | 105.0000 |        0.0530 | -0.1383 | 0.0018 |
+| 03 [-0.0497, -0.02309]  |  1,869.0000 | 113.0000 |        0.0570 | -0.0609 | 0.0004 |
+| 04 [-0.02308, -0.00111] |  1,874.0000 | 108.0000 |        0.0545 | -0.1087 | 0.0011 |
+| 05 [-0.001103, 0.02109] |  1,872.0000 | 110.0000 |        0.0555 | -0.0893 | 0.0008 |
+| 06 [0.02111, 0.04381]   |  1,881.0000 | 101.0000 |        0.0510 | -0.1791 | 0.0030 |
+| 07 [0.04383, 0.0709]    |  1,876.0000 | 106.0000 |        0.0535 | -0.1283 | 0.0016 |
+| 08 [0.0709, 0.108]      |  1,878.0000 | 104.0000 |        0.0525 | -0.1483 | 0.0021 |
+| 09 [0.108, 0.7373]      |  1,882.0000 | 100.0000 |        0.0505 | -0.1895 | 0.0033 |
 | NULL                    |     55.0000 |   2.0000 |        0.0351 | -0.3594 | 0.0003 |
 
 ## WoE · pension_deposit_stopped_flag

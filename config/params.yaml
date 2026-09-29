@@ -146,6 +146,26 @@ target:
   exclusion_rate: 0.006                    # [Supuesto]
 
 # ---------------------------------------------------------------------------
+# Evento de salida común a los Pasos 1+ · mudanza del banco principal (D-14, D-17)
+# ---------------------------------------------------------------------------
+# Precursor directo de la salida: depende de la propensión total a irse (índice de
+# riesgo del Paso 0). Se sortea UNA vez y lo usan todos los pasos, para que el mismo
+# hogar muestre a la vez: nómina que deja de llegar (Paso 2), saldo que cae (Paso 1)
+# y transferencias al banco nuevo (Paso 3). Los flujos de semilla conservan el nombre
+# "s2.move*" para no alterar lo ya generado.
+exit_move:
+  move_intercept: -7.6                     # [Calibrado] ≈ 5% de hogares
+  move_slope: 4.2                          # [Calibrado]
+  move_window_days: 180
+  p_stop_given_move: {payroll: 0.85, pension: 0.45, dividend: 0.30, business_distribution: 0.40}
+  # Traslado de saldos al banco nuevo (dólares que salen de la serie del Paso 1).
+  deposit_transfer_p: 0.90                 # [Supuesto]
+  deposit_transfer_share: [0.30, 0.90]     # [Supuesto] fracción del saldo de depósitos
+  aum_transfer_p: 0.60                     # [Supuesto] ACATS, entre hogares con inversiones
+  aum_transfer_share: [0.20, 0.80]         # [Supuesto] fracción del AUM
+  acats_lag_days: [0, 30]                  # [Supuesto] el ACATS llega después del traslado de depósitos
+
+# ---------------------------------------------------------------------------
 # Paso 1 · Balances & AUM (series mensuales → variables 1, 2, 17, 18)
 # ---------------------------------------------------------------------------
 # Serie de 24 meses (m = −23..0; 0 = mes que cierra en t), anclada al Paso 0:
@@ -172,10 +192,10 @@ step1:
   flow_sigma: 0.80                         # [Supuesto] σ log de los montos
   # Episodio de salida (SEÑAL): P = logit⁻¹(a + b · z_outflow), duración 1–6 meses
   # hasta t, intensidad mensual δ ~ LogNormal. Afecta depósitos y AUM.
-  episode_intercept: -3.0                  # [Calibrado] tasa base de episodios (≈ 14%)
-  episode_slope: 2.2                       # [Calibrado] fuerza predictiva (IV)
+  episode_intercept: -4.0                  # [Calibrado] tasa base de episodios (recalibrado con la mudanza, D-17)
+  episode_slope: 1.4                       # [Calibrado] fuerza predictiva (IV)
   episode_max_months: 6
-  episode_delta_median: 0.14               # [Calibrado] ≈ 14% mensual antes del multiplicador de canal
+  episode_delta_median: 0.12               # [Calibrado] ≈ 12% mensual antes del multiplicador de canal
   episode_delta_sigma: 0.50
   episode_channel_range_deposit: [1.0, 2.0] # [Calibrado] multiplicador de δ en depósitos
   episode_channel_range_aum: [0.3, 1.1]    # [Calibrado] multiplicador de δ en AUM
@@ -189,10 +209,10 @@ step1:
   # aum_vs_baseline_pct (caída neta ex-mercado) ante el mismo episodio.
   # IV "High" del Excel → [0.10, 0.30] contra hard_churn_6m.
   targets:
-    aum_outflow_pct_90d:            {alert: "> 0.10",   rate: [0.06, 0.16], iv: [0.10, 0.30]}
-    deposit_balance_change_pct_90d: {alert: "<= -0.25", rate: [0.06, 0.14], iv: [0.10, 0.30]}
-    aum_vs_baseline_pct:            {alert: "<= -0.20", rate: [0.05, 0.12], iv: [0.10, 0.30]}
-    deposit_balance_vs_6m_avg_pct:  {alert: "<= -0.30", rate: [0.05, 0.14], iv: [0.10, 0.30]}
+    aum_outflow_pct_90d:            {alert: "> 0.10",   rate: [0.04, 0.16], iv: [0.10, 0.30]}
+    deposit_balance_change_pct_90d: {alert: "<= -0.25", rate: [0.04, 0.16], iv: [0.10, 0.30]}
+    aum_vs_baseline_pct:            {alert: "<= -0.20", rate: [0.04, 0.16], iv: [0.10, 0.30]}
+    deposit_balance_vs_6m_avg_pct:  {alert: "<= -0.30", rate: [0.04, 0.16], iv: [0.10, 0.30]}
 
 # ---------------------------------------------------------------------------
 # Paso 2 · Recurring deposits & flows (variables 3, 4, 5, 6, 19, 20)
@@ -212,13 +232,6 @@ step2:
   bonus_months: [2, 3, 12]                 # [Supuesto] mes del bono (feb, mar, dic).
   business_payroll_frequency: {biweekly: 0.60, semimonthly: 0.40}   # [Supuesto]
 
-  # SEÑAL "Very high" · mudanza del banco principal (decisiones D-14). Es un precursor
-  # directo de la salida, así que depende de la propensión total a irse (índice de
-  # riesgo del Paso 0), no de un solo factor: P = logit⁻¹(a + b · risk_index).
-  move_intercept: -7.6                     # [Calibrado] ≈ 5% de hogares
-  move_slope: 4.2                          # [Calibrado] IV de la nómina detenida ≈ 0.32 (satura: el churn es Bernoulli)
-  move_window_days: 180
-  p_stop_given_move: {payroll: 0.85, pension: 0.45, dividend: 0.30, business_distribution: 0.40}
   # SEÑAL "High" · redirección parcial del ingreso (sigue llegando una parte):
   # P = logit⁻¹(a + b · z_outflow); el monto cae a factor × monto desde la fecha.
   partial_intercept: -3.8                  # [Calibrado]
@@ -262,7 +275,7 @@ step2:
     salary_deposit_stopped_flag:    {alert: "= 1",      rate: [0.02, 0.08], iv: [0.30, 0.50], strength: Very high, iv_base: applicable, driver: propensity}
     recurring_deposit_stopped_flag: {alert: "= 1",      rate: [0.03, 0.10], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: propensity}
     recurring_deposit_change_pct:   {alert: "<= -0.40", rate: [0.03, 0.12], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
-    # Sale de la serie de depósitos del Paso 1 (ya validada): el umbral del Excel alerta ≈ 18%.
-    net_deposit_flow_pct_90d:       {alert: "<= -0.15", rate: [0.10, 0.22], iv: [0.10, 0.30], strength: High, iv_base: all, driver: factor}
+    # Sale de la serie de depósitos del Paso 1: con el umbral del Excel alerta ≈ 10%.
+    net_deposit_flow_pct_90d:       {alert: "<= -0.15", rate: [0.06, 0.22], iv: [0.10, 0.30], strength: High, iv_base: all, driver: factor}
     pension_deposit_stopped_flag:   {alert: "= 1",      rate: [0.01, 0.06], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: propensity}
     business_payroll_stopped_flag:  {alert: "= 1",      rate: [0.02, 0.08], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: factor}

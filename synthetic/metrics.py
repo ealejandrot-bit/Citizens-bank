@@ -56,3 +56,21 @@ def cochran_armitage(t: pd.DataFrame) -> tuple[float, float]:
     var = pbar * (1 - pbar) * (np.sum(n * s**2) - np.sum(n * s) ** 2 / N)
     z = T / np.sqrt(var)
     return z, stats.norm.sf(z)
+
+
+def logit_wald(y: np.ndarray, X: np.ndarray, names: list[str]) -> pd.DataFrame:
+    """Regresión logística por Newton-Raphson con errores estándar (Hessiano) y test de Wald."""
+    from scipy import special, stats
+    Xc = np.column_stack([np.ones(len(X)), X])
+    b = np.zeros(Xc.shape[1])
+    for _ in range(50):
+        p = special.expit(Xc @ b)
+        H = Xc.T @ (Xc * (p * (1 - p))[:, None])
+        step = np.linalg.solve(H, Xc.T @ (y - p))
+        b += step
+        if np.max(np.abs(step)) < 1e-10:
+            break
+    se = np.sqrt(np.diag(np.linalg.inv(H)))
+    z = b / se
+    return pd.DataFrame({"coef": b, "se": se, "z": z, "p": 2 * stats.norm.sf(np.abs(z))},
+                        index=["intercepto"] + names)

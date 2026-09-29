@@ -5,30 +5,23 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from synthetic.balances import build_step1
-from synthetic.population import build_population
-from synthetic.recurring import build_step2, detect
-from synthetic.seeds import SeedManager
+from synthetic.pipeline import build
+from synthetic.recurring import detect
 from synthetic.validate_step2 import check_step2
 
 CFG = yaml.safe_load((Path(__file__).resolve().parents[1] / "config" / "params.yaml").read_text())
 
 
 def _build(cfg):
-    s = SeedManager(cfg["master_seed"])
-    base, truth = build_population(cfg, s)
-    f1, sim1 = build_step1(base, truth, cfg, s)
-    f2, sim2 = build_step2(base, truth, sim1, cfg, s)
-    return base, truth, f1, sim1, f2, sim2
+    o = build(cfg, upto=2)
+    return o["base"], o["truth"], o["f1"], o["sim1"], o["f2"], o["sim2"]
 
 
 def test_step2_reproducible_and_leaves_previous_steps_untouched():
     b, t, f1, _, f2, _ = _build(CFG)
-    s = SeedManager(CFG["master_seed"])
-    b0, t0 = build_population(CFG, s)
-    f1_only, _ = build_step1(b0, t0, CFG, s)
-    pd.testing.assert_frame_equal(b, b0)
-    pd.testing.assert_frame_equal(f1, f1_only)
+    o1 = build(CFG, upto=1)
+    pd.testing.assert_frame_equal(b, o1["base"])
+    pd.testing.assert_frame_equal(f1, o1["f1"])
     pd.testing.assert_frame_equal(f2, _build(CFG)[4])
 
 
@@ -54,7 +47,7 @@ def test_step2_validation_passes_on_production_seed():
 
 def test_changing_move_slope_leaves_noise_events():
     cfg2 = copy.deepcopy(CFG)
-    cfg2["step2"]["move_slope"] += 1.0
+    cfg2["exit_move"]["move_slope"] += 1.0
     e1 = _build(CFG)[5]["events"]
     e2 = _build(cfg2)[5]["events"]
     for c in ["job_change", "retire", "leave", "business_sale", "partial"]:
