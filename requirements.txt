@@ -6,3 +6,5 @@ openpyxl>=3.1
 tabulate>=0.9
 pytest>=8.0
 scikit-learn>=1.4
+statsmodels>=0.14
+optbinning>=0.19

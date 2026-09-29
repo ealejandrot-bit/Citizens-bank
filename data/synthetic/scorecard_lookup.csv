@@ -1,0 +1,29 @@
+variable,dimensión,bin,N dev,% pob,tasa churn dev,WoE,β,puntos,puntos vs neutral
+aum_vs_baseline_pct,Deterioro de AUM,"[-inf, -0.2031)",680,5.6535,0.4691,-1.3659,0.3241,39.5628,-25.5489
+aum_vs_baseline_pct,Deterioro de AUM,"[-0.2031, -0.02156)",1219,10.1347,0.1772,0.0459,0.3241,65.9704,0.8587
+aum_vs_baseline_pct,Deterioro de AUM,"[-0.02156, inf)",8571,71.2587,0.1364,0.3560,0.3241,71.7715,6.6597
+aum_vs_baseline_pct,Deterioro de AUM,Missing,1558,12.9531,0.3267,-0.7664,0.3241,50.7758,-14.3359
+transfer_to_competitor_pct_90d,Externalización,"[-inf, 0.006803)",5838,48.5367,0.1518,0.2313,0.3677,70.0189,4.9072
+transfer_to_competitor_pct_90d,Externalización,"[0.006803, 0.01991)",4395,36.5397,0.1663,0.1223,0.3677,67.7075,2.5958
+transfer_to_competitor_pct_90d,Externalización,"[0.01991, 0.08466)",1164,9.6774,0.2079,-0.1520,0.3677,61.8874,-3.2243
+transfer_to_competitor_pct_90d,Externalización,"[0.08466, inf)",631,5.2461,0.5610,-1.7348,0.3677,28.3007,-36.8110
+banker_change_6m_flag,Relación con banquero,"[-inf, 0.5)",10257,85.2760,0.1514,0.2340,0.6916,74.4520,9.3403
+banker_change_6m_flag,Relación con banquero,"[0.5, inf)",1771,14.7240,0.3727,-0.9688,0.6916,26.4469,-38.6648
+client_reply_rate,Relación con banquero,"[-inf, 0.3452)",1230,10.2261,0.1951,-0.0725,0.7084,62.1481,-2.9637
+client_reply_rate,Relación con banquero,"[0.3452, inf)",5027,41.7941,0.1221,0.4828,0.7084,84.8465,19.7348
+client_reply_rate,Relación con banquero,Missing,5771,47.9797,0.2355,-0.3120,0.7084,52.3579,-12.7538
+positions_liquidated_pct,Salida de activos,"[-inf, 0.04725)",9803,81.5015,0.1491,0.2518,0.5207,72.6783,7.5666
+positions_liquidated_pct,Salida de activos,"[0.04725, inf)",667,5.5454,0.3628,-0.9264,0.5207,37.2748,-27.8369
+positions_liquidated_pct,Salida de activos,Missing,1558,12.9531,0.3267,-0.7664,0.5207,42.0823,-23.0295
+share_of_wallet,Pérdida de productos,"[-inf, 0.1966)",1551,12.8949,0.3301,-0.7819,0.4043,46.8683,-18.2435
+share_of_wallet,Pérdida de productos,"[0.1966, 0.3378)",2392,19.8869,0.1923,-0.0545,0.4043,63.8406,-1.2711
+share_of_wallet,Pérdida de productos,"[0.3378, 0.5294)",3312,27.5357,0.1715,0.0855,0.4043,67.1064,1.9947
+share_of_wallet,Pérdida de productos,"[0.5294, 0.7829)",2990,24.8587,0.1512,0.2359,0.4043,70.6156,5.5039
+share_of_wallet,Pérdida de productos,"[0.7829, inf)",1783,14.8237,0.1239,0.4660,0.4043,75.9848,10.8731
+complaint_escalated_flag,Fricción de servicio,"[-inf, 0.5)",11390,94.6957,0.1736,0.0709,0.4783,67.0700,1.9583
+complaint_escalated_flag,Fricción de servicio,"[0.5, inf)",638,5.3043,0.3699,-0.9569,0.4783,38.6980,-26.4137
+return_vs_benchmark,Fricción de servicio,"[-inf, -0.04175)",1595,13.2607,0.2163,-0.2022,0.4801,59.5092,-5.6026
+return_vs_benchmark,Fricción de servicio,"[-0.04175, 0.004157)",3077,25.5820,0.1641,0.1383,0.4801,68.9441,3.8323
+return_vs_benchmark,Fricción de servicio,"[0.004157, 0.04165)",1867,15.5221,0.1328,0.3866,0.4801,75.8224,10.7107
+return_vs_benchmark,Fricción de servicio,"[0.04165, inf)",790,6.5680,0.0987,0.7218,0.4801,85.1107,19.9990
+return_vs_benchmark,Fricción de servicio,Missing,4699,39.0672,0.2207,-0.2279,0.4801,58.7977,-6.3140

@@ -507,3 +507,20 @@ Se construye por grupo porque las variables de un grupo comparten mecánica y ti
 pares redundantes (p. ej. `deposit_balance_change_pct` vs `deposit_balance_vs_6m_avg_pct`)
 que deben salir coherentes entre sí. Cada paso: especificación de distribución →
 revisión contigo → construcción → chequeos (NULL, rangos, tasa de alerta, IV esperado).
+
+## UHNWI Churn Propensity Scorecard (pasos 0–17)
+
+**D-26 · Scorecard auditable sobre la base sintética (modo SINT-BASE)** (`scripts/build_scorecard.py`,
+`docs/reports/scorecard_report.md`). Toda cifra es sintética; ninguna es de Citizens.
+- **Target:** hard ∪ económico (salida neta ex-mercado ≥ 25% al cierre de (T0, T0+6m]). Los indeterminados (10–25%) no entrenan, pero se scorean. 3,162 eventos (16.2%) sobre 19,473 hogares; sensibilidad a 20/25/35/50%.
+- **Universo completo** con el segmento en calibración: UHNW solo tiene 189 eventos (< 300 para WoE-logística).
+- **Binning:** optbinning monótono en la dirección esperada, bins con ≥ 5% de la población y ≥ 30 eventos, y bins contiguos distintos con p < 0.05.
+- **Selección:** clustering de variables por centroide (sin PCA), orden LASSO y forward con β > 0, VIF < 5, p < 0.05 y ≤ 2 variables por dimensión. Resultado: 8 variables en 6 dimensiones. Excluidas por diseño: edad (ECOA), buró (FCRA, condicionado), `multi_signal_count` (compuesta) y tamaño.
+- **Campeón:** logística sobre WoE, AUC val 0.711, KS 30.4, caída de Gini dev→val 2.8%. El GBM empata (IC de ΔAUC incluye 0) y sobreajusta (Gini −33% dev→val).
+- **Escala:** S₀ = 600, O₀ = 20:1, PDO = 40.
+- **Calibración:** Platt b = 0.88. El δ UHNW = +0.32 recupera el efecto de tamaño que el score excluye a propósito.
+- **Tramos:** Crítico por capacidad (360 banqueros × 2 = 720/mes); saltos ≥ 2× y lift 10×. Overrides con tope de 30% por tramo.
+- **Hallazgos:**
+  - los depositantes sin inversiones discriminan mal (AUC 0.58) porque el target económico es ruidoso por la volatilidad del saldo;
+  - 57% de los churners no muestra señal previa distintiva.
+- **Pendiente con datos reales:** OOT por cohortes, horizonte de 12 m y bloque digital.

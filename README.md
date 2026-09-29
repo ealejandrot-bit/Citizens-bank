@@ -3,6 +3,12 @@
 **Base final:** `data/synthetic/client_pulse_synthetic.csv` (20,000 hogares × 62 columnas, las 37
 variables del Excel + target). Resumen de cada variable en `docs/reports/final_report.md`.
 
+**UHNWI Churn Propensity Scorecard (pasos 0–17):** `python scripts/build_scorecard.py` construye el target
+económico (hard ∪ salida neta ex-mercado ≥ 25% en 6m), binning monótono, WoE/IV, selección, logística sobre WoE,
+escala S₀ = 600 / O₀ = 20:1 / PDO = 40, tramos por capacidad, overrides, reason codes, calibración en cuatro capas,
+estabilidad y arquetipos. Documento de modelo en `docs/reports/scorecard_report.md`; lookup table en
+`data/synthetic/scorecard_lookup.csv`; salida por hogar en `data/synthetic/scorecard_clients.csv`.
+
 **Scores:** `python scripts/score_models.py` construye la variable de churn sobre la ventana de
 resultado y compara reglas, scorecard experto, scorecard WoE, Gradient Boosting, logística y red
 neuronal. Resultados en `docs/reports/model_comparison.md`.
@@ -56,6 +62,8 @@ scripts/build_step8.py      Paso 8 + base final consolidada + reporte final de l
 synthetic/outcome.py        Ventana de resultado (t, t+6m] y construcción de la variable de churn
 synthetic/scoring.py        Metodologías de score, métricas, bootstrap e importancia de drivers
 scripts/score_models.py     Construye el churn, entrena y compara las metodologías
+synthetic/scorecard.py      Scorecard auditable: target económico, binning, WoE, selección, puntos, calibración
+scripts/build_scorecard.py  Documento de modelo 0–17 del scorecard + lookup + salida por hogar
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
@@ -75,6 +83,7 @@ python scripts/build_step5.py       # genera data/synthetic/step5_*.csv + manifi
 python scripts/build_step6.py       # genera data/synthetic/step6_*.csv + manifiesto
 python scripts/build_step7.py       # genera data/synthetic/step7_*.csv + manifiesto
 python scripts/build_step8.py       # base final (client_pulse_synthetic*.csv) + docs/reports/final_report.md
+python scripts/build_scorecard.py   # scorecard 0–17 → docs/reports/scorecard_report.md (~45 s)
 python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
