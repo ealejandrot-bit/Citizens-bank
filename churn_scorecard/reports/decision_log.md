@@ -4,8 +4,8 @@ Memoria del proyecto. Nada se decide fuera de este archivo. Etiquetas: `[DATA]` 
 usuario · `[DEF-default]` default aplicado.
 
 ## Estado
-- Último paso completado: **9** · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
-- Tests: 49 / 49 PASS (pasos 00–09).
+- Último paso completado: **10** · G0 y G1 cerrados ("usa defaults", 2026-09-29) · bloque en curso: pasos 5–11 (G2).
+- Tests: 55 / 55 PASS (pasos 00–10).
 
 ## Parámetros vigentes
 | Parámetro | Valor | Etiqueta |
@@ -95,6 +95,20 @@ usuario · `[DEF-default]` default aplicado.
   con < 30 eventos, WoE = 0 (neutral).
 - **D9.5 · Pre-binning.** Se prueban `min_prebin_size` 1% / 2% / 5% y se queda el de mayor IV (todas cumplen las
   restricciones); el pre-binning CART no encuentra cortes con muchos empates.
+
+- **D10.1 · Criterio de adición.** Entra la variable de mayor ΔGini medio en los 25 folds (bins fijos del paso 9) si
+  ΔGini > 0 en ≥ 80% de los folds (mismo umbral que la permutación del challenger), VIF(WoE) < 5 y todos los β con signo
+  correcto; tope 10 [DEF-default]. Variables con signo "?" fuera del campeón (regla D.7: signo y lógica de negocio).
+- **D10.2 · Representante de cluster (desvío del SPEC).** La regla literal (menor (1−R²propio)/(1−R²vecino)) deja
+  fuera `banker_change_6m_flag` (IV 0.289) frente a `relationship_dissatisfaction_flag` (IV 0.027) en un cluster débil de
+  2 flags: Gini CV 0.386 con 7 variables. Con "a lo sumo una por cluster, el aporte incremental elige el miembro":
+  Gini CV 0.441 con 8 variables, mejor en 25 de 25 folds [DATA]. Campeón = D10.2; pregunta G2-3.
+- **D10.3 · Transferencias externas fuera del campeón.** El cluster de transferencias externas (incluye
+  `transfer_to_competitor_pct_90d`, IV 0.305) aporta ΔGini > 0 en solo 64–72% de los folds una vez que están
+  `share_of_wallet` y `outflow_x_contact_gap` [DATA]: su información ya está en el modelo. Sigue disponible como
+  override en el paso 12 (≥ 10%).
+- **D10.4 · Challenger.** 70 candidatas → 14 redundantes (|ρ| > 0.75) → 40 sin permutation importance estable → 16
+  variables [DATA], incluido `multi_signal_count` (compuesto, permitido en challenger por I-3).
 
 ## Limitaciones registradas
 - **L1** Sin OOT ni cohortes ni PSI temporal (un solo snapshot 2025-12-31) [DATA].

@@ -1,0 +1,3 @@
+variante,variables,Gini CV,sd folds,selección,% folds D10.2 > literal
+SPEC literal (solo representantes 1−R²),7,0.3860610725842291,0.031081111223317585,"client_reply_rate, net_deposit_flow_pct_90d, cash_pct_of_portfolio_chg, complaint_escalated_flag, streams_stopped_count, contact_gap_ratio, aum_outflow_pct_90d",
+"D10.2 (uno por cluster, cualquier miembro)",8,0.44127545085780256,0.026859774894707474,"client_reply_rate, banker_change_6m_flag, share_of_wallet, outflow_x_contact_gap, return_vs_benchmark, streams_stopped_count, cash_pct_of_portfolio_chg, contact_gap_ratio_peer",100.0

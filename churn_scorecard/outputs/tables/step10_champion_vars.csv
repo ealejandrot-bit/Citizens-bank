@@ -1,0 +1,9 @@
+variable,IV,dimensión,signo esperado,VIF (WoE),β EN 1-SE ≠ 0,regla de bins,cluster,representante 1−R² del cluster
+client_reply_rate,0.2159695120494654,relación,−,1.3022746940550618,True,optbinning 5%,8,client_reply_rate
+banker_change_6m_flag,0.2893239340469847,relación,+,1.0739834592616795,True,"negocio {0,1} (D9.1)",10,relationship_dissatisfaction_flag
+share_of_wallet,0.1956417713328405,patrimonial,−,1.1365926011944683,True,optbinning 5%,2,net_deposit_flow_pct_90d
+outflow_x_contact_gap,0.2049237819746978,transaccional,+,1.278135265541329,True,optbinning 5%,4,aum_outflow_pct_90d
+return_vs_benchmark,0.0613404660163026,economía,−,1.0112730243110233,True,optbinning 5%,5,complaint_escalated_flag
+streams_stopped_count,0.1986613819492247,transaccional,+,1.1410566534539746,True,negocio inflada en mínimo (D9.1b),7,streams_stopped_count
+cash_pct_of_portfolio_chg,0.1069993726912726,transaccional,+,1.0577411407519877,True,optbinning 5%,3,cash_pct_of_portfolio_chg
+contact_gap_ratio_peer,0.1385416910795815,relación,+,1.382246441984955,True,optbinning 5%,9,contact_gap_ratio

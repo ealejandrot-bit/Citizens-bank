@@ -1,0 +1,7 @@
+etapa,variables
+candidatas (con compuestos y cluster),70
+− casi constantes,0
+− fuga,0
+− redundantes |ρ| > 0.75,14
+− permutación < 80% folds,40
+= challenger,16
