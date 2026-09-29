@@ -1,0 +1,19 @@
+modelo,KPI,línea base holdout,frecuencia,responsable
+A,Churn rate por hogares (hard 6m),6.04%,mensual (ventana móvil 6m),Analytics
+A,Churn rate por valor (RV de churners ÷ RV),6.07%,mensual,Analytics
+A,Valor de churners en hogares alertados (Crítico + Alto),41.6% del valor perdido,mensual,Head of PB
+A,Precisión de alertas Crítico / Alto,34.0% / 11.4%,trimestral (madura a 6m),Model Risk
+A,Tiempo alerta → primer contacto,sin dato (se mide en producción; meta ≤ 5 / ≤ 15 días hábiles),semanal,Head of PB
+A,PSI del score,0.0030,mensual,Model Risk
+A,Pendiente de calibración b,0.876,trimestral,Model Risk
+A,Gini,0.450,trimestral,Model Risk
+A,Calibración por tramo (observado vs tasa oficial),Crítico 34.0% vs 38.5%; Alto 11.4% vs 14.2%; Vigilancia 5.2% vs 5.5%; Estable 2.8% vs 1.8%,trimestral,Model Risk
+A-lite,Churn rate por hogares (hard 6m),6.04%,mensual (ventana móvil 6m),Analytics
+A-lite,Churn rate por valor (RV de churners ÷ RV),6.07%,mensual,Analytics
+A-lite,Valor de churners en hogares alertados (Crítico + Alto),40.1% del valor perdido,mensual,Head of PB
+A-lite,Precisión de alertas Crítico / Alto,33.3% / 12.3%,trimestral (madura a 6m),Model Risk
+A-lite,Tiempo alerta → primer contacto,sin dato (se mide en producción; meta ≤ 5 / ≤ 15 días hábiles),semanal,Head of PB
+A-lite,PSI del score,0.0013,mensual,Model Risk
+A-lite,Pendiente de calibración b,0.856,trimestral,Model Risk
+A-lite,Gini,0.424,trimestral,Model Risk
+A-lite,Calibración por tramo (observado vs tasa oficial),Crítico 33.3% vs 35.8%; Alto 12.3% vs 14.0%; Vigilancia 5.1% vs 5.5%; Estable 2.6% vs 1.7%,trimestral,Model Risk

@@ -25,6 +25,7 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 14. [Calibración](#14-calibración)
 15. [Estabilidad](#15-estabilidad)
 16. [Acción, arquetipos y EWS](#16-acción-arquetipos-y-ews)
+17. [KPIs, gobernanza y limitaciones](#17-kpis-gobernanza-y-limitaciones)
 
 ---
 
@@ -1399,3 +1400,128 @@ Especificación de EWS:
 **Decisiones y alternativas descartadas** · D16.1–D16.4
 - K = 3 por regla; nombres por reglas reproducibles tras ver centroides (descartado el nombrado automático por lift);
   etiqueta de falta de contacto corregida; campaña de cobertura en Vigilancia.
+
+---
+
+## 17. KPIs, gobernanza y limitaciones
+
+**Objetivo**
+- Dejar el modelo gobernable: qué se mide, con qué frecuencia, quién responde y qué dispara recalibrar o redesarrollar.
+  Cerrar con las limitaciones y lo que cambiaría con datos reales.
+
+**Por qué**
+- Un modelo sin línea base ni disparadores explícitos se degrada sin que nadie lo note (SR 11-7: monitoreo continuo y
+  validación independiente).
+
+**Método**
+- Línea base de KPIs medida en holdout [DATA-SINT]; disparadores con umbrales numéricos; QC del entregable (secciones,
+  figuras, tablas, archivos).
+
+**Código** · `src/17_report.py`
+
+**Salida** · `outputs/tables/17_kpi_baseline.csv`, `17_governance_triggers.csv`
+
+KPIs y línea base [DATA-SINT] (holdout):
+
+| KPI | A | A-lite | Frecuencia | Responsable |
+|:--|:--|:--|:--|:--|
+| Churn rate por hogares (hard 6m) | 6.04% | 6.04% | mensual (ventana móvil 6m) | Analytics |
+| Churn rate por valor (RV de churners ÷ RV) | 6.07% | 6.07% | mensual | Analytics |
+| Valor de churners en hogares alertados (Crítico + Alto) | 41.6% del valor perdido | 40.1% del valor perdido | mensual | Head of PB |
+| Precisión de alertas Crítico / Alto | 34.0% / 11.4% | 33.3% / 12.3% | trimestral (madura a 6m) | Model Risk |
+| Tiempo alerta → primer contacto | sin dato (se mide en producción; meta ≤ 5 / ≤ 15 días hábiles) | sin dato (se mide en producción; meta ≤ 5 / ≤ 15 días hábiles) | semanal | Head of PB |
+| PSI del score | 0.0030 | 0.0013 | mensual | Model Risk |
+| Pendiente de calibración b | 0.876 | 0.856 | trimestral | Model Risk |
+| Gini | 0.450 | 0.424 | trimestral | Model Risk |
+| Calibración por tramo (observado vs tasa oficial) | Crítico 34.0% vs 38.5%; Alto 11.4% vs 14.2%; Vigilancia 5.2% vs 5.5%; Estable 2.8% vs 1.8% | Crítico 33.3% vs 35.8%; Alto 12.3% vs 14.0%; Vigilancia 5.1% vs 5.5%; Estable 2.6% vs 1.7% | trimestral | Model Risk |
+
+Disparadores de gobierno:
+
+| Disparador | Condición | Acción | Umbral (base A) |
+|:--|:--|:--|:--|
+| Recalibración | b de calibración fuera de [0.8, 1.2] en dos ciclos trimestrales seguidos, o tasa observada de Crítico fuera de su Wilson 90% dos ciclos | re-estimar Platt (a, b) con la cohorte más reciente; comité aprueba | b ∉ [0.8, 1.2]; hoy 0.88 |
+| Redesarrollo | PSI del score > 0.25 sostenido (2 meses) o caída relativa de Gini ≥ 15% | re-binning, selección y estimación completas (pasos 3–15); validación independiente | PSI > 0.25; Gini < 0.382 (hoy 0.450) |
+| Revisión de variable | PSI de una variable > 0.25 o cambio en su definición / fuente | revisar bins y aporte; decidir recalibrar o redesarrollar | PSI variable > 0.25 |
+| Revisión de overrides | precisión de una regla < tasa oficial de su tramo dos trimestres | bajar de tramo o retirar la regla | p. ej. pensión detenida (D14.5) |
+| Capacidad | casos Crítico/Alto sin contacto dentro de SLA > 20% | revisar capacidad (3% / 10%) con Head of PB | Crítico 3%, Alto 10% (supuestos) |
+
+Roles (estilo SR 11-7): **dueño del modelo** Head of Private Banking (uso y capacidad); **desarrollador** Analytics
+(este documento, re-ejecución con `run_all.sh`); **validación independiente** Model Risk Management (revisión anual y en
+cada redesarrollo); **comité** mensual de retención (revisa el 100% del Crítico, muestra del Alto y overrides).
+
+### Resumen del documento de modelo
+
+| Elemento | Decisión | Sección |
+|:--|:--|:--|
+| Target | `hard_churn_6m` (salida total en 6m); soft y unión como sensibilidad | 1 |
+| Datos | 20,000 hogares sintéticos, corte único 2025-12-31; 123 excluidos (muerte / reubicación) | 0, 1, 3 |
+| Ventanas | señales de 30–180 días y baseline 6m antes de T0; outcome (T0, T0+6m] | 1, 2 |
+| Exclusiones de variables | outcomes, compuestos, `snapshot_date`, `household_id`; buró por FCRA; edad por fair lending | 2, 10 |
+| Binning | optbinning monótono; bins de "no aplica" / "sin dato"; mínimo 5% continuas / 1% discretas con ≥ 30 eventos | 9 |
+| Diagnóstico de estructura | 21 pares con |ρ| > 0.6 en 3 bloques; PCA difuso (PC1 18%) | 8 |
+| Segmentación | 3 clusters estructurales sin diferencia de churn; sin modelos separados; `segment` forzada | 7 |
+| Campeón | A: logística sobre WoE, 10 señales + `segment`, β > 0 | 11 |
+| Versión ejecutiva | A-lite: 4 señales + `segment` (tarjeta de 5 renglones) | 11, 12 |
+| Challenger | LightGBM monótono: no supera a A (ΔAUC −0.002) | 11 |
+| Escala | S₀ = 600, 15:1, PDO = 40; puntos enteros; Crítico 3%, Alto 10% (capacidad), overrides medidos | 12 |
+| Validación | holdout AUC 0.725, KS 0.33, decil top 38% de eventos; supera a `multi_signal_count` (diferencia pareada) | 13 |
+| Calibración | Platt en OOF; b holdout 0.88; cola alta algo extrema en holdout | 14 |
+| Estabilidad | PSI 0.003; AUC 0.69–0.78 por sub-población; β estables; re-binning ±0.004 | 15 |
+| Acción | 3 arquetipos; playbook tramo × arquetipo; EWS; punto ciego: desenganche silencioso | 16 |
+
+### Qué cambiaría con datos reales del banco
+
+- **OOT real**: entrenar con cohortes de meses anteriores y validar en los últimos 6; hoy la estabilidad temporal no
+  se puede probar (la CV repetida la sustituye solo en parte).
+- **Features reconstruidas**: calcular las señales desde transacciones con una definición auditable, en vez de
+  recibirlas pre-ingenierizadas. Permitiría cubrir los huecos de tendencia, aceleración y persistencia (D5.4).
+- **Señales de engagement** (uso de app, sesiones, sentimiento e intención de salida en el Client Assistant,
+  reuniones): son la vía para ver el Desenganche silencioso, hoy el punto ciego (D16.2).
+- **Capacidad real**: número de banqueros y hogares por banquero para fijar Crítico y Alto con datos (hoy 3% y 10%
+  son supuestos).
+- **Tiempo al evento**: con historia de salidas, un modelo de supervivencia daría también cuándo, no solo si.
+- **Buró**: si Legal documenta propósito permisible, reevaluar `bureau_new_mortgage_elsewhere` (hoy sin aporte
+  incremental).
+- **Uplift**: con el grupo de control del 10–15% en Alto, medir el efecto de la retención y pasar de "quién se va" a
+  "a quién le sirve el contacto".
+- **UHNW**: con más historia (más de 100 eventos) evaluar calibración y quizás un modelo propio.
+
+### Preguntas para el equipo de datos
+
+1. ¿Cómo se calculan exactamente las señales pre-ingenierizadas (ventanas, pisos, exclusiones) y desde qué sistema?
+2. ¿Qué condiciones generan el missing operativo? < 3 contactos, campo de reuniones no registrado, piloto del
+   Assistant, sin vencimientos. ¿Se pueden observar como columnas?
+3. ¿Por qué 134 hogares sin `has_pension_stream` tienen flag de pensión, y 232 con nómina no tienen flag de salario?
+   (D0.4, D3.3)
+4. ¿`client_reply_rate` sin dato significa "el banquero contactó menos de 3 veces"? Si es así, ¿existe el conteo de
+   contactos? Es la señal central del Desenganche silencioso.
+5. ¿Cómo se define y fecha una salida total (hard churn) y una contracción (soft churn) en los sistemas? ¿Cómo se marcan
+   muerte y reubicación?
+6. ¿Hay historia mensual de al menos 24 meses para reconstruir cohortes y un OOT?
+7. ¿Qué base legal existe para usar datos de buró con fines de retención?
+8. ¿Cuántos banqueros y qué carga por banquero hay, para fijar la capacidad de Crítico y Alto?
+
+### Limitaciones
+
+- **Base sintética** [DATA-SINT]: todas las cifras salen de un generador; describen el método, no a un banco real.
+  Relaciones como "la estructura no predice churn" pueden ser propiedad del generador.
+- **Corte único**: sin OOT ni tiempo al evento; la estabilidad temporal no está probada. La brecha CV–holdout
+  (0.764 vs 0.725) no se explica por población (PSI 0.003), pero tampoco se puede separar de un efecto temporal.
+- **UHNW con 80 eventos** (24 en holdout): métricas con intervalos anchos (AUC 0.72 [0.63, 0.82]); no hay base para un
+  modelo ni una calibración propia.
+- **Features pre-ingenierizadas** cuyo cálculo original no es auditable desde la base; el missing operativo solo se
+  explica con el diccionario del generador.
+- **Capacidad operativa asumida** (Crítico 3%, Alto 10%); cambia el tamaño de los tramos, no el ranking.
+- **Efecto de la intervención no medible**: al operar, el churn observado en Crítico / Alto bajará por la acción y
+  no por descalibración; hace falta un grupo de control (sección 14).
+- **Mejora moderada sobre la regla existente**: +0.04 de AUC y +5 pp de captura sobre `multi_signal_count`; el
+  criterio original de IC sin traslape no se cumple (D13.3–D13.4).
+- **Punto ciego**: la mitad de los churners (Desenganche silencioso) casi no llega a Crítico / Alto (D16.2).
+- **Decisiones revisadas tras ver resultados** (documentadas): regla de cierre de variables (D10.3), elección de cortes
+  de tramo (D12.2), nombrado de arquetipos (D16.1) y criterio C1 (D13.4). En ningún caso se usó el holdout para ajustar.
+
+**QC** · ver salida de `src/17_report.py`: secciones 0–17 en orden, figuras y tablas referenciadas existentes,
+entregables obligatorios presentes.
+
+**Decisiones y alternativas descartadas**
+- KPIs con línea base del holdout; disparadores numéricos (b, PSI, Gini relativo, precisión de overrides, SLA).

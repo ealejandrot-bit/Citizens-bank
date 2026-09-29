@@ -349,3 +349,11 @@ respuesta baja": se etiqueta como falta de contacto del banquero, lo que convier
 **D16.4 · Asignación de no churners.** Los hogares alertados se asignan al centroide más cercano solo para elegir la
 acción; el arquetipo de un hogar sin eventos es aproximado (el centroide del Desenganche silencioso está cerca del
 perfil sin señales).
+
+## 2026-09-29 · Paso 17
+
+**D17.1 · Gobierno.** KPIs con línea base del holdout [DATA-SINT]; disparadores: recalibración (b ∉ [0.8, 1.2] dos
+trimestres o Crítico fuera de su Wilson dos ciclos), redesarrollo (PSI > 0.25 sostenido o Gini < 0.85 × 0.450 = 0.382),
+revisión de variable (PSI > 0.25), revisión de overrides (precisión < tasa del tramo dos trimestres), capacidad (> 20%
+de casos fuera de SLA). Roles: dueño Head of PB, desarrollo Analytics, validación independiente Model Risk, comité
+mensual de retención.
