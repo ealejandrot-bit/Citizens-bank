@@ -1,0 +1,15 @@
+| rol               | dimensión                   |   columnas |   elegibles |
+|:------------------|:----------------------------|-----------:|------------:|
+| identificador     | —                           |          2 |           0 |
+| estructura        | estructura                  |         12 |          12 |
+| nivel patrimonial | nivel patrimonial           |          5 |           5 |
+| señal             | salida de activos           |          7 |           7 |
+| señal             | deterioro de saldos         |          3 |           3 |
+| señal             | externalización/competencia |          9 |           9 |
+| señal             | ingresos recurrentes        |          5 |           5 |
+| señal             | pérdida de productos        |          4 |           4 |
+| señal             | fricción de servicio        |          4 |           4 |
+| señal             | relación con banquero       |          4 |           4 |
+| señal             | rendimiento                 |          1 |           1 |
+| compuesto         | compuesto                   |          2 |           0 |
+| outcome           | outcome                     |          4 |           0 |

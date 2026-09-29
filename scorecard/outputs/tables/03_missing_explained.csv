@@ -1,0 +1,35 @@
+variable,% missing,causa,NaN estructural (no aplica),valor donde no aplica,NaN restante | historia<24,NaN restante | historia=24,% missing restante no estructural,máx history_months con NaN restante
+fixed_income_maturity_not_reinvested,73.91,operativa: sin vencimientos,0,0,1055,13727,73.91,24.0
+business_payroll_stopped_flag,73.89,estructural + historia corta + patrón no detectado por el algoritmo de recurrencia,14713,0,13,51,0.32,24.0
+relationship_dissatisfaction_flag,70.45,operativa: fuera del piloto del Assistant,0,0,985,13104,70.45,24.0
+trustee_change_flag,68.13,estructural,13626,0,0,0,0.0,
+pension_deposit_stopped_flag,65.74,estructural + historia corta + patrón no detectado por el algoritmo de recurrencia,13065,134,23,61,0.42,24.0
+meetings_cancelled_by_client,60.72,operativa: campo no registrado por el banker,0,0,858,11287,60.72,24.0
+client_reply_rate,47.99,operativa: < 3 contactos en 90d,0,0,671,8927,47.99,24.0
+salary_deposit_stopped_flag,47.3,estructural + historia corta + patrón no detectado por el algoritmo de recurrencia,9228,0,42,190,1.16,24.0
+return_vs_benchmark,41.0,estructural + historia corta,7948,0,251,0,1.26,11.0
+aum_vs_baseline_pct,15.0,estructural + historia corta,2870,0,131,0,0.66,6.0
+cash_pct_of_portfolio_chg,15.0,estructural + historia corta,2870,0,131,0,0.66,6.0
+positions_liquidated_pct,14.59,estructural + historia corta,2870,0,48,0,0.24,3.0
+aum_outflow_90d,14.49,estructural + historia corta,2870,0,27,0,0.14,2.0
+aum_outflow_pct_90d,14.49,estructural + historia corta,2870,0,27,0,0.14,2.0
+investment_redemption_pct,14.49,estructural + historia corta,2870,0,27,0,0.14,2.0
+aum,14.35,estructural,2870,0,0,0,0.0,
+recurring_deposit_stopped_flag,7.46,estructural + historia corta + patrón no detectado por el algoritmo de recurrencia,1344,0,107,42,0.74,24.0
+recurring_deposit_change_pct,7.4,estructural + historia corta + patrón no detectado por el algoritmo de recurrencia,1344,0,78,57,0.68,24.0
+bureau_new_mortgage_elsewhere,5.04,operativa: sin propósito permisible (FCRA) / sin aprobación legal,0,0,75,933,5.04,24.0
+new_external_destinations_90d,3.48,historia corta (< 24 meses),0,0,696,0,3.48,15.0
+deposit_balance_vs_6m_avg_pct,0.79,historia corta + saldo base < $10k,0,0,153,5,0.79,24.0
+outflow_vs_baseline_pct,0.76,historia corta (< 24 meses),0,0,153,0,0.76,6.0
+share_of_wallet_change,0.76,historia corta (< 24 meses),0,0,153,0,0.76,6.0
+deposit_balance_change_pct_90d,0.55,historia corta + saldo base < $10k,0,0,106,4,0.55,24.0
+banker_change_6m_flag,0.53,historia corta (< 24 meses),0,0,106,0,0.53,5.0
+products_closed_180d,0.53,historia corta (< 24 meses),0,0,106,0,0.53,5.0
+net_deposit_flow_pct_90d,0.29,historia corta + saldo base < $10k,0,0,53,4,0.29,24.0
+transfer_to_competitor_pct_90d,0.16,historia corta (< 24 meses),0,0,32,0,0.16,2.0
+accounts_closed_90d,0.16,historia corta (< 24 meses),0,0,32,0,0.16,2.0
+external_destination_concentration,0.16,historia corta (< 24 meses),0,0,32,0,0.16,2.0
+net_external_flow_pct_90d,0.16,historia corta (< 24 meses),0,0,32,0,0.16,2.0
+external_transfer_acceleration,0.16,historia corta (< 24 meses),0,0,32,0,0.16,2.0
+transfer_to_competitor_bank_amount_90d,0.16,historia corta (< 24 meses),0,0,32,0,0.16,2.0
+external_transfer_pct_of_balance_60d,0.08,historia corta (< 24 meses),0,0,16,0,0.08,1.0
