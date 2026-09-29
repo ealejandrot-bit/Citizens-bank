@@ -269,3 +269,20 @@ Resultado A (holdout): Alto 10.2% de hogares, churn 11.4% (antes 9.0%); saltos 2
 2.57× / 2.60× / 2.82×); lift Crítico/Estable 12.3×. En conjunto los overrides son 47% del Alto en holdout (282 de 606).
 - Descartado: Alto sin capacidad (opción a); cupo ocupado solo por p_cal (dejaría fuera overrides con precisión
   20–33%, mayor que la del margen del modelo, ~12%).
+
+## 2026-09-29 · Paso 13
+
+**D13.1 · Criterios de aprobación** (fijados antes de calcularlos; umbrales estándar de la práctica, no ajustados a
+los resultados): C1 supera a `multi_signal_count` y `multi_signal_flag` en AUC y captura del decil top con IC sin
+traslape [GATE, del brief]; C2 AUC holdout IC inferior > 0.65; C3 KS ≥ 0.25; C4 captura decil top ≥ 30%; C5 captura de
+valor decil top ≥ 25%; C6 tasa por decil monótona (Spearman ≤ −0.90); C7 AUC UHNW ≥ 0.60 (informativo).
+**D13.2 · KS con empates.** El KS por orden de filas es ambiguo con puntajes empatados (benchmarks discretos); se
+calcula como máx(TPR − FPR) sobre umbrales únicos.
+**D13.3 · QC GATE FALLIDO (C1) — pendiente de decisión del usuario.** En holdout (360 eventos) A supera a
+`multi_signal_flag` sin traslape, pero frente a `multi_signal_count` los IC marginales se traslapan: AUC 0.725
+[0.696, 0.757] vs 0.683 [0.653, 0.715]; captura decil top 37.7% [33.0, 42.2] vs 32.6% [28.7, 36.7]. La prueba pareada
+(mismos hogares, mismas réplicas) sí es significativa: ΔAUC +0.041 [+0.015, +0.064]; Δcaptura +5.1 pp [+2.1, +8.7];
+Δcaptura de valor +4.4 pp [−0.3, +9.8] (no significativa). Evidencia adicional en desarrollo (OOF anidadas, 840
+eventos): AUC 0.764 [0.747, 0.779] vs 0.698 [0.678, 0.716], sin traslape. A-lite vs count en holdout: ΔAUC +0.029
+[0.000, +0.053] (en el límite), Δcaptura +4.7 pp [+1.4, +7.8]. C2–C7 se cumplen en ambos modelos.
+Por la regla del brief el pipeline se detiene hasta que el usuario decida el criterio.

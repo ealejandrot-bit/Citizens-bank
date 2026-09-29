@@ -1,0 +1,14 @@
+| modelo   | benchmark          | métrica                      |   modelo (punto) |   benchmark (punto) |      Δ | IC95 Δ pareado   | IC sin traslape   |
+|:---------|:-------------------|:-----------------------------|-----------------:|--------------------:|-------:|:-----------------|:------------------|
+| A        | multi_signal_count | AUC                          |           0.7248 |              0.6834 | 0.0414 | [0.015, 0.064]   | False             |
+| A        | multi_signal_count | captura eventos decil top    |           0.377  |              0.3256 | 0.0513 | [0.021, 0.087]   | False             |
+| A        | multi_signal_count | captura valor (RV) decil top |           0.358  |              0.3137 | 0.0443 | [-0.003, 0.098]  | False             |
+| A        | multi_signal_flag  | AUC                          |           0.7248 |              0.6407 | 0.0841 | [0.058, 0.108]   | True              |
+| A        | multi_signal_flag  | captura eventos decil top    |           0.377  |              0.2084 | 0.1686 | [0.134, 0.207]   | True              |
+| A        | multi_signal_flag  | captura valor (RV) decil top |           0.358  |              0.2156 | 0.1424 | [0.075, 0.211]   | True              |
+| A-lite   | multi_signal_count | AUC                          |           0.712  |              0.6834 | 0.0286 | [0.000, 0.053]   | False             |
+| A-lite   | multi_signal_count | captura eventos decil top    |           0.3726 |              0.3256 | 0.0469 | [0.014, 0.078]   | False             |
+| A-lite   | multi_signal_count | captura valor (RV) decil top |           0.3748 |              0.3137 | 0.0611 | [0.005, 0.119]   | False             |
+| A-lite   | multi_signal_flag  | AUC                          |           0.712  |              0.6407 | 0.0713 | [0.043, 0.094]   | True              |
+| A-lite   | multi_signal_flag  | captura eventos decil top    |           0.3726 |              0.2084 | 0.1642 | [0.123, 0.200]   | True              |
+| A-lite   | multi_signal_flag  | captura valor (RV) decil top |           0.3748 |              0.2156 | 0.1592 | [0.088, 0.228]   | True              |

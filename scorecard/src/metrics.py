@@ -2,15 +2,13 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
+from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score, roc_curve
 
 
 def ks(y, p) -> float:
-    o = np.argsort(-p)
-    y = np.asarray(y)[o]
-    cb = np.cumsum(y) / y.sum()
-    cg = np.cumsum(1 - y) / (1 - y).sum()
-    return float(np.max(np.abs(cb - cg)))
+    """KS = máx(TPR − FPR) sobre umbrales únicos (correcto con empates)."""
+    fpr, tpr, _ = roc_curve(np.asarray(y, int), np.asarray(p, float))
+    return float(np.max(tpr - fpr))
 
 
 def all_metrics(y, p) -> dict:
@@ -46,3 +44,34 @@ def bootstrap(y, preds: dict, fn, n=500, seed=42, strata=None) -> dict:
 def ci(a, level=0.95) -> tuple[float, float]:
     lo, hi = np.percentile(a, [100 * (1 - level) / 2, 100 * (1 + level) / 2])
     return float(lo), float(hi)
+
+
+def top_capture_ties(y, p, w=None, q=0.10) -> float:
+    """Captura esperada en el top q con desempate aleatorio: el grupo empatado en el corte aporta su parte proporcional."""
+    y, p = np.asarray(y, float), np.asarray(p, float)
+    w = np.ones_like(y) if w is None else np.asarray(w, float)
+    n = q * len(y)
+    o = np.argsort(-p, kind="stable")
+    ps = p[o]
+    v = ps[int(np.ceil(n)) - 1]
+    above, equal = p > v, p == v
+    frac = (n - above.sum()) / equal.sum()
+    num = (y * w)[above].sum() + frac * (y * w)[equal].sum()
+    return float(num / (y * w).sum())
+
+
+def decile_table(y, p, w=None, lv=None, n=10) -> "pd.DataFrame":
+    import pandas as pd
+    y, p = np.asarray(y, float), np.asarray(p, float)
+    w = np.ones_like(y) if w is None else np.asarray(w, float)
+    lv = np.zeros_like(y) if lv is None else np.asarray(lv, float)
+    r = pd.Series(p).rank(method="first", ascending=False)
+    d = np.ceil(r / len(p) * n).astype(int).to_numpy()
+    df = pd.DataFrame({"decil": d, "y": y, "w": w, "yw": y * w, "lv": lv * y})
+    t = df.groupby("decil").agg(hogares=("y", "size"), eventos=("y", "sum"), valor=("w", "sum"), valor_churners=("yw", "sum"), value_lost=("lv", "sum"))
+    t["tasa %"] = 100 * t.eventos / t.hogares
+    t["lift"] = t["tasa %"] / (100 * y.mean())
+    t["captura acumulada %"] = 100 * t.eventos.cumsum() / y.sum()
+    t["captura valor acumulada %"] = 100 * t.valor_churners.cumsum() / (y * w).sum()
+    t["captura value_lost acumulada %"] = 100 * t.value_lost.cumsum() / max((lv * y).sum(), 1e-9)
+    return t.reset_index()

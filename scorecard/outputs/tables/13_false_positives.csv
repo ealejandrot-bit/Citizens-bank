@@ -1,0 +1,5 @@
+modelo,tramo,hogares,churners,precisión %,tasa falsos positivos % (no churners en el tramo),% de los no churners alertados,RV alertado sin churn $M
+A,Crítico,235,80,34.043,65.957,2.766,2077.643
+A,Alto,606,69,11.386,88.614,9.582,6392.659
+A-lite,Crítico,225,75,33.333,66.667,2.677,2108.082
+A-lite,Alto,609,75,12.315,87.685,9.529,6138.962
