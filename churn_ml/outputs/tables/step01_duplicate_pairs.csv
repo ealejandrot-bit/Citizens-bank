@@ -1,0 +1,9 @@
+grupo,se queda,sale,Spearman con la que queda
+12,new_external_destinations_90d,competitor_x_new_destinations,0.9658
+18,aum_outflow_pct_90d,aum_outflow_90d,0.9788
+18,aum_outflow_pct_90d,aum_outflow_pct_90d_peer,1.0
+23,net_deposit_flow_pct_90d,net_deposit_flow_pct_90d_peer,0.9995
+30,aum_share,deposit_share,-1.0
+39,contact_gap_ratio,contact_gap_ratio_peer,0.9982
+53,aum,relationship_value,0.9658
+53,aum,log_rv,0.9658
