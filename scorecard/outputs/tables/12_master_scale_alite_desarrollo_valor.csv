@@ -1,0 +1,5 @@
+tramo,RV $M,% RV,valor esperado en riesgo $M (Σ p·RV),RV de churners $M (desarrollo OOF),captura valor churners %,captura value_lost %,churn por valor % (RV churners ÷ RV)
+Crítico,6043.772,4.134,2088.337,2530.044,26.142,26.142,41.862
+Alto,43167.142,29.525,4143.455,4202.022,43.417,43.417,9.734
+Vigilancia,56043.045,38.332,2464.315,2439.077,25.202,25.202,4.352
+Estable,40951.415,28.01,855.33,507.045,5.239,5.239,1.238

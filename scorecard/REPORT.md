@@ -20,6 +20,7 @@ predicciones out-of-fold de la CV 5×5 en desarrollo; el holdout los mide.
 9. [Binning, WoE e IV](#9-binning-woe-e-iv)
 10. [Selección de variables](#10-selección-de-variables)
 11. [Estimación: campeón, versión ejecutiva y challenger](#11-estimación-campeón-versión-ejecutiva-y-challenger)
+12. [Escalamiento, tramos y salida por hogar](#12-escalamiento-tramos-y-salida-por-hogar)
 
 ---
 
@@ -894,3 +895,120 @@ Comparación en holdout [DATA-SINT] (5,964 hogares, 360 eventos; solo evaluació
 **Decisiones y alternativas descartadas** · D11.1–D11.7
 - CV anidada para OOF; descartadas las OOF optimistas. Sin interacciones. Eliminación hacia atrás p > 0.05.
 - Dos versiones: A (operativa) y A-lite (ejecutiva). LightGBM descartado como campeón.
+
+---
+
+## 12. Escalamiento, tramos y salida por hogar
+
+**Objetivo**
+- Convertir el modelo en puntos legibles, tramos de acción con gobernanza, overrides probados y una salida por hogar
+  con sus tres razones principales, para A (operativo) y A-lite (ejecutivo).
+
+**Por qué**
+- El banquero y la dirección no leen log-odds: leen puntos, tramos y razones. Los tramos deben reflejar capacidad y
+  separar riesgo de verdad; los overrides deben ganarse su lugar con precisión medida.
+
+**Método y fórmulas**
+- odds = buenos:malos; Factor = PDO/ln 2 = 57.71; Offset = S₀ − Factor·ln O₀ = 443.72 (S₀ = 600, O₀ = 15, PDO = 40).
+  Score = Offset + Factor·ln(odds). Puntos por bin = (βⱼ·WoEⱼ + β₀/n)·Factor + Offset/n, redondeados (D12.1).
+  **Mayor score = menor churn. El score no es probabilidad.**
+- Probabilidad calibrada (capa modelo): logit(p_cal) = a + b·logit(p), Platt sobre OOF anidadas de desarrollo (DM.1).
+- Tramos sobre p_cal: Crítico = top 3% (capacidad); Alto / Vigilancia / Estable por rejilla con salto ≥ 2×, lift
+  C/E ≥ 5×, ≥ 70 eventos por tramo en desarrollo; máximo margen de separación (D12.2). Decididos en desarrollo,
+  reportados en holdout.
+- Overrides: precisión en desarrollo → Crítico (≥ 25%), Alto (12–25%) o fuera (< 12%); ≤ 30% del tramo por regla;
+  solo suben de tramo (D12.3).
+- Reason codes: 3 bins con mayor pérdida de puntos vs neutral (WoE = 0), sin `segment` (D12.4).
+- Prioridad dentro del tramo = p_cal × `relationship_value`.
+
+**Código** · `src/12_scaling.py`
+
+**Salida** · `outputs/tables/12_scorecard_lookup.csv` (A), `12_scorecard_lookup_alite.csv`, `12_scaling_params.csv`,
+`12_master_scale_{a,alite}_{holdout,desarrollo}_{hogares,valor}.csv`, `12_overrides_{a,alite}.csv`, `12_tramo_grid_*.csv`;
+`outputs/scored/scored_households.csv`
+
+Scorecard A-lite · la tarjeta ejecutiva [DATA-SINT] (score = suma de 5 renglones; más puntos = menos riesgo):
+
+| Señal | Rango | Puntos |
+|:--|:--|--:|
+| Cambió de banquero (6m) | no / sí / sin dato | 138 / 69 / 120 |
+| Tasa de respuesta al banquero | < 34.5% / 34.5–54.8% / 54.8–66.9% / ≥ 66.9% / sin dato | 116 / 132 / 153 / 172 / 102 |
+| Transferencias externas / saldo (60d) | < 1.5% / 1.5–8.0% / ≥ 8.0% / sin dato | 131 / 122 / 67 / 120 |
+| Share of wallet | < 12.4% / 12.4–18.4% / 18.4–23.7% / 23.7–43.7% / 43.7–55.5% / 55.5–90.9% / ≥ 90.9% | 89 / 100 / 116 / 120 / 127 / 132 / 135 |
+| Segmento | HNW / UHNW | 122 / 94 |
+
+Scorecard A · operativo [DATA-SINT] (extracto; completo en `12_scorecard_lookup.csv`):
+
+| Señal | Mejor rango → peor rango (puntos) |
+|:--|:--|
+| Tasa de respuesta al banquero | ≥ 66.9% (96) → sin dato (40) |
+| Rendimiento vs benchmark | ≥ +2.1% (80) → < −5.6% (35) |
+| Cambió de banquero (6m) | no (71) → sí (10) |
+| Share of wallet | ≥ 90.9% (66) → < 12.4% (32) |
+| Brecha de contacto vs cadencia | < 0.03 (64) → ≥ 0.97 (45) |
+| Transferencias externas / saldo (60d) | < 1.5% (61) → ≥ 8.0% (24) |
+| Cambio en depósitos recurrentes | ≥ −11.3% (59) → < −71.6% (31) |
+| Queja repetida | no (57) → sí (20) |
+| Productos cerrados (180d) | 0 (57) → ≥ 3 (26) |
+| Redenciones de inversión (90d) | < 4.1% (57) → ≥ 9.0% (41) |
+| Segmento | HNW (56) / UHNW (30) |
+
+Escala maestra A · por hogares [DATA-SINT] (holdout, 5,964 hogares, 360 eventos):
+
+| Tramo | Score (sin override) | p_cal | Hogares (por override) | % hogares | Esperado % | Observado % | Eventos | Captura % | Lift | Responsable · SLA · gobernanza |
+|:--|:--|:--|:--|--:|--:|--:|--:|--:|--:|:--|
+| Crítico | 360–500 | 26.4–78.7% | 235 (16) | 3.9 | 39.6 | 34.0 | 80 | 22.2 | 5.6 | banquero + Head of PB · ≤ 5 días hábiles · comité revisa 100% |
+| Alto | 501–592 | 7.2–26.0% | 1,361 (457) | 22.8 | 9.5 | 9.0 | 122 | 33.9 | 1.5 | banquero · ≤ 15 días hábiles · comité revisa muestra y overrides |
+| Vigilancia | 593–647 | 3.0–7.1% | 2,466 (0) | 41.3 | 4.6 | 4.5 | 111 | 30.8 | 0.7 | banquero · siguiente contacto · tablero mensual |
+| Estable | 648–724 | 0.8–2.9% | 1,902 (0) | 31.9 | 2.0 | 2.5 | 47 | 13.1 | 0.4 | banquero · cadencia normal |
+
+Escala maestra A · por valor [DATA-SINT] (holdout):
+
+| Tramo | RV $M | % RV | Valor esperado en riesgo Σp·RV $M | RV de churners $M | Captura de valor % | Churn por valor % |
+|:--|--:|--:|--:|--:|--:|--:|
+| Crítico | 2,878 | 4.8 | 1,257 | 800 | 21.9 | 27.8 |
+| Alto | 14,948 | 24.9 | 1,445 | 1,280 | 35.1 | 8.6 |
+| Vigilancia | 24,770 | 41.2 | 1,127 | 1,198 | 32.9 | 4.8 |
+| Estable | 17,473 | 29.1 | 364 | 367 | 10.1 | 2.1 |
+
+Escala maestra A-lite [DATA-SINT] (holdout): Crítico 3.8% de hogares, observado 33.3%, captura 20.8% de eventos y 20.1%
+del valor; Alto 27.1% / 8.3% / 37.2% / 44.4%; Vigilancia 40.8% / 4.6% / 31.4% / 26.9%; Estable 28.3% / 2.2% / 10.6% / 8.6%.
+
+![Tramos A vs A-lite](outputs/figures/12_tramos.png)
+
+Overrides [DATA-SINT] (decididos en desarrollo, precisión en holdout; iguales para A y A-lite):
+
+| Regla | Precisión dev % | Precisión holdout % | Precisión incremental dev % (fuera de Crítico) | Tramo |
+|:--|--:|--:|--:|:--|
+| Pensión detenida (D9.1) | 29.0 | 37.5 | 36.1 | Crítico |
+| Transferencias a competidores ≥ 10% del saldo | 30.3 | 27.7 | 21.8 | Alto (aportaría > 30% del Crítico) |
+| ≥ 2 destinos externos nuevos (90d) | 21.8 | 33.0 | 9.7 | Alto |
+| Queja repetida | 20.6 | 24.7 | 13.0 | Alto |
+| Cambio de trustee | 19.5 | 24.5 | 11.3 | Alto |
+| Cambio de banquero (6m) | 17.4 | 15.6 | 12.9 | Alto |
+| Queja escalada | 17.3 | 15.9 | 11.3 | Alto |
+| Insatisfacción confirmada (Assistant) | 15.9 | 19.2 | 11.1 | Alto |
+
+Lectura:
+- **Crítico funciona**: 3.9% de los hogares, 34% de churn observado (5.6× la base) y 22% de los eventos y del valor
+  perdido. El esperado (39.6%) supera al observado → el paso 14 revisa la calibración de la cola.
+- **Estable es de verdad estable**: 32% de los hogares con 2.5% de churn. Lift Crítico/Estable 13.8×.
+- **Saltos en holdout**: 3.8× / 1.99× / 1.82×. Alto/Vigilancia y Vigilancia/Estable quedan justo bajo 2× (en desarrollo
+  fueron 3.45× / 2.42× / 2.70×). Se reporta sin reajustar (DM.1, D12.2).
+- **Carga del tramo Alto**: 22.8% de los hogares (~4,600 en la cartera) con SLA de 15 días, y un tercio entra por
+  override. Es la decisión operativa abierta más importante (ver pregunta al final).
+- **A vs A-lite**: coinciden en el tramo en 85.5% de los hogares y en 81% del Crítico de A (567 de 696). A-lite
+  concentra algo menos en Crítico (20.8% vs 22.2% de eventos).
+- Ejemplo de reason codes (Crítico, score 367): "cambió de banquero: sí (−45 pts) · queja repetida: sí (−35 pts) ·
+  transferencias externas ≥ 8.0% (−31 pts)".
+
+**QC** · 23 PASS · 2 WARN · 0 FAIL
+- Tramos suman 100% de hogares; captura de eventos y de valor suman 100%; churn de cartera = Σ share × tasa
+  (6.0362%); score monótono en p; Crítico total (706) ≤ capacidad + 30%; ≥ 30 eventos por tramo en holdout (A mín.
+  47; A-lite mín. 38); corte factible en desarrollo; 20,000 hogares en el archivo (123 excluidos con bandera);
+  `segment` fuera de reason codes; sin outcomes en el archivo.
+- WARN: salto ≥ 2× entre tramos contiguos no se cumple en holdout (A 1.99× / 1.82×; A-lite 1.79×).
+
+**Decisiones y alternativas descartadas** · D12.1–D12.5
+- Puntos enteros; tramos con OOF y regla de máximo margen (descartada "más Estable"); overrides medidos; `segment`
+  fuera de reason codes; etiquetas legibles.

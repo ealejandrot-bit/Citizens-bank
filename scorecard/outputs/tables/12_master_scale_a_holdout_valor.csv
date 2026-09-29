@@ -1,0 +1,5 @@
+tramo,RV $M,% RV,valor esperado en riesgo $M (Σ p·RV),RV de churners $M (holdout),captura valor churners %,captura value_lost %,churn por valor % (RV churners ÷ RV)
+Crítico,2877.632,4.791,1257.089,799.989,21.949,21.949,27.8
+Alto,14948.121,24.885,1444.87,1279.999,35.118,35.118,8.563
+Vigilancia,24769.768,41.236,1127.305,1197.762,32.862,32.862,4.836
+Estable,17472.791,29.088,364.396,367.051,10.071,10.071,2.101

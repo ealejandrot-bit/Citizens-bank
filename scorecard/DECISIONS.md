@@ -234,3 +234,27 @@ contribución al logit es chica (0.10) aunque β sea grande. Se mantiene por dis
 **D11.7 · Hallazgo: holdout más difícil que la CV.** AUC holdout 0.725 vs 0.764 anidado; B muestra la misma brecha
 (0.722 vs 0.758), así que no es sobreajuste específico de A sino variación de muestra (360 eventos; IC ±0.03). Se
 revisa con PSI desarrollo vs holdout en el paso 15. Pendiente de calibración en holdout 0.84 → se corrige en el paso 14.
+
+## 2026-09-29 · Paso 12
+
+**D12.1 · Escala y puntos enteros.** Factor = 40/ln 2 = 57.71; Offset = 600 − 57.71·ln 15 = 443.72. Puntos por bin
+redondeados a entero (tabla legible para dirección); score oficial = Σ puntos enteros; error de redondeo ≤ n/2 puntos
+(5.5 en A, 2.5 en A-lite). La probabilidad sale de la calibración, no del score.
+**D12.2 · Tramos decididos con OOF de desarrollo (DM.1).** Platt (capa modelo) ajustado sobre OOF anidadas:
+A a = −0.089, b = 0.962; A-lite a = −0.054, b = 0.977 (el paso 14 lo valida). Crítico = top 3%. Búsqueda en rejilla
+de los otros dos cortes con restricciones del brief (salto ≥ 2×, lift C/E ≥ 5×, ≥ 70 eventos por tramo en desarrollo).
+- Regla inicial de elección (más hogares en Estable) **revisada**: elegía cortes al borde de la factibilidad
+  (Vigilancia de 4.3% y 15 eventos en holdout; saltos 1.89× y 1.49× en holdout). Regla adoptada: máximo margen de
+  separación (ratio contiguo mínimo), desempate por Estable más grande. Cortes A: p_cal ≥ 26.2% / 7.2% / 3.0%
+  (3% / 19% / 66% acumulado). A-lite: 23.0% / 5.9% / 3.0%.
+- Hallazgo: en holdout A cumple lift (13.8×) pero el salto Vigilancia/Estable es 1.82× y Alto/Vigilancia 1.99×;
+  no se reajusta sobre el holdout (DM.1). Consistente con D11.7.
+**D12.3 · Overrides decididos en desarrollo.** Precisión ≥ 25% → Crítico; 12–25% → Alto; < 12% → fuera; una regla que
+aportaría > 30% del tramo baja un nivel o sale. Resultado A: pensión detenida → Crítico (29.0% dev / 37.5% holdout);
+transferencias a competidores ≥ 10% (30.3%, bajó de Crítico a Alto por aportar > 30% del Crítico), cambio de banquero,
+queja escalada, queja repetida, insatisfacción, cambio de trustee y ≥ 2 destinos nuevos → Alto (15.9–21.8%). Ninguna
+eliminada. En conjunto los overrides aportan 34% del Alto en holdout (457 de 1,361): la regla del brief es por regla, no
+agregada; se reporta para decisión de capacidad.
+**D12.4 · `segment` fuera de reason codes.** Es estructural y no accionable; con β inestable (D11.6) su bin UHNW resta
+26 puntos y aparecía como driver ("riesgo por ser UHNW"). Sigue dentro del score por diseño.
+**D12.5 · Etiquetas legibles** en lookup y reason codes (sí/no, rangos con %, "sin dato", "no aplica").
