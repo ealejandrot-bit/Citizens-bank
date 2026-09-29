@@ -14,6 +14,7 @@ synthetic/validate.py       Chequeos por paso (el build falla si alguno no pasa)
 scripts/extract_catalog.py  Excel → data/catalog/variables_catalog.csv
 scripts/build_step0.py      Construye, valida y escribe el Paso 0
 docs/decisiones.md          Log de decisiones y supuestos a validar
+docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
 ```
 
