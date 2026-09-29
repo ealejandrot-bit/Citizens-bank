@@ -1,0 +1,17 @@
+variable,condición,% missing,NaN con has=False,valor con has=False,NaN extra con has=True,NaN extra | history<24
+aum,has_investments = False,14.35,2870.0,0.0,0.0,0.0
+aum_outflow_90d,has_investments = False,14.49,2870.0,0.0,27.0,27.0
+aum_outflow_pct_90d,has_investments = False,14.49,2870.0,0.0,27.0,27.0
+investment_redemption_pct,has_investments = False,14.49,2870.0,0.0,27.0,27.0
+positions_liquidated_pct,has_investments = False,14.59,2870.0,0.0,48.0,48.0
+aum_vs_baseline_pct,has_investments = False,15.0,2870.0,0.0,131.0,131.0
+cash_pct_of_portfolio_chg,has_investments = False,15.0,2870.0,0.0,131.0,131.0
+pension_deposit_stopped_flag,has_pension_stream = False,65.74,13065.0,134.0,84.0,23.0
+business_payroll_stopped_flag,has_linked_business = False,73.89,14713.0,0.0,64.0,13.0
+trustee_change_flag,has_trust = False,68.13,13626.0,0.0,0.0,0.0
+salary_deposit_stopped_flag,has_payroll_stream = False,47.3,9228.0,0.0,232.0,42.0
+return_vs_benchmark,has_advisory = False,41.0,7948.0,0.0,251.0,251.0
+client_reply_rate,operativa: < 3 contactos del banker en 90d,47.99,,,,
+meetings_cancelled_by_client,operativa: el banker no registra el campo,60.72,,,,
+relationship_dissatisfaction_flag,operativa: hogar fuera del piloto del Client Assistant,70.45,,,,
+fixed_income_maturity_not_reinvested,operativa: sin vencimientos de renta fija en la ventana (o sin inversiones),73.91,,,,
