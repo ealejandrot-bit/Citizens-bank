@@ -399,3 +399,50 @@ step4:
     cash_pct_of_portfolio_chg:            {alert: "> 0.10",  rate: [0.03, 0.15], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
     return_vs_benchmark:                  {alert: "<= -0.03", rate: [0.10, 0.40], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: factor}
     positions_liquidated_pct:             {alert: "> 0.15",  rate: [0.01, 0.10], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+
+# ---------------------------------------------------------------------------
+# Paso 5 · Relationship & closures (variables 10, 29, 30, 31, 32)
+# ---------------------------------------------------------------------------
+step5:
+  # Productos de depósito y tarjeta (los demás salen de las banderas del Paso 0).
+  p_savings: 0.70
+  p_money_market: 0.50
+  p_cd: 0.35
+  p_credit_card: 0.60
+  extra_accounts_poisson: {HNW: 0.4, UHNW: 1.2}   # cuentas adicionales por producto
+  # SEÑAL propensión: quien se muda cierra productos 0–90 días después de la mudanza.
+  move_close_p: {checking: 0.45, savings: 0.55, money_market: 0.55, cd: 0.40, brokerage: 0.60,
+                 advisory: 0.60, credit_card: 0.35, credit_line: 0.20, business_account: 0.30}
+  move_close_lag_days: [0, 90]
+  # SEÑAL factor: un episodio de salida cierra ahorro / money market.
+  episode_close_p: 0.30
+  # RUIDO incluido (cuenta como cierre): CD que vence y no se renueva, cierre ocasional.
+  cd_maturity_p_90d: 0.12
+  cd_renewed_p: 0.70                        # renovado → excluido
+  random_close_p_90d: 0.01
+  # RUIDO excluido por el Excel: préstamo pagado a término, conversión / upgrade, consolidación interna.
+  loan_paid_at_term_p_90d: 0.02
+  conversion_p_90d: 0.02
+  consolidation_p_90d: 0.03
+  # Share of wallet: logit(SOW verdadero) = a − b · z_outflow + ruido.
+  sow_logit_intercept: 0.0                  # [Supuesto] SOW mediano ≈ 50%
+  sow_logit_zout: 0.30                      # [Calibrado]
+  sow_logit_noise: 0.90
+  wealth_sources: {declared: 0.40, vendor: 0.45, model: 0.15}
+  wealth_noise_sigma: {declared: 0.10, vendor: 0.35, model: 0.50}
+  estimate_updated_6m_p: 0.10               # si se reestimó, el cambio de SOW refleja la nueva estimación
+  # Trustee: mudanza (propensión), servicio (factor) y ruido; sucesión por muerte = exclusión.
+  trustee_move_p: 0.40
+  trustee_service_intercept: -4.5
+  trustee_service_slope: 0.8
+  trustee_noise_p_12m: 0.01
+  trustee_death_succession_p_12m: 0.01
+  iv_tolerance: 0.03
+  targets:
+    # Ventana de 180 días como principal (el Excel lista 90d y 180d): los cierres por mudanza
+    # llegan meses después del traslado; a 90 días el IV es ≈ 0.23.
+    products_closed_180d:    {alert: ">= 1",     rate: [0.03, 0.15], iv: [0.30, 0.50], strength: Very high, iv_base: all, driver: mixed}
+    accounts_closed_90d:     {alert: ">= 1",     rate: [0.04, 0.20], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    share_of_wallet:         {alert: "<= 0.30",  rate: [0.10, 0.40], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    share_of_wallet_change:  {alert: "<= -0.10", rate: [0.03, 0.20], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed}
+    trustee_change_flag:     {alert: "= 1",      rate: [0.01, 0.08], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}

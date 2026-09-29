@@ -1,6 +1,6 @@
 # Distribuciones por variable
 
-Estado: **Pasos 0 a 4 construidos y validados** (variables 1–9, 17–28, 34). El resto es una
+Estado: **Pasos 0 a 5 construidos y validados** (variables 1–10, 17–32, 34). El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
@@ -113,7 +113,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 28 | return_vs_benchmark | Normal(−0.5pp, 3pp), en esencia exógena (ver pregunta 1) | exógena | ≤ −3pp: ≈ 20% | sin advisory |
 | 34 | positions_liquidated_pct | #9 × proporción en liquidaciones totales ~ Beta(2, 3) | O | > 15%: ≈ 4% | sin inversiones |
 
-### Paso 5 · Relationship & closures
+### Paso 5 · Relationship & closures — CONSTRUIDO (ver decisiones D-20 y docs/reports/step5_report.md; lo de abajo era la propuesta original)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|

@@ -34,6 +34,9 @@ synthetic/investments.py    Paso 4: composición del portafolio, vencimientos, b
 synthetic/validate_common.py Piezas de validación compartidas (calibración, semillas, AUC combinado)
 synthetic/validate_step4.py Validación del Paso 4
 scripts/build_step4.py      Construye, valida y escribe el Paso 4 (+ 20 semillas de referencia)
+synthetic/relationship.py   Paso 5: cuentas y cierres, share of wallet, trustee → 10, 29, 30, 31, 32
+synthetic/validate_step5.py Validación del Paso 5
+scripts/build_step5.py      Construye, valida y escribe el Paso 5 (+ 20 semillas de referencia)
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
@@ -49,6 +52,7 @@ python scripts/build_step1.py       # genera data/synthetic/step1_*.csv + manifi
 python scripts/build_step2.py       # genera data/synthetic/step2_*.csv + manifiesto
 python scripts/build_step3.py       # genera data/synthetic/step3_*.csv + catálogo + manifiesto (~2.5 min)
 python scripts/build_step4.py       # genera data/synthetic/step4_*.csv + manifiesto
+python scripts/build_step5.py       # genera data/synthetic/step5_*.csv + manifiesto
 python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
@@ -66,4 +70,5 @@ salida, así que si un rebuild da otro hash, algo cambió.
 | 2 | Recurring deposits & flows: variables 3, 4, 5, 6, 19, 20 | Construido y validado (71 pruebas, 20 semillas) |
 | 3 | Transfers: variables 7, 8, 21, 22, 23, 24, 25 | Construido y validado (71 pruebas, 20 semillas) |
 | 4 | Investments: variables 9, 26, 27, 28, 34 | Construido y validado (53 pruebas, 20 semillas) |
-| 5–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |
+| 5 | Relationship & closures: variables 10, 29, 30, 31, 32 | Construido y validado (56 pruebas, 20 semillas) |
+| 6–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |

@@ -99,3 +99,16 @@ STEP4_COLUMNS: dict[str, tuple[str, str]] = {
     "return_vs_benchmark": ("fracción", "#28 · TWR neto 12m − benchmark por perfil (−0.03 = −3 pp); NULL sin advisory"),
     "positions_liquidated_pct": ("fracción", "#34 · posiciones vendidas completas sin reemplazo 90d ÷ valor hace 90d (alerta > 15%)"),
 }
+
+# Paso 5 · Relationship & closures (variables 10, 29, 30, 31, 32 del Excel)
+STEP5_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "products_closed_90d": ("entero", "#10 · productos distintos cerrados en 90d (sin CD renovado, préstamo a término, conversión, consolidación)"),
+    "accounts_closed_90d": ("entero", "#29 · cuentas cerradas en 90d (sin consolidación interna ni CD renovado)"),
+    "products_closed_180d": ("entero", "#10 · versión 180d (principal, D-20)"),
+    "accounts_closed_180d": ("entero", "#29 · versión 180d"),
+    "share_of_wallet": ("fracción", "#30 · (AUM + depósitos en Citizens) ÷ patrimonio total estimado, tope 1 (alerta < 30%)"),
+    "wealth_estimate_source": ("categoría", "#30 · fuente de la estimación: declared / vendor / model"),
+    "share_of_wallet_change": ("fracción", "#31 · SOW hoy − SOW hace 6 meses (−0.10 = −10 pp)"),
+    "trustee_change_flag": ("0/1", "#32 · Citizens deja de ser trustee o entra uno externo en 12m; NULL sin trust"),
+}

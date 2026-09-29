@@ -334,6 +334,42 @@ recupera −κ, y ε no entra.
   rendimiento explica el "porqué", pero no anticipa la salida tanto como mover dinero.
 - El AUC combinado de 22 variables es 0.683; el techo sigue en 0.851.
 
+## Paso 5 · Relationship & closures (variables 10, 29, 30, 31, 32)
+
+**D-20 · Cuentas con fecha y motivo de cierre; SOW con patrimonio estimado.**
+- **Tabla de cuentas** (≈ 90 mil): cheques para todos; ahorro, money market, CD y tarjeta según
+  probabilidad; brokerage, advisory, trust, crédito y cuenta de negocio según las banderas del Paso 0;
+  cuentas adicionales por producto (más en UHNW).
+- **Cierres:**
+  - quien se muda cierra productos 0–90 días después del traslado (propensión);
+  - un episodio de salida cierra ahorro o money market (factor);
+  - ruido que cuenta: CD vencido no renovado, cierre ocasional;
+  - ruido que el Excel excluye: CD renovado, préstamo pagado a término, conversión y
+    consolidación interna. De 10,559 cierres en 180 días, se cuentan 3,189 productos.
+  - El ruido se simula sobre 180 días. Primero lo hice solo sobre 90, y eso habría favorecido
+    artificialmente a la ventana larga.
+- **#10 en ventana de 180 días como principal:** los cierres por mudanza llegan meses después del
+  traslado; a 90 días el IV es ≈ 0.23. La de 90 días se conserva, igual que en #8.
+- **SOW:** patrimonio total verdadero estable, con SOW de hace 6 meses ligado a z_outflow (mediana
+  46%). Se estima con tres fuentes de distinta calidad: declarado 40% (error 7%), proveedor 45% (23%)
+  y modelo 15% (33%). La fuente se guarda como pide el Excel. El valor en Citizens sale de las series
+  del Paso 1, así que quien se muda pierde ~20 pp de share. El 10% de hogares reestimados duplica la
+  dispersión del cambio, que es justo la advertencia del Excel.
+- **Trustee:** mudanza (40% de los trusts de quienes se mudan), servicio (z_service) y ruido. La
+  sucesión por muerte es exclusión.
+- Independencia del ruido probada sobre el **sorteo**, no sobre el cierre efectivo: una cuenta que
+  ya se cerró por mudanza no puede convertirse después, y eso induce una correlación aparente.
+
+| Variable | Excel | Alerta | IV (semilla) | Lift |
+|---|---|---|---|---|
+| products_closed_180d | Very high | 9.7% | 0.36 | 3.4× |
+| accounts_closed_90d | High | 14.3% | 0.23 | 1.9× |
+| share_of_wallet | High | 26.7% (< 30%) | 0.27 | 2.2× |
+| share_of_wallet_change | High | 13.7% | 0.23 | 2.7× |
+| trustee_change_flag | High | 4.6% de los trusts | 0.21 | 3.8× |
+
+El AUC combinado de 27 variables es 0.696; el techo sigue en 0.851.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |
