@@ -17,10 +17,18 @@ population:
   relationship_value_sigma: 1.2            # [Supuesto]
   relationship_value_min: 1_000_000        # [Supuesto] piso de Private Bank.
   uhnw_threshold: 30_000_000               # [Deck · slide 69] "UHNW (above $30M)".
+  # Cola Pareto sobre el umbral UHNW (riqueza real ≈ Pareto, α ≈ 1.5). Se conserva
+  # P(valor ≥ $30M) de la LogNormal; por encima, Pareto truncada en [$30M, tope].
+  pareto_tail_alpha: 1.5                   # [Supuesto] ajuste D-13.
+  pareto_tail_max: 1_000_000_000           # [Supuesto] tope: evita varianza infinita.
 
   # Hogares sin cuentas de inversión (solo depósitos): variables de
   # inversión quedan NULL, no cero [Excel · Base definitions "Null vs. zero"].
-  share_deposit_only: 0.15                 # [Supuesto]
+  # P(solo depósitos) cae con el patrimonio (ajuste D-13):
+  # logit p = logit(p_en_mediana) + pendiente · lv, con lv = log-valor estandarizado.
+  # ≈ 31% a $1M, 15% a $4M, 4% a $30M.
+  deposit_only_p_at_median: 0.15           # [Supuesto]
+  deposit_only_slope: -0.80                # [Supuesto]
   # Proporción de depósitos en hogares con inversión ~ Beta(a, b) (media ≈ 0.29).
   deposit_share_beta: [2.0, 5.0]           # [Supuesto]
 
@@ -71,6 +79,10 @@ income:
   # Bono anual como % del sueldo base = bonus_max × Beta(a, b) (media ≈ 50%).
   # Llega en un solo pago al año: rompe la regularidad de la nómina y la
   # detección de flujos recurrentes debe tratarlo aparte (Paso 2).
+  # Ajuste D-13: masa de "sin bono" (bono = 0, no NULL) y piso para quien sí recibe.
+  # Bono = sueldo × [min + (max − min) · Beta(a, b)]  → media ≈ 57% entre quienes reciben.
+  p_no_bonus: 0.25                         # [Supuesto] médicos, abogados socios, etc.
+  bonus_share_min: 0.10                    # [Supuesto]
   bonus_share_beta: [1.5, 3.0]             # [Supuesto]
   bonus_share_max: 1.5                     # [Supuesto]
   pay_frequency: {biweekly: 0.40, semimonthly: 0.45, monthly: 0.15}   # [Supuesto]
@@ -109,6 +121,14 @@ latent:
   idiosyncratic_sd: 0.60                   # [Supuesto]
 
 # ---------------------------------------------------------------------------
+# Distribuciones comunes a los pasos 1+
+# ---------------------------------------------------------------------------
+distributions:
+  # Ruido de colas pesadas de los cambios % y flujos: t-Student estandarizada a
+  # varianza 1. ν = 6 (D-11): curtosis de exceso 3, finita y estable. ν = 4 da infinita.
+  t_df: 6
+
+# ---------------------------------------------------------------------------
 # Paso 0 · Target
 # ---------------------------------------------------------------------------
 target:
@@ -124,3 +144,52 @@ target:
   # Exclusiones (no cuentan como churn) [Deck · slide 59]: muerte, reubicación
   # gestionada por Legacy. Se marcan y su target queda NULL.
   exclusion_rate: 0.006                    # [Supuesto]
+
+# ---------------------------------------------------------------------------
+# Paso 1 · Balances & AUM (series mensuales → variables 1, 2, 17, 18)
+# ---------------------------------------------------------------------------
+# Serie de 24 meses (m = −23..0; 0 = mes que cierra en t), anclada al Paso 0:
+# el saldo de depósitos y el AUM del mes 0 son los del Paso 0. Se simula hacia
+# atrás, así ningún valor del Paso 0 cambia. Ventanas del Excel en días →
+# meses: 30d = 1, 90d = 3, 180d = 6, línea base (t−210d, t−30d] = meses −6..−1.
+step1:
+  months: 24
+  min_balance_for_pct: 10_000              # [Excel · Parameters] saldo mínimo para %.
+  # Depósitos: incrementos log mensuales = μ + σ · t(ν) estandarizada.
+  deposit_drift_monthly: 0.002             # [Supuesto]
+  deposit_sigma_monthly: 0.05              # [Supuesto]
+  # Mercado común a todos los hogares (una draw por mes): μ + σ · t(ν) estandarizada.
+  market_mu_monthly: 0.006                 # [Supuesto] ≈ 7% anual.
+  market_sigma_monthly: 0.040              # [Supuesto] ≈ 14% anual.
+  equity_share_range: [0.30, 1.00]         # [Supuesto] beta del portafolio al mercado.
+  non_equity_return_monthly: 0.003         # [Supuesto] renta fija / cash.
+  idio_return_sigma: 0.010                 # [Supuesto]
+  # Flujos de fondo del AUM (fracción del AUM del mes previo), tipo hurdle.
+  contribution_p: 0.12                     # [Supuesto] P(aporte en el mes)
+  contribution_median: 0.02                # [Supuesto]
+  withdrawal_p: 0.20                       # [Supuesto] retiros para gasto corriente
+  withdrawal_median: 0.01                  # [Supuesto]
+  flow_sigma: 0.80                         # [Supuesto] σ log de los montos
+  # Episodio de salida (SEÑAL): P = logit⁻¹(a + b · z_outflow), duración 1–6 meses
+  # hasta t, intensidad mensual δ ~ LogNormal. Afecta depósitos y AUM.
+  episode_intercept: -3.0                  # [Calibrado] tasa base de episodios (≈ 14%)
+  episode_slope: 2.2                       # [Calibrado] fuerza predictiva (IV)
+  episode_max_months: 6
+  episode_delta_median: 0.14               # [Calibrado] ≈ 14% mensual antes del multiplicador de canal
+  episode_delta_sigma: 0.50
+  episode_channel_range_deposit: [1.0, 2.0] # [Calibrado] multiplicador de δ en depósitos
+  episode_channel_range_aum: [0.3, 1.1]    # [Calibrado] multiplicador de δ en AUM
+  # Choque de liquidez (RUIDO, independiente del riesgo): impuestos, compra de casa.
+  shock_p_12m: 0.10                        # [Supuesto]
+  shock_size_median: 0.25                  # [Supuesto] fracción que sale en el mes
+  shock_size_sigma: 0.50
+  shock_hits_aum_p: 0.50                   # [Supuesto]
+  # Objetivos de calibración. Alerta = umbral ilustrativo del Excel; la tasa es un rango
+  # porque aum_outflow_pct (retiros brutos ÷ AUM promedio) siempre alerta más que
+  # aum_vs_baseline_pct (caída neta ex-mercado) ante el mismo episodio.
+  # IV "High" del Excel → [0.10, 0.30] contra hard_churn_6m.
+  targets:
+    aum_outflow_pct_90d:            {alert: "> 0.10",   rate: [0.06, 0.16], iv: [0.10, 0.30]}
+    deposit_balance_change_pct_90d: {alert: "<= -0.25", rate: [0.06, 0.14], iv: [0.10, 0.30]}
+    aum_vs_baseline_pct:            {alert: "<= -0.20", rate: [0.05, 0.12], iv: [0.10, 0.30]}
+    deposit_balance_vs_6m_avg_pct:  {alert: "<= -0.30", rate: [0.05, 0.14], iv: [0.10, 0.30]}

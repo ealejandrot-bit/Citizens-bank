@@ -1,5 +1,5 @@
 {
-  "step": 0,
+  "step": 1,
   "master_seed": 20260928,
   "currency": "USD",
   "params_sha256": "5b6431d3d012d419aeecca972e15d68c22a508e1b1ec1386a7907781154e8cc0",
@@ -26,23 +26,40 @@
     "pop.relationship_value_tail",
     "pop.tenure",
     "pop.trust",
+    "s1.contribution.occurs",
+    "s1.contribution.size",
+    "s1.deposit_noise",
+    "s1.episode",
+    "s1.episode_delta",
+    "s1.episode_k_aum",
+    "s1.episode_k_dep",
+    "s1.episode_len",
+    "s1.equity_share",
+    "s1.idio_return",
+    "s1.market",
+    "s1.shock",
+    "s1.shock_aum",
+    "s1.shock_month",
+    "s1.shock_size",
+    "s1.withdrawal.occurs",
+    "s1.withdrawal.size",
     "target.exclusion",
     "target.hard",
     "target.soft",
     "target.soft_loss"
   ],
-  "intercepts": {
-    "hard": -3.727222351734336,
-    "soft": -2.619278796446538
-  },
   "outputs": {
-    "step0_households.csv": {
+    "step1_balances.csv": {
       "rows": 20000,
-      "sha256": "7f4cc58fa35bb95b12863bb953c68d2b5bfcad57a805e43d4fbf696b89193f62"
+      "sha256": "a3147da674c3feb19abc2e26913f4f7da80ef826575799f39d6827123751dd27"
     },
-    "step0_truth.csv": {
+    "step1_series.csv": {
+      "rows": 480000,
+      "sha256": "7ee788871df2c261c075d2aac0fcaa5e0944f0b6de28ac16d73b8daa191bcf06"
+    },
+    "step1_truth.csv": {
       "rows": 20000,
-      "sha256": "796f56b4aa3db9977adb6922fa1c4ec9a7476212874df5a2dbb03ac226889936"
+      "sha256": "f6d6df0933e5ba400ec3f2fab930f5e064b10ff908fb02a00e85e5f85bfa5377"
     }
   },
   "checks_passed": true

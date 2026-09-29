@@ -18,6 +18,10 @@ config/validation.yaml      Criterios: α, semillas de referencia, máximos y ba
 synthetic/validate.py       Chequeos por paso (el build falla si alguno no pasa)
 scripts/extract_catalog.py  Excel → data/catalog/variables_catalog.csv
 scripts/build_step0.py      Construye, valida y escribe el Paso 0
+synthetic/balances.py       Paso 1: series mensuales de depósitos y AUM → variables 1, 2, 17, 18
+synthetic/validate_step1.py Validación del Paso 1 (estructura, NULL, calibración, t(6), fuga)
+synthetic/metrics.py        WoE / IV y tendencia de Cochran-Armitage
+scripts/build_step1.py      Construye, valida y escribe el Paso 1 (+ 20 semillas de referencia)
 docs/decisiones.md          Log de decisiones y supuestos a validar
 docs/distribuciones.md      Distribución por variable (Paso 0 construido, 1–37 propuesta)
 docs/reports/               Reporte de cada paso
@@ -29,6 +33,7 @@ docs/reports/               Reporte de cada paso
 pip install -r requirements.txt
 python scripts/extract_catalog.py   # catálogo de variables
 python scripts/build_step0.py       # genera data/synthetic/step0_*.csv + manifiesto
+python scripts/build_step1.py       # genera data/synthetic/step1_*.csv + manifiesto
 python scripts/stats_step0.py       # 200 pruebas estadísticas + 200 semillas de referencia (~1 min)
 python -m pytest                    # tests de semillas, reproducibilidad y suite estadística rápida
 ```
@@ -41,5 +46,6 @@ salida, así que si un rebuild da otro hash, algo cambió.
 
 | Paso | Contenido | Estado |
 |---|---|---|
-| 0 | Población, latentes, target | Construido y validado |
-| 1–8 | Variables por grupo (ver `docs/decisiones.md`) | Pendiente |
+| 0 | Población, latentes, target, ingresos | Construido y validado (200 pruebas) |
+| 1 | Balances & AUM: variables 1, 2, 17, 18 | Construido y validado (50 pruebas, 20 semillas) |
+| 2–8 | Resto de variables por grupo (ver `docs/decisiones.md`) | Pendiente |

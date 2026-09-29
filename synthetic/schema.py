@@ -38,3 +38,17 @@ COLUMNS: dict[str, tuple[str, str]] = {
     "soft_churn_3m": ("0/1", "Contracción > 20% sin salida en (t, t+3m]; NULL si excluido"),
     "value_lost_6m": (USD, "Valor perdido por churn; NULL si excluido"),
 }
+
+# Paso 1 · Balances & AUM (variables 1, 2, 17, 18 del Excel)
+STEP1_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "aum_outflow_30d": (USD, "#1 · max(0, retiros − aportes) de inversión, último mes; NULL sin inversiones"),
+    "aum_outflow_pct_30d": ("fracción", "#1 · aum_outflow_30d ÷ AUM promedio de la ventana"),
+    "aum_outflow_90d": (USD, "#1 · max(0, retiros − aportes) de inversión, últimos 3 meses"),
+    "aum_outflow_pct_90d": ("fracción", "#1 · aum_outflow_90d ÷ AUM promedio (alerta > 10%)"),
+    "deposit_balance_change_pct_30d": ("fracción", "#2 · media último mes ÷ mes previo − 1"),
+    "deposit_balance_change_pct_90d": ("fracción", "#2 · media 3m ÷ 3m previos − 1 (alerta ≤ −25%); NULL si base < $10k"),
+    "deposit_balance_change_pct_180d": ("fracción", "#2 · media 6m ÷ 6m previos − 1"),
+    "aum_vs_baseline_pct": ("fracción", "#17 · AUM ex-mercado t ÷ media meses −6..−1 − 1 (alerta ≤ −20%)"),
+    "deposit_balance_vs_6m_avg_pct": ("fracción", "#18 · depósitos último mes ÷ media meses −6..−1 − 1 (alerta ≤ −30%)"),
+}

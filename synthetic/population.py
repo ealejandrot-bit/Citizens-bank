@@ -42,7 +42,16 @@ def build_population(cfg: dict, seeds: SeedManager) -> tuple[pd.DataFrame, pd.Da
         value[below] = rng.lognormal(mu, p["relationship_value_sigma"], below.sum())
         below = value < p["relationship_value_min"]
 
-    has_investments = seeds.rng("pop.deposit_only").random(n) >= p["share_deposit_only"]
+    # Cola Pareto truncada sobre el umbral UHNW (flujo propio: no altera el cuerpo).
+    T, H, alpha = p["uhnw_threshold"], p["pareto_tail_max"], p["pareto_tail_alpha"]
+    tail = value >= T
+    u = seeds.rng("pop.relationship_value_tail").random(n)
+    value = np.where(tail, T * (1 - u * (1 - (T / H) ** alpha)) ** (-1 / alpha), value)
+
+    # P(solo depósitos) decreciente con el patrimonio; mismo flujo uniforme que antes.
+    lv = (np.log(value) - mu) / p["relationship_value_sigma"]
+    p_dep_only = special.expit(special.logit(p["deposit_only_p_at_median"]) + p["deposit_only_slope"] * lv)
+    has_investments = seeds.rng("pop.deposit_only").random(n) >= p_dep_only
     a, b = p["deposit_share_beta"]
     dep_share = seeds.rng("pop.deposit_share").beta(a, b, n)
     dep_share = np.where(has_investments, dep_share, 1.0)
@@ -159,5 +168,6 @@ def build_population(cfg: dict, seeds: SeedManager) -> tuple[pd.DataFrame, pd.Da
     truth["primary_driver"] = primary_driver
     truth["p_hard_6m"] = p_hard
     truth["p_soft_3m"] = np.where(eligible_soft, p_soft, np.nan)
+    truth["p_deposit_only"] = p_dep_only
     truth.attrs["intercepts"] = {"hard": a_h, "soft": a_s}
     return base, truth

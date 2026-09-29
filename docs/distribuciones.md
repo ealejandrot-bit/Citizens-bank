@@ -1,6 +1,7 @@
 # Distribuciones por variable
 
-Estado: **Paso 0 construido**. Variables 1–37: **propuesta para revisión**, todavía no generadas.
+Estado: **Paso 0 y Paso 1 construidos y validados** (variables 1, 2, 17, 18). El resto es una
+**propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
 
@@ -34,9 +35,9 @@ igual que en la realidad.
 
 | Columna | Distribución | Parámetros |
 |---|---|---|
-| relationship_value | LogNormal truncada (remuestreo bajo el piso) | mediana $4M, σ = 1.2, piso $1M |
+| relationship_value | LogNormal truncada (remuestreo bajo el piso) con cola Pareto truncada ≥ $30M | mediana $4M, σ = 1.2, piso $1M; cola α = 1.5, tope $1B |
 | segment | Determinística | UHNW si valor ≥ $30M |
-| has_investments | Bernoulli | 0.85 |
+| has_investments | Bernoulli con p según patrimonio | P(solo depósitos) = logit⁻¹(logit 0.15 − 0.8·lv): 31% a $1M → 4% a $30M |
 | deposit_balance | valor × Beta(2, 5) (100% si no hay inversiones) | media de la proporción ≈ 0.29 |
 | aum | valor − depósitos (NULL sin inversiones) | — |
 | age_primary | Normal truncada, redondeada hacia abajo | 61 ± 12, rango [28, 95] |
@@ -50,7 +51,7 @@ igual que en la realidad.
 | has_pension_stream | Bernoulli según edad | retirado 0.85 · activo 0.05 |
 | has_dividend_stream | Bernoulli condicionada a tener inversiones | 0.55 |
 | salary_base_annual | LogNormal ligada al patrimonio (ρ = 0.45), piso $150k por remuestreo | mediana $350k, σ = 0.55 → resultado: mediana $379k, p95 $912k |
-| bonus_annual | sueldo base × 1.5 · Beta(1.5, 3) | media ≈ 50% del base; un pago al año |
+| bonus_annual | 25% sin bono (0); resto: sueldo × [0.10 + 1.40 · Beta(1.5, 3)] | media ≈ 57% entre quienes reciben; un pago al año |
 | pay_frequency | Categórica | quincenal 45% · catorcenal 40% · mensual 15% |
 | pension_monthly | LogNormal ligada al patrimonio (ρ = 0.30), piso $2.5k | mediana $9k (Social Security + pensión privada) |
 | dividend_annual | AUM × rendimiento ~ Beta(4, 196) | rendimiento medio 2%, pagos trimestrales |
@@ -70,7 +71,7 @@ igual que en la realidad.
 Latente: **O** = outflow, **N** = neglect, **S** = service. "Alerta" es el % objetivo de
 hogares elegibles que cruza el umbral del Excel.
 
-### Paso 1 · Balances & AUM (desde la serie mensual de saldo y AUM)
+### Paso 1 · Balances & AUM — CONSTRUIDO (ver decisiones D-12 y docs/reports/step1_report.md)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|

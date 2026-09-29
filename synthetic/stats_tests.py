@@ -58,6 +58,21 @@ def hill_alpha(x: np.ndarray, top: float = 0.01) -> float:
     return 1.0 / np.mean(np.log(x[:k]) - np.log(x[k]))
 
 
+def pareto_trunc_mle(x: np.ndarray, lo: float, hi: float) -> tuple[float, float]:
+    """MLE de α para Pareto truncada en [lo, hi]; error estándar por información observada."""
+    from scipy import optimize
+    n, sl = len(x), np.sum(np.log(x))
+    r = lo / hi
+
+    def nll(a):
+        return -(n * np.log(a) + n * a * np.log(lo) - n * np.log1p(-r**a) - (a + 1) * sl)
+
+    a_hat = optimize.minimize_scalar(nll, bounds=(0.05, 10), method="bounded").x
+    h = 1e-4
+    info = (nll(a_hat + h) - 2 * nll(a_hat) + nll(a_hat - h)) / h**2
+    return a_hat, 1 / np.sqrt(info)
+
+
 def tail_profile(x: np.ndarray) -> dict[str, float]:
     x = np.asarray(x, dtype=float)
     x = x[np.isfinite(x)]
@@ -87,14 +102,23 @@ def _trunc_normal_pit(x, loc, scale, lower=None):
     return (stats.norm.cdf(z) - stats.norm.cdf(a)) / stats.norm.sf(a)
 
 
+def relationship_value_cdf(v: np.ndarray, p: dict) -> np.ndarray:
+    """CDF empalmada: LogNormal truncada en [mín, T) y Pareto truncada en [T, tope]."""
+    mu, sig = np.log(p["relationship_value_median"]), p["relationship_value_sigma"]
+    T, H, a = p["uhnw_threshold"], p["pareto_tail_max"], p["pareto_tail_alpha"]
+    body = _trunc_normal_pit(np.log(np.minimum(v, T)), mu, sig, np.log(p["relationship_value_min"]))
+    f_T = _trunc_normal_pit(np.log(T), mu, sig, np.log(p["relationship_value_min"]))
+    tail = (1 - (T / np.maximum(v, T)) ** a) / (1 - (T / H) ** a)
+    return np.where(v < T, body, f_T + (1 - f_T) * tail)
+
+
 def pit_columns(base: pd.DataFrame, cfg: dict) -> dict[str, np.ndarray]:
     """PIT de cada columna continua con su distribución y parámetros de config."""
     p, inc = cfg["population"], cfg["income"]
     mu, sig = np.log(p["relationship_value_median"]), p["relationship_value_sigma"]
     out = {}
     v = base["relationship_value"].to_numpy()
-    out["relationship_value · LogNormal truncada"] = _trunc_normal_pit(
-        np.log(v), mu, sig, np.log(p["relationship_value_min"]))
+    out["relationship_value · LogNormal truncada + cola Pareto"] = relationship_value_cdf(v, p)
 
     inv = base["has_investments"].to_numpy()
     share = (base["deposit_balance"] / base["relationship_value"]).to_numpy()[inv]
@@ -125,10 +149,11 @@ def pit_columns(base: pd.DataFrame, cfg: dict) -> dict[str, np.ndarray]:
         "business_distribution_annual", inc["business_distribution_median"], inc["business_distribution_sigma"],
         inc["business_distribution_wealth_corr"], None)
 
-    m = base["salary_base_annual"].notna()
-    bshare = (base.loc[m, "bonus_annual"] / base.loc[m, "salary_base_annual"] / inc["bonus_share_max"]).to_numpy()
+    m = base["bonus_annual"] > 0
+    lo_b, hi_b = inc["bonus_share_min"], inc["bonus_share_max"]
+    bshare = ((base.loc[m, "bonus_annual"] / base.loc[m, "salary_base_annual"] - lo_b) / (hi_b - lo_b)).to_numpy()
     a, b = inc["bonus_share_beta"]
-    out["bono / sueldo · 1.5·Beta(1.5,3)"] = stats.beta.cdf(bshare, a, b)
+    out["bono / sueldo (con bono) · 0.1 + 1.4·Beta(1.5,3)"] = stats.beta.cdf(np.clip(bshare, 0, 1), a, b)
 
     m = base["dividend_annual"].notna() & (base["aum"] > 0)
     y = (base.loc[m, "dividend_annual"] / base.loc[m, "aum"]).to_numpy()
@@ -187,12 +212,20 @@ def goodness_of_fit(base: pd.DataFrame, cfg: dict) -> list[dict]:
     res.append(_res("A · Bondad de ajuste", "χ² frecuencia de pago", chi.statistic, len(obs) - 1, chi.pvalue,
                     "gl = categorías − 1"))
 
+    # Solo depósitos: p_i depende del patrimonio y se recalcula aquí desde config (no se estima
+    # nada), así que Hosmer-Lemeshow usa gl = g (no g − 2).
+    lv = (np.log(base["relationship_value"]) - np.log(p["relationship_value_median"])) / p["relationship_value_sigma"]
+    p_dep = special.expit(special.logit(p["deposit_only_p_at_median"]) + p["deposit_only_slope"] * lv).to_numpy()
+    y_dep = (~base["has_investments"]).to_numpy().astype(int)
+    hl, dof, pv = hosmer_lemeshow(y_dep, p_dep, n_estimated=0)
+    res.append(_res("A · Bondad de ajuste", "Hosmer-Lemeshow solo depósitos (p_i conocida)", hl, dof, pv,
+                    "gl = g (0 parámetros estimados)", f"obs {y_dep.mean():.4f} vs E[p] {p_dep.mean():.4f}"))
+
     # Banderas Bernoulli por estrato: prueba binomial exacta.
     uhnw = base["segment"] == "UHNW"
     retired = base["age_primary"] >= p["retirement_age"]
     inv = base["has_investments"]
     checks = [
-        ("has_investments", slice(None), 1 - p["share_deposit_only"]),
         ("has_linked_business · HNW", ~uhnw, p["p_linked_business"]),
         ("has_linked_business · UHNW", uhnw, p["p_linked_business_uhnw"]),
         ("has_trust · HNW", ~uhnw, p["p_trust"]),
@@ -206,6 +239,9 @@ def goodness_of_fit(base: pd.DataFrame, cfg: dict) -> list[dict]:
         ("has_dividend_stream | inversiones", inv, p["p_dividend_stream_given_investments"]),
         ("churn_excluded", slice(None), cfg["target"]["exclusion_rate"]),
     ]
+    has_sal = base["salary_base_annual"].notna()
+    checks.append(("sin_bono | nómina", has_sal, cfg["income"]["p_no_bonus"]))
+    base = base.assign(sin_bono=base["bonus_annual"] == 0)
     for label, mask, prob in checks:
         col = label.split(" ")[0]
         x = base.loc[mask, col]
@@ -266,12 +302,16 @@ def latent_tests(truth: pd.DataFrame, cfg: dict) -> list[dict]:
 # ---------------------------------------------------------------------------
 # C · Target: calibración
 # ---------------------------------------------------------------------------
-def hosmer_lemeshow(y: np.ndarray, p: np.ndarray, g: int = 10) -> tuple[float, int, float]:
-    """HL con g grupos por deciles de p; gl = g − 2."""
+def hosmer_lemeshow(y: np.ndarray, p: np.ndarray, g: int = 10, n_estimated: int = 2) -> tuple[float, int, float]:
+    """HL con g grupos por deciles de p; gl = g − (parámetros estimados en esta muestra).
+
+    g − 2 es el caso clásico de una logística ajustada (intercepto + pendiente). Aquí el
+    target usa la pendiente de config y solo calibra el intercepto en la muestra → gl = g − 1.
+    """
     bins = pd.qcut(p, g, labels=False, duplicates="drop")
     df_ = pd.DataFrame({"y": y, "p": p, "b": bins}).groupby("b").agg(o=("y", "sum"), e=("p", "sum"), n=("y", "size"))
     hl = np.sum((df_.o - df_.e) ** 2 / (df_.e * (1 - df_.e / df_.n)))
-    dof = len(df_) - 2
+    dof = len(df_) - n_estimated
     return hl, dof, stats.chi2.sf(hl, dof)
 
 
@@ -280,12 +320,12 @@ def target_tests(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict) -> list[dic
     el = ~base["churn_excluded"].to_numpy()
     y = base.loc[el, "hard_churn_6m"].astype(int).to_numpy()
     p = truth.loc[el, "p_hard_6m"].to_numpy()
-    hl, dof, pv = hosmer_lemeshow(y, p)
-    res.append(_res("C · Target", "Hosmer-Lemeshow hard churn 6m", hl, dof, pv, "gl = grupos − 2"))
+    hl, dof, pv = hosmer_lemeshow(y, p, n_estimated=1)
+    res.append(_res("C · Target", "Hosmer-Lemeshow hard churn 6m", hl, dof, pv, "gl = g − 1 (intercepto calibrado)"))
     soft_el = truth["p_soft_3m"].notna().to_numpy()
     ys = base.loc[soft_el, "soft_churn_3m"].astype(int).to_numpy()
-    hl, dof, pv = hosmer_lemeshow(ys, truth.loc[soft_el, "p_soft_3m"].to_numpy())
-    res.append(_res("C · Target", "Hosmer-Lemeshow soft churn 3m", hl, dof, pv, "gl = grupos − 2"))
+    hl, dof, pv = hosmer_lemeshow(ys, truth.loc[soft_el, "p_soft_3m"].to_numpy(), n_estimated=1)
+    res.append(_res("C · Target", "Hosmer-Lemeshow soft churn 3m", hl, dof, pv, "gl = g − 1 (intercepto calibrado)"))
     # Cada evento es Bernoulli(p_i) independiente: el total observado vs Σp_i (Poisson-binomial ≈ normal).
     zs = (y.sum() - p.sum()) / np.sqrt(np.sum(p * (1 - p)))
     res.append(_res("C · Target", "Eventos hard observados vs Σ p_i", zs, None, 2 * stats.norm.sf(abs(zs)),
@@ -327,17 +367,26 @@ def kurtosis_tests(base: pd.DataFrame, cfg: dict, alpha: float) -> list[dict]:
         jb = stats.jarque_bera(z)
         res.append(_res("D · Colas y curtosis", f"Jarque-Bera de Φ⁻¹(PIT): {name}", jb.statistic, 2, jb.pvalue,
                         "gl = 2"))
-    # Referencia teórica: log del patrimonio es Normal truncada → curtosis exacta conocida.
+    # Cuerpo: log del patrimonio en [mín, T) es Normal doblemente truncada → curtosis exacta.
     p = cfg["population"]
     mu, sig = np.log(p["relationship_value_median"]), p["relationship_value_sigma"]
-    a = (np.log(p["relationship_value_min"]) - mu) / sig
-    k_theo = float(stats.truncnorm.stats(a, np.inf, moments="k"))
-    lx = np.log(base["relationship_value"].to_numpy())
+    T, H, alpha = p["uhnw_threshold"], p["pareto_tail_max"], p["pareto_tail_alpha"]
+    lo = (np.log(p["relationship_value_min"]) - mu) / sig
+    hi = (np.log(T) - mu) / sig
+    k_theo = float(stats.truncnorm.stats(lo, hi, moments="k"))
+    v = base["relationship_value"].to_numpy()
+    lx = np.log(v[v < T])
     k_obs = stats.kurtosis(lx)
     se = np.sqrt(24 / len(lx))
     zk = (k_obs - k_theo) / se
-    res.append(_res("D · Colas y curtosis", "Curtosis log(relationship_value) vs teórica", zk, None,
-                    2 * stats.norm.sf(abs(zk)), "igual a la teórica", f"obs {k_obs:+.4f} vs teo {k_theo:+.4f}"))
+    res.append(_res("D · Colas y curtosis", "Curtosis log(patrimonio) del cuerpo vs teórica", zk, None,
+                    2 * stats.norm.sf(abs(zk)), "Normal doblemente truncada", f"obs {k_obs:+.4f} vs teo {k_theo:+.4f}"))
+    # Cola: α de la Pareto truncada por máxima verosimilitud; debe recuperar el α configurado.
+    xt = v[v >= T]
+    a_hat, se_a = pareto_trunc_mle(xt, T, H)
+    za = (a_hat - alpha) / se_a
+    res.append(_res("D · Colas y curtosis", "α Pareto de la cola UHNW (MLE truncada)", za, None,
+                    2 * stats.norm.sf(abs(za)), f"α = {alpha}", f"α̂ = {a_hat:.3f} ± {se_a:.3f}; n = {len(xt):,}"))
     return res
 
 
@@ -388,9 +437,13 @@ def money_tests(base: pd.DataFrame, cfg: dict, vcfg: dict) -> list[dict]:
     p = cfg["population"]
     mu, sig = np.log(p["relationship_value_median"]), p["relationship_value_sigma"]
     a = (np.log(p["relationship_value_min"]) - mu) / sig
-    theo = {
-        "relationship_value": np.exp(mu + sig**2 / 2) * stats.norm.sf(a - sig) / stats.norm.sf(a),
-    }
+    T, H, al = p["uhnw_threshold"], p["pareto_tail_max"], p["pareto_tail_alpha"]
+    b_ = (np.log(T) - mu) / sig
+    body_mean = np.exp(mu + sig**2 / 2) * (stats.norm.cdf(b_ - sig) - stats.norm.cdf(a - sig)) / (
+        stats.norm.cdf(b_) - stats.norm.cdf(a))
+    tail_mean = al * T**al / (1 - (T / H) ** al) * (H ** (1 - al) - T ** (1 - al)) / (1 - al)
+    f_T = (stats.norm.cdf(b_) - stats.norm.cdf(a)) / stats.norm.sf(a)
+    theo = {"relationship_value": f_T * body_mean + (1 - f_T) * tail_mean}
     k, th = p["tenure_gamma"]
     old = base["age_primary"] >= 18 + p["tenure_max_years"]
     sh_a, sh_b = p["deposit_share_beta"]
@@ -564,7 +617,7 @@ def seed_metrics(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict) -> dict[str
         "curtosis log valor": stats.kurtosis(np.log(v)),
         "L-curtosis valor": t4,
         "Hill α valor": hill_alpha(v),
-        "KS p relationship_value": stats.kstest(pits["relationship_value · LogNormal truncada"], "uniform").pvalue,
+        "KS p relationship_value": stats.kstest(pits["relationship_value · LogNormal truncada + cola Pareto"], "uniform").pvalue,
         "KS p sueldo": stats.kstest(pits["salary_base_annual · LogNormal ligada, piso $150k"], "uniform").pvalue,
     }
 

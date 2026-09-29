@@ -42,7 +42,10 @@ def build_income(base: pd.DataFrame, cfg: dict, seeds: SeedManager) -> pd.DataFr
     salary = _wealth_linked_lognormal(seeds.rng("income.salary"), lv, inc["salary_base_median"],
                                       inc["salary_sigma"], inc["salary_wealth_corr"], inc["salary_min"])
     a, b = inc["bonus_share_beta"]
-    bonus_share = inc["bonus_share_max"] * seeds.rng("income.bonus").beta(a, b, n)
+    lo_b, hi_b = inc["bonus_share_min"], inc["bonus_share_max"]
+    bonus_share = lo_b + (hi_b - lo_b) * seeds.rng("income.bonus").beta(a, b, n)
+    no_bonus = seeds.rng("income.no_bonus").random(n) < inc["p_no_bonus"]
+    bonus_share = np.where(no_bonus, 0.0, bonus_share)  # aplica y vale 0: cero, no NULL
     freqs = list(inc["pay_frequency"])
     probs = np.array([inc["pay_frequency"][f] for f in freqs])
     pay_freq = seeds.rng("income.pay_frequency").choice(freqs, size=n, p=probs / probs.sum())

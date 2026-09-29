@@ -105,7 +105,16 @@ darían colas muy distintas. Con ν = 5 sigue siendo inestable (CV 0.45). Con ν
 (teórica 3, CV 0.20) y conserva colas pesadas. La máxima verosimilitud recupera ν sin sesgo (< 1%)
 en todos los casos, así que si Citizens entrega datos reales, ν se estima de ellos.
 
-**Hallazgos pendientes de decisión** (no son fallas estadísticas; son de plausibilidad de negocio):
+**D-13 · Ajustes de plausibilidad aplicados** (antes eran hallazgos pendientes):
+- **Solo depósitos según patrimonio:** logit p = logit(0.15) − 0.8·lv → ≈ 31% a $1M, 15% a $4M, 4% a $30M.
+  Resultado: 14.3% en total y 4.2% en UHNW (antes 16.6%).
+- **Bono:** 25% sin bono (bono = 0, no NULL); el resto recibe 10% + 140% × Beta(1.5, 3) del sueldo.
+- **Cola Pareto:** por encima de $30M, Pareto truncada con α = 1.5 y tope de $1B. Se conserva
+  P(≥ $30M), así que el segmento y el target no cambian. La MLE truncada recupera α.
+- **Grados de libertad de Hosmer-Lemeshow corregidos:** el target solo calibra el intercepto en la
+  muestra → gl = g − 1 (antes g − 2). Para solo depósitos, p_i es conocida → gl = g.
+
+Contexto histórico de los hallazgos:
 1. **Hogares grandes solo con depósitos.** La probabilidad de no tener inversiones no depende del
    patrimonio (15% en HNW y UHNW). Hay 183 hogares de más de $30M solo en depósitos, y uno de
    $782M que concentra el 0.4% del libro. Por eso la media de depósitos de esta semilla queda en el
@@ -116,6 +125,44 @@ en todos los casos, así que si Citizens entrega datos reales, ν se estima de e
 3. **Cola del patrimonio.** La LogNormal da un índice de Hill de 2.4 en el top 1%. La riqueza real
    suele tener una cola Pareto más pesada (α ≈ 1.5). Si importa el peso de los UHNW en el AUM
    churn, se puede usar una cola Pareto por encima de $30M.
+
+## Paso 1 · Balances & AUM (variables 1, 2, 17, 18)
+
+**D-12 · Variables calculadas desde series mensuales, no sorteadas.**
+Cada hogar tiene 24 meses de depósitos (promedio mensual) y AUM (cierre de mes), anclados al
+Paso 0 en t y simulados hacia atrás, así ningún valor del Paso 0 cambia. Componentes:
+- **Ruido de fondo:** incrementos log de depósitos = 0.2% + 5% · t(6) estandarizada. La prueba KS
+  y la MLE (ν̂ ≈ 6) confirman que el ruido de la serie es t(6).
+- **Mercado:** un rendimiento común por mes (0.6% + 4% · t(6)), una beta de renta variable por hogar
+  en [0.3, 1.0] y un índice TWR. Así el AUM ex-mercado (#17) solo se mueve con los flujos del cliente.
+- **Flujos de fondo del AUM** (hurdle): aportes P = 12% (mediana 2%) y retiros P = 20% (mediana 1%).
+- **Señal:** episodio de salida con P = logit⁻¹(−3.0 + 2.2 · z_outflow) (≈ 14% de hogares), duración
+  de 1 a 6 meses hasta t, intensidad mensual ~ LogNormal (mediana 14%) con multiplicador por canal
+  (depósitos [1.0, 2.0], AUM [0.3, 1.1]).
+- **Ruido que imita señal:** choque de liquidez independiente del riesgo (10% de hogares en 12
+  meses; impuestos o compra de casa; mediana 25% del saldo). Genera falsos positivos realistas: el
+  12% de los hogares con choque y sin episodio dispara la alerta de AUM.
+- **Ventanas en meses** (aproximación a los días del Excel): 30d = 1, 90d = 3, 180d = 6, línea base
+  (t−210d, t−30d] = meses −6..−1. Los meses anteriores a la apertura no existen → NULL.
+
+**Resultado** (semilla de producción; 20 semillas de referencia en el reporte):
+
+| Variable | Alerta | Tasa | IV hard | Lift de la alerta |
+|---|---|---|---|---|
+| aum_outflow_pct_90d | > 10% | 13.5% | 0.165 | 2.5× |
+| deposit_balance_change_pct_90d | ≤ −25% | 9.7% | 0.149 | 2.5× |
+| aum_vs_baseline_pct | ≤ −20% | 8.4% | 0.146 | 2.5× |
+| deposit_balance_vs_6m_avg_pct | ≤ −30% | 10.7% | 0.168 | 2.5× |
+
+- Las cuatro quedan en la banda "High" (IV 0.10–0.30) en las 20 semillas de referencia.
+- El AUC combinado de las cuatro es 0.60, lejos del techo de 0.85: ninguna variable explica todo.
+- Correlación de Spearman entre #2 y #18 ≈ 0.90: el par redundante del Excel sale redundante,
+  como se esperaba; se decide por IV.
+- La forma es de palo de hockey (plana en el medio, fuerte en la cola), por eso la monotonía se
+  valida con Cochran-Armitage y lift, no con ρ ≈ 1.
+- **Las dos medidas de AUM no pueden alertar igual:** retiros brutos ÷ AUM promedio (#1) siempre
+  alerta más que la caída neta ex-mercado (#17) ante el mismo episodio. Por eso las tasas objetivo
+  son rangos.
 
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 

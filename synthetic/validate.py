@@ -21,6 +21,7 @@ def auc(y: np.ndarray, score: np.ndarray) -> float:
 
 def check_step0(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict) -> list[tuple[str, bool, str]]:
     p, tg = cfg["population"], cfg["target"]
+    inc_cfg = cfg["income"]
     out = []
 
     def add(name, ok, detail):
@@ -45,8 +46,18 @@ def check_step0(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict) -> list[tupl
     add("dividendos ⊂ inversiones", (~base["has_dividend_stream"] | base["has_investments"]).all(), "")
 
     dep_only = 1 - base["has_investments"].mean()
-    add("share deposit-only", abs(dep_only - p["share_deposit_only"]) < 0.015,
-        f"{dep_only:.3f} vs {p['share_deposit_only']}")
+    exp_dep = truth["p_deposit_only"].mean()
+    se_d = np.sqrt((truth["p_deposit_only"] * (1 - truth["p_deposit_only"])).sum()) / len(base)
+    add("share deposit-only = E[p]", abs(dep_only - exp_dep) < 3 * se_d, f"{dep_only:.3f} vs {exp_dep:.3f}")
+    uh = base["segment"] == "UHNW"
+    add("deposit-only UHNW < 8%", (1 - base.loc[uh, "has_investments"].mean()) < 0.08,
+        f"{1 - base.loc[uh, 'has_investments'].mean():.3f}")
+    add("valor ≤ tope Pareto", base["relationship_value"].max() <= p["pareto_tail_max"],
+        f"máx {base['relationship_value'].max():,.0f}")
+    b = base["bonus_annual"].dropna()
+    share_b = b / base.loc[b.index, "salary_base_annual"]
+    add("bono: 0 o ≥ piso", ((share_b == 0) | (share_b >= inc_cfg["bonus_share_min"] - 1e-6)).all(),
+        f"sin bono {(share_b == 0).mean():.3f}")
     uhnw = (base["segment"] == "UHNW").mean()
     add("share UHNW en [2%, 10%]", 0.02 <= uhnw <= 0.10, f"{uhnw:.3%}")
     add("antigüedad < edad adulta", (base["tenure_years"] <= base["age_primary"] - 18 + 1e-9).all(), "")

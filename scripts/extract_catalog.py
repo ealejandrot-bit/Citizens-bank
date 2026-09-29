@@ -44,6 +44,9 @@ STEP_BY_GROUP = {
     "External & composite": 8,
 }
 
+# Variables ya construidas y validadas (se actualiza al cerrar cada paso).
+BUILT = {"aum_outflow", "deposit_balance_change_pct", "aum_vs_baseline_pct", "deposit_balance_vs_6m_avg_pct"}
+
 COLS = {
     "#": "id", "Priority": "priority", "Group": "group", "Variable": "variable",
     "Business definition": "definition", "Calculation (simplified)": "calculation",
@@ -62,7 +65,7 @@ def main() -> None:
     df["id"] = df["id"].astype(int)
     df["applies_to"] = df["variable"].map(APPLIES_TO).fillna("all")
     df["build_step"] = df["group"].map(STEP_BY_GROUP).astype(int)
-    df["status"] = "pending"
+    df["status"] = df["variable"].map(lambda v: "validated" if v in BUILT else "pending")
     assert len(df) == 37 and df["variable"].is_unique, "El Excel debe tener 37 variables únicas"
     assert df["build_step"].notna().all()
     OUT.parent.mkdir(parents=True, exist_ok=True)
