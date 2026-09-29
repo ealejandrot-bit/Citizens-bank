@@ -52,7 +52,9 @@ def make(algo, p, spw, seed=SEED, n=2000):
     q = {"max_depth": p["max_depth"], "num_leaves": 2 ** p["max_depth"], "min_child_weight": p["min_child_weight"], "learning_rate": p["learning_rate"],
          "subsample": p["subsample"], "subsample_freq": 1, "colsample_bytree": p["colsample_bytree"], "reg_lambda": p["reg_lambda"],
          "reg_alpha": p["reg_alpha"], "min_split_gain": p["gamma"]}
-    return lgb.LGBMClassifier(**q, n_estimators=n, monotone_constraints=MONO, scale_pos_weight=spw, random_state=seed, n_jobs=4, verbose=-1)
+    # metric = average_precision: el early stopping mira PR-AUC y no el logloss por defecto (D3.2)
+    return lgb.LGBMClassifier(**q, n_estimators=n, monotone_constraints=MONO, scale_pos_weight=spw, random_state=seed, n_jobs=4, verbose=-1,
+                              metric="average_precision")
 
 
 def fit_es(algo, p, Xtr, ytr, seed=SEED):
@@ -64,7 +66,7 @@ def fit_es(algo, p, Xtr, ytr, seed=SEED):
         m.fit(a, ya, eval_set=[(b, yb)], verbose=False)
         n = m.best_iteration + 1
     else:
-        m.fit(a, ya, eval_set=[(b, yb)], eval_metric="average_precision", callbacks=[lgb.early_stopping(50, verbose=False)])
+        m.fit(a, ya, eval_set=[(b, yb)], callbacks=[lgb.early_stopping(50, first_metric_only=True, verbose=False)])
         n = m.best_iteration_
     return m, n, spw
 
