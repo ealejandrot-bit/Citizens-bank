@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from synthetic.population import build_population  # noqa: E402
+from synthetic.schema import COLUMNS  # noqa: E402
 from synthetic.seeds import SeedManager  # noqa: E402
 from synthetic.validate import check_step0, summarize_step0  # noqa: E402
 
@@ -46,6 +47,7 @@ def main() -> int:
     manifest = {
         "step": 0,
         "master_seed": cfg["master_seed"],
+        "currency": cfg["currency"],
         "params_sha256": sha256(cfg_path),
         "streams": seeds.issued,
         "intercepts": truth.attrs["intercepts"],
@@ -56,11 +58,14 @@ def main() -> int:
     (OUT / "step0_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
 
     lines = ["# Paso 0 · Reporte de población, latentes y target", "",
-             f"Semilla maestra `{cfg['master_seed']}` · {len(base):,} hogares · corte {cfg['snapshot_date']}", "",
+             f"Semilla maestra `{cfg['master_seed']}` · {len(base):,} hogares · corte {cfg['snapshot_date']}"
+             f" · montos en {cfg['currency']}", "",
              "## Chequeos", "", "| Chequeo | Resultado | Detalle |", "|---|---|---|"]
     lines += [f"| {n} | {'OK' if ok else '**FALLA**'} | {d} |" for n, ok, d in checks]
     for title, df in tables.items():
-        lines += ["", f"## {title.capitalize()}", "", df.to_markdown(floatfmt=",.4f")]
+        lines += ["", f"## {title[0].upper() + title[1:]}", "", df.to_markdown(floatfmt=",.4f")]
+    lines += ["", "## Diccionario de columnas", "", "| Columna | Unidad | Descripción |", "|---|---|---|"]
+    lines += [f"| {c} | {COLUMNS[c][0]} | {COLUMNS[c][1]} |" for c in base.columns]
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(lines) + "\n")
 

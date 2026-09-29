@@ -69,6 +69,12 @@ ingreso recurrente mensual mediano $31k (UHNW $108k). Todo esto está por valida
 Agregarlos no cambió ninguna columna previa (flujos de semilla nuevos, D-01). La excepción
 es `has_any_recurring_stream`, que ahora incluye las distribuciones del negocio (+469 hogares).
 
+**D-09 · Moneda: USD.**
+Citizens es un banco de EE. UU.: todos los montos son dólares nominales, sin conversión.
+`config/params.yaml → currency: USD`. Cada columna declara su unidad en
+`synthetic/schema.py` y el build falla si aparece una columna sin declarar. Las
+referencias también son de EE. UU.: ACH/SEC, ABA/SWIFT, Social Security, IRS, CFPB/OCC, FCRA.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |

@@ -5,6 +5,7 @@
 master_seed: 20260928          # Única semilla del proyecto; todo deriva de aquí.
 n_households: 20000            # [Supuesto] Tamaño suficiente para IV/WoE y ML estable.
 snapshot_date: "2025-12-31"    # [Excel · Base definitions] t = corte mensual.
+currency: USD                  # Banco de EE. UU.: todos los montos en dólares nominales, sin FX.
 
 # ---------------------------------------------------------------------------
 # Paso 0 · Población de hogares

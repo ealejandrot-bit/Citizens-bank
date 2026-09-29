@@ -8,6 +8,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from .schema import COLUMNS, USD
+
 
 def auc(y: np.ndarray, score: np.ndarray) -> float:
     """AUC por rangos (Mann-Whitney), sin dependencias externas."""
@@ -25,6 +27,12 @@ def check_step0(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict) -> list[tupl
         out.append((name, bool(ok), detail))
 
     add("filas", len(base) == cfg["n_households"], f"{len(base):,}")
+    add("moneda = USD", cfg.get("currency") == USD, str(cfg.get("currency")))
+    undeclared = sorted(set(base.columns) - set(COLUMNS))
+    add("toda columna declarada en el diccionario", not undeclared, ", ".join(undeclared))
+    money = [c for c, (u, _) in COLUMNS.items() if u == USD and c in base]
+    add("montos USD numéricos y ≥ 0", all(pd.api.types.is_float_dtype(base[c]) and (base[c].dropna() >= 0).all()
+                                           for c in money), f"{len(money)} columnas en USD")
     add("household_id único", base["household_id"].is_unique, "")
     add("piso de relación", (base["relationship_value"] >= p["relationship_value_min"]).all(),
         f"min = {base['relationship_value'].min():,.0f}")

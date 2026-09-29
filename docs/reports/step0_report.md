@@ -1,12 +1,15 @@
 # Paso 0 · Reporte de población, latentes y target
 
-Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
+Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31 · montos en USD
 
 ## Chequeos
 
 | Chequeo | Resultado | Detalle |
 |---|---|---|
 | filas | OK | 20,000 |
+| moneda = USD | OK | USD |
+| toda columna declarada en el diccionario | OK |  |
+| montos USD numéricos y ≥ 0 | OK | 10 columnas en USD |
 | household_id único | OK |  |
 | piso de relación | OK | min = 1,000,062 |
 | depósitos + AUM = relación | OK | máx desvío 0.0100 |
@@ -61,7 +64,7 @@ Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
 | has_dividend_stream      |  0.4642 |
 | has_any_recurring_stream |  0.9326 |
 
-## Ingresos (usd)
+## Ingresos (USD)
 
 |                              |       count |         mean |          std |          min |           5% |          25% |          50% |            75% |            95% |             max |
 |:-----------------------------|------------:|-------------:|-------------:|-------------:|-------------:|-------------:|-------------:|---------------:|---------------:|----------------:|
@@ -72,7 +75,7 @@ Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
 | business_distribution_annual |  5,287.0000 | 852,224.2910 | 984,022.9558 |  27,106.3400 | 134,447.3260 | 315,166.4500 | 567,076.2400 | 1,015,861.6550 | 2,462,868.4400 | 21,847,768.2500 |
 | recurring_income_monthly     | 20,000.0000 |  47,374.8848 |  63,409.4147 |       0.0000 |       0.0000 |  13,416.6550 |  30,628.6150 |    58,242.2925 |   149,424.4855 |  2,194,450.0500 |
 
-## Mediana de ingresos por segmento (usd)
+## Mediana de ingresos por segmento (USD)
 
 |                              |          HNW |           UHNW |
 |:-----------------------------|-------------:|---------------:|
@@ -90,7 +93,7 @@ Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
 | HNW       |  18,782.0000 |       0.0596 |       0.0879 |
 | UHNW      |   1,095.0000 |       0.0731 |       0.0959 |
 
-## Logo vs aum churn
+## Logo vs AUM churn
 
 |    |   logo |   aum_value |   soft_contraction_value |
 |:---|-------:|------------:|-------------------------:|
@@ -118,3 +121,37 @@ Semilla maestra `20260928` · 20,000 hogares · corte 2025-12-31
 | neglect          |   6,181.0000 |       0.0586 |
 | outflow          |   7,494.0000 |       0.0807 |
 | service          |   6,202.0000 |       0.0376 |
+
+## Diccionario de columnas
+
+| Columna | Unidad | Descripción |
+|---|---|---|
+| household_id | id | Identificador del hogar |
+| snapshot_date | fecha | Fecha de corte t (ISO 8601) |
+| segment | categoría | HNW / UHNW (UHNW si relationship_value ≥ USD 30M) |
+| relationship_value | USD | AUM + depósitos en Citizens |
+| deposit_balance | USD | Saldo en depósitos (checking, savings, MM, CD) |
+| aum | USD | Valor de mercado de inversión, custodia y trust; NULL sin inversiones |
+| has_investments | bool | Tiene cuentas de inversión |
+| has_advisory | bool | Tiene cuentas advisory con benchmark |
+| has_linked_business | bool | Tiene un negocio vinculado |
+| has_trust | bool | Tiene trust |
+| has_credit_anchor | bool | Tiene hipoteca o línea de crédito con Citizens |
+| has_payroll_stream | bool | Recibe nómina en Citizens |
+| has_pension_stream | bool | Recibe pensión / Social Security en Citizens |
+| has_dividend_stream | bool | Recibe dividendos en Citizens |
+| has_any_recurring_stream | bool | Tiene al menos un flujo recurrente (incl. negocio) |
+| age_primary | años | Edad del titular principal |
+| tenure_years | años | Antigüedad con el banco |
+| history_months | meses | Historia disponible, tope 24 |
+| salary_base_annual | USD | Sueldo base anual; NULL sin nómina |
+| bonus_annual | USD | Bono anual (un pago); NULL sin nómina |
+| pay_frequency | categoría | biweekly / semimonthly / monthly |
+| pension_monthly | USD | Pensión mensual; NULL sin pensión |
+| dividend_annual | USD | Dividendos anuales; NULL sin flujo de dividendos |
+| business_distribution_annual | USD | Distribuciones anuales del negocio; NULL sin negocio |
+| recurring_income_monthly | USD | Ingreso recurrente mensual sin bono |
+| churn_excluded | bool | Excluido del target (muerte / reubicación) |
+| hard_churn_6m | 0/1 | Salida total en (t, t+6m]; NULL si excluido |
+| soft_churn_3m | 0/1 | Contracción > 20% sin salida en (t, t+3m]; NULL si excluido |
+| value_lost_6m | USD | Valor perdido por churn; NULL si excluido |
