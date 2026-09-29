@@ -1,8 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **2 · fase 0 (perfil)** terminada: 14 de 14 hechos de SPEC §2 coinciden. Siguiente: PASO 3 = fase 1 tras "go".
-- Tests: 7 passed, 1 skipped.
+- Paso actual: **3 · fase 1 (target y población)** terminada: 19,473 hogares tras exclusiones (123 churn_excluded + 404
+  antigüedad < 1). Siguiente: PASO 4 = fase 2 tras "go".
+- Tests: 9 passed, 1 skipped.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -29,8 +30,14 @@
   A-lite (congelado vs re-estimado con su receta), referencia del gate y escala del scorecard.
 - Ninguna otra. `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
 
-## Preguntas abiertas al dueño del dato (heredadas de M1/M2)
-- Regla de `multi_signal_count`; motivo de `churn_excluded`; definición de `value_lost_6m`; fecha as-of de cada señal.
+## Preguntas abiertas al dueño del dato
+1. ¿Por qué 123 hogares tienen `churn_excluded` = True y targets vacíos? (se excluyen; motivo desconocido)
+2. ¿Qué mide exactamente `value_lost_6m` en los soft (pérdida 20–60% del RV) y en qué ventana? Define el umbral θ de B.
+3. Los 404 hogares con antigüedad < 1 año, excluidos del desarrollo, tienen más churn (M1: A 7.92% vs 6.00%): ¿hay un
+   proceso de onboarding que explique su salida?
+4. ¿Cuál es la regla de construcción de `multi_signal_count` / `multi_signal_flag`?
+5. ¿Cuál es la fecha de corte (as-of) de cada señal pre-ingenierizada respecto del 2025-12-31?
+6. ¿Soft (3M) y hard (6M) son excluyentes por diseño (0 solapes) o un hogar soft puede volverse hard después?
 
 ## Observaciones sobre el plan (a decidir por el usuario)
 - EWS "alertas por mes" (fase 13): con un solo snapshot no hay flujo mensual; la curva se construiría repartiendo las

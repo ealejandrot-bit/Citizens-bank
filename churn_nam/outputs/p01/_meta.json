@@ -1,0 +1,1 @@
+{"title": "Fase 1 · Target y población", "order": ["exclusions.csv", "rates_by_segment.csv", "checks.json"], "notes": {"exclusions.csv": "secuencial = cada regla sobre lo que queda tras las anteriores.", "rates_by_segment.csv": "B excluye del denominador a los soft con pérdida < θ (indeterminados)."}}

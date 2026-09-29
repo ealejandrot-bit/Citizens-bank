@@ -1,0 +1,3 @@
+regla,cumplen (independiente),salen (secuencial),quedan,solape con reglas previas
+churn_excluded = True,123,123,19877,0
+tenure_years < 1,404,404,19473,0
