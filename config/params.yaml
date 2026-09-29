@@ -185,6 +185,12 @@ step1:
   equity_share_range: [0.30, 1.00]         # [Supuesto] beta del portafolio al mercado.
   non_equity_return_monthly: 0.003         # [Supuesto] renta fija / cash.
   idio_return_sigma: 0.010                 # [Supuesto]
+  # Alpha anual del portafolio (neto de comisiones), D-19: el factor S ("servicio y valor
+  # percibido") incluye el bajo rendimiento. alpha = −comisión + habilidad − κ · z_service.
+  advisory_fee_annual: 0.010               # [Supuesto] cuentas advisory
+  fund_expense_annual: 0.002               # [Supuesto] resto
+  manager_skill_sigma_annual: 0.015        # [Supuesto]
+  alpha_service_loading_annual: 0.020      # [Calibrado] κ: por 1 d.e. de z_service
   # Flujos de fondo del AUM (fracción del AUM del mes previo), tipo hurdle.
   contribution_p: 0.12                     # [Supuesto] P(aporte en el mes)
   contribution_median: 0.02                # [Supuesto]
@@ -348,3 +354,48 @@ step3:
     # Forma en U (D-18): riesgo alto al inicio de la mudanza (> +100%) y al terminarla (≈ −100%
     # frente a una línea base inflada por los tramos previos). Se valida con IV y lift, no con tendencia lineal.
     outflow_vs_baseline_pct:              {alert: "> 1.0",  rate: [0.03, 0.15], iv: [0.10, 0.30], strength: High, iv_base: all, driver: mixed, shape: u}
+
+# ---------------------------------------------------------------------------
+# Paso 4 · Investments (variables 9, 26, 27, 28, 34)
+# ---------------------------------------------------------------------------
+# Se construye sobre las series del Paso 1 (AUM, retiros, aportes, rendimientos) y el
+# evento de mudanza. Lo nuevo aquí cambia la COMPOSICIÓN del portafolio (ventas a cash,
+# vencimientos, posiciones), no los dólares que entran o salen del AUM.
+step4:
+  # Benchmark asignado por perfil (IPS): beta objetivo = beta real + desvío (tilt).
+  benchmark_tilt_sigma: 0.08               # [Supuesto]
+  # SEÑAL factor: venta a cash sin reinvertir (paso previo a transferir).
+  liquidation_intercept: -3.6              # [Calibrado]
+  liquidation_slope: 1.7                   # [Calibrado] sobre z_outflow
+  liquidation_share: [0.15, 0.60]          # fracción del AUM vendida a cash
+  liquidation_window_days: 150
+  liquidation_full_position_share_beta: [1.5, 4.0]   # parte vendida en posiciones completas (#34)
+  # SEÑAL propensión: antes del ACATS se liquidan los fondos propietarios (el custodio nuevo no los acepta).
+  proprietary_p: 0.50                      # [Supuesto] no todos tienen fondos propietarios
+  proprietary_share: [0.05, 0.25]
+  proprietary_sale_lead_days: [0, 30]
+  # RUIDO: de-risking recomendado por el banker (sube el cash; origen asesor → no cuenta en #9).
+  advisor_derisk_p: 0.05                   # [Supuesto]
+  advisor_derisk_pp: [0.05, 0.15]
+  # RUIDO: rebalanceos del asesor (compra y venta por igual; excluidos de #9 y #34).
+  rebalance_p_month: 0.15
+  rebalance_share: [0.02, 0.10]
+  # RUIDO: venta completa de una posición por el cliente, sin reemplazo.
+  client_full_sale_p_90d: 0.08
+  client_full_sale_share: [0.01, 0.06]
+  rmd_age: 73                              # RMD de diciembre: excluida de #9
+  rmd_rate: 0.04
+  cash_noise_pp_monthly: 0.01
+  # Renta fija: vencimientos en 90 días y reinversión en 30 días.
+  maturity_p_90d_given_fi: 0.30            # [Supuesto]
+  maturity_share_of_fi: [0.05, 0.30]
+  reinvest_full_p: 0.65                    # [Supuesto] reinversión normal completa
+  reinvest_partial_beta: [2.0, 2.0]
+  nonreinvest_liquidation_p: 0.85          # si el hogar está liquidando / mudándose, no reinvierte
+  iv_tolerance: 0.03                       # política general desde el Paso 3 (D-18): bandas = priors expertos
+  targets:
+    investment_redemption_pct:            {alert: "> 0.20",  rate: [0.02, 0.12], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+    fixed_income_maturity_not_reinvested: {alert: "> 0.50",  rate: [0.10, 0.45], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+    cash_pct_of_portfolio_chg:            {alert: "> 0.10",  rate: [0.03, 0.15], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}
+    return_vs_benchmark:                  {alert: "<= -0.03", rate: [0.10, 0.40], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: factor}
+    positions_liquidated_pct:             {alert: "> 0.15",  rate: [0.01, 0.10], iv: [0.10, 0.30], strength: High, iv_base: applicable, driver: mixed}

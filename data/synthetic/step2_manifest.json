@@ -2,7 +2,7 @@
   "step": 2,
   "master_seed": 20260928,
   "currency": "USD",
-  "params_sha256": "469ed3a6c246d3fa52aa0cffe072052f2e22ff2435a89a4671146d9d0f0ede87",
+  "params_sha256": "bdc9b388ec7dba1ef2eefe9b04d0092c887e647b260aae9e0fa62e8c77a14b37",
   "streams": [
     "exit.acats_lag",
     "exit.aum_share",
@@ -42,6 +42,7 @@
     "s1.episode_len",
     "s1.equity_share",
     "s1.idio_return",
+    "s1.manager_skill",
     "s1.market",
     "s1.shock",
     "s1.shock_aum",

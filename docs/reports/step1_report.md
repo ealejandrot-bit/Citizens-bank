@@ -6,9 +6,9 @@ Semilla `20260928` · 20,000 hogares × 24 meses · montos en USD · **54 de 54 
 
 | variable                       | alerta   |   tasa_alerta | rango_tasa   |   IV_hard |   IV_soft | banda_IV   |   tendencia_z |   tendencia_p |   lift_alerta |   spearman_tramos |   null_% |
 |:-------------------------------|:---------|--------------:|:-------------|----------:|----------:|:-----------|--------------:|--------------:|--------------:|------------------:|---------:|
-| aum_outflow_pct_90d            | > 0.10   |         0.077 | [0.04, 0.16] |     0.266 |     0.067 | [0.1, 0.3] |        14.203 |         0.000 |         3.957 |             0.588 |   14.459 |
+| aum_outflow_pct_90d            | > 0.10   |         0.077 | [0.04, 0.16] |     0.265 |     0.067 | [0.1, 0.3] |        14.182 |         0.000 |         3.953 |             0.602 |   14.459 |
 | deposit_balance_change_pct_90d | <= -0.25 |         0.105 | [0.04, 0.16] |     0.251 |     0.051 | [0.1, 0.3] |        12.825 |         0.000 |         3.166 |             0.661 |    0.553 |
-| aum_vs_baseline_pct            | <= -0.20 |         0.062 | [0.04, 0.16] |     0.291 |     0.069 | [0.1, 0.3] |        11.900 |         0.000 |         5.178 |             0.384 |   14.982 |
+| aum_vs_baseline_pct            | <= -0.20 |         0.062 | [0.04, 0.16] |     0.289 |     0.068 | [0.1, 0.3] |        11.956 |         0.000 |         5.178 |             0.421 |   14.982 |
 | deposit_balance_vs_6m_avg_pct  | <= -0.30 |         0.099 | [0.04, 0.16] |     0.289 |     0.066 | [0.1, 0.3] |        13.524 |         0.000 |         3.618 |             0.830 |    0.795 |
 
 AUC combinado de las 4 variables (logística): **0.631**; techo con la probabilidad verdadera: 0.851.
@@ -17,8 +17,8 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 
 | variable                       |   ('tasa_alerta', 'min') |   ('tasa_alerta', 'median') |   ('tasa_alerta', 'max') |   ('IV_hard', 'min') |   ('IV_hard', 'median') |   ('IV_hard', 'max') |   ('lift_alerta', 'min') |   ('lift_alerta', 'median') |   ('lift_alerta', 'max') |
 |:-------------------------------|-------------------------:|----------------------------:|-------------------------:|---------------------:|------------------------:|---------------------:|-------------------------:|----------------------------:|-------------------------:|
-| aum_outflow_pct_90d            |                    0.071 |                       0.072 |                    0.076 |                0.232 |                   0.272 |                0.342 |                    3.823 |                       4.118 |                    4.550 |
-| aum_vs_baseline_pct            |                    0.057 |                       0.059 |                    0.062 |                0.227 |                   0.283 |                0.354 |                    4.387 |                       4.895 |                    5.828 |
+| aum_outflow_pct_90d            |                    0.071 |                       0.073 |                    0.076 |                0.232 |                   0.272 |                0.342 |                    3.823 |                       4.118 |                    4.554 |
+| aum_vs_baseline_pct            |                    0.057 |                       0.059 |                    0.062 |                0.230 |                   0.283 |                0.354 |                    4.387 |                       4.895 |                    5.828 |
 | deposit_balance_change_pct_90d |                    0.099 |                       0.103 |                    0.107 |                0.192 |                   0.229 |                0.264 |                    2.747 |                       3.011 |                    3.347 |
 | deposit_balance_vs_6m_avg_pct  |                    0.094 |                       0.099 |                    0.103 |                0.225 |                   0.277 |                0.340 |                    3.247 |                       3.508 |                    3.942 |
 
@@ -29,7 +29,7 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 | depósitos mes 0 = Paso 0 |  |  |  | OK |
 | AUM mes 0 = Paso 0 |  |  |  | OK |
 | depósitos > 0 en toda la serie | mín $708.87 |  |  | OK |
-| AUM > 0 con inversiones | mín $79,228.66 |  |  | OK |
+| AUM > 0 con inversiones | mín $80,212.81 |  |  | OK |
 | flujos de AUM ≥ 0 |  |  |  | OK |
 | índice TWR > 0 |  |  |  | OK |
 | columnas declaradas con unidad |  |  |  | OK |
@@ -43,35 +43,35 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 | deposit_change_90d NULL ⇔ < 6 meses o base < $10k | NULL por base baja: 4 |  |  | OK |
 | deposit_vs_6m NULL ⇔ < 7 meses o base < $10k |  |  |  | OK |
 | cambios % > −100% |  |  |  | OK |
-| aum_outflow_pct ≥ 0 | máx 7.641 |  |  | OK |
-| USD válido: aum_outflow_30d | máx $462,881,697 |  |  | OK |
-| USD válido: aum_outflow_90d | máx $462,881,697 |  |  | OK |
+| aum_outflow_pct ≥ 0 | máx 7.684 |  |  | OK |
+| USD válido: aum_outflow_30d | máx $463,748,493 |  |  | OK |
+| USD válido: aum_outflow_90d | máx $463,748,493 |  |  | OK |
 
 ## 3 · Calibración (tasa de alerta, IV, monotonía)
 
 | Prueba | Detalle | p | p BH | OK |
 |---|---|---|---|---|
 | tasa de alerta aum_outflow_pct_90d | 0.077 en [0.04, 0.16] |  |  | OK |
-| IV aum_outflow_pct_90d | 0.266 en [0.1, 0.3] |  |  | OK |
-| tendencia creciente del riesgo (Cochran-Armitage) aum_outflow_pct_90d | z = 14.2 (ρ tramos 0.59) |  |  | OK |
-| lift del grupo en alerta ≥ 1.5: aum_outflow_pct_90d | lift = 3.96 |  |  | OK |
+| IV aum_outflow_pct_90d | 0.265 en [0.1, 0.3] |  |  | OK |
+| tendencia creciente del riesgo (Cochran-Armitage) aum_outflow_pct_90d | z = 14.2 (ρ tramos 0.60) |  |  | OK |
+| lift del grupo en alerta ≥ 1.5: aum_outflow_pct_90d | lift = 3.95 |  |  | OK |
 | tasa de alerta deposit_balance_change_pct_90d | 0.105 en [0.04, 0.16] |  |  | OK |
 | IV deposit_balance_change_pct_90d | 0.251 en [0.1, 0.3] |  |  | OK |
 | tendencia creciente del riesgo (Cochran-Armitage) deposit_balance_change_pct_90d | z = 12.8 (ρ tramos 0.66) |  |  | OK |
 | lift del grupo en alerta ≥ 1.5: deposit_balance_change_pct_90d | lift = 3.17 |  |  | OK |
 | tasa de alerta aum_vs_baseline_pct | 0.062 en [0.04, 0.16] |  |  | OK |
-| IV aum_vs_baseline_pct | 0.291 en [0.1, 0.3] |  |  | OK |
-| tendencia creciente del riesgo (Cochran-Armitage) aum_vs_baseline_pct | z = 11.9 (ρ tramos 0.38) |  |  | OK |
+| IV aum_vs_baseline_pct | 0.289 en [0.1, 0.3] |  |  | OK |
+| tendencia creciente del riesgo (Cochran-Armitage) aum_vs_baseline_pct | z = 12.0 (ρ tramos 0.42) |  |  | OK |
 | lift del grupo en alerta ≥ 1.5: aum_vs_baseline_pct | lift = 5.18 |  |  | OK |
 | tasa de alerta deposit_balance_vs_6m_avg_pct | 0.099 en [0.04, 0.16] |  |  | OK |
 | IV deposit_balance_vs_6m_avg_pct | 0.289 en [0.1, 0.3] |  |  | OK |
 | tendencia creciente del riesgo (Cochran-Armitage) deposit_balance_vs_6m_avg_pct | z = 13.5 (ρ tramos 0.83) |  |  | OK |
 | lift del grupo en alerta ≥ 1.5: deposit_balance_vs_6m_avg_pct | lift = 3.62 |  |  | OK |
-| IV mediano entre semillas en banda: aum_outflow_pct_90d | mediana 0.272 (p10–p90 0.238–0.326) en [0.1, 0.3] |  |  | OK |
+| IV mediano entre semillas en banda: aum_outflow_pct_90d | mediana 0.272 (p10–p90 0.237–0.326) en [0.1, 0.3] |  |  | OK |
 | alerta en rango en todas las semillas: aum_outflow_pct_90d | 0.071–0.076 |  |  | OK |
 | IV mediano entre semillas en banda: deposit_balance_change_pct_90d | mediana 0.229 (p10–p90 0.195–0.246) en [0.1, 0.3] |  |  | OK |
 | alerta en rango en todas las semillas: deposit_balance_change_pct_90d | 0.099–0.107 |  |  | OK |
-| IV mediano entre semillas en banda: aum_vs_baseline_pct | mediana 0.283 (p10–p90 0.252–0.333) en [0.1, 0.3] |  |  | OK |
+| IV mediano entre semillas en banda: aum_vs_baseline_pct | mediana 0.283 (p10–p90 0.251–0.333) en [0.1, 0.3] |  |  | OK |
 | alerta en rango en todas las semillas: aum_vs_baseline_pct | 0.057–0.062 |  |  | OK |
 | IV mediano entre semillas en banda: deposit_balance_vs_6m_avg_pct | mediana 0.277 (p10–p90 0.248–0.308) en [0.1, 0.3] |  |  | OK |
 | alerta en rango en todas las semillas: deposit_balance_vs_6m_avg_pct | 0.094–0.103 |  |  | OK |
@@ -92,7 +92,7 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 | ε por diseño vía mudanza: deposit_balance_change_pct_30d | ρ = -0.0247 |  |  | OK |
 | ε por diseño vía mudanza: deposit_balance_change_pct_90d | ρ = -0.0406 |  |  | OK |
 | ε por diseño vía mudanza: deposit_balance_change_pct_180d | ρ = -0.0209 |  |  | OK |
-| ε por diseño vía mudanza: aum_vs_baseline_pct | ρ = -0.0550 |  |  | OK |
+| ε por diseño vía mudanza: aum_vs_baseline_pct | ρ = -0.0548 |  |  | OK |
 | ε por diseño vía mudanza: deposit_balance_vs_6m_avg_pct | ρ = -0.0413 |  |  | OK |
 | AUC combinado < AUC techo | 0.631 vs techo 0.851 |  |  | OK |
 
@@ -100,10 +100,10 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 
 |                                 |       count |         mean |            std |     min |      1% |      5% |     25% |     50% |         75% |            95% |             99% |              max |
 |:--------------------------------|------------:|-------------:|---------------:|--------:|--------:|--------:|--------:|--------:|------------:|---------------:|----------------:|-----------------:|
-| aum_outflow_30d                 | 17,130.0000 | 365,745.9744 | 6,588,537.7959 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |      0.0000 |   409,985.6110 |  5,064,140.5729 | 462,881,697.4200 |
-| aum_outflow_pct_30d             | 17,130.0000 |       0.0386 |         0.2844 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |      0.0000 |         0.0742 |          1.1151 |           9.0071 |
-| aum_outflow_90d                 | 17,103.0000 | 640,720.7646 | 7,361,740.2878 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 | 48,786.6750 | 1,321,523.5920 | 11,978,046.7712 | 462,881,697.4200 |
-| aum_outflow_pct_90d             | 17,103.0000 |       0.0493 |         0.2142 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |      0.0129 |         0.2729 |          0.9955 |           7.6408 |
+| aum_outflow_30d                 | 17,130.0000 | 366,455.1131 | 6,603,659.5341 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |      0.0000 |   409,784.7055 |  5,060,666.7464 | 463,748,492.5200 |
+| aum_outflow_pct_30d             | 17,130.0000 |       0.0387 |         0.2849 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |      0.0000 |         0.0743 |          1.1181 |           9.0394 |
+| aum_outflow_90d                 | 17,103.0000 | 642,611.6933 | 7,382,644.7563 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 | 48,796.7500 | 1,326,543.4030 | 12,079,482.3514 | 463,748,492.5200 |
+| aum_outflow_pct_90d             | 17,103.0000 |       0.0493 |         0.2148 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |  0.0000 |      0.0129 |         0.2731 |          0.9978 |           7.6841 |
 | deposit_balance_change_pct_30d  | 19,979.0000 |      -0.0094 |         0.1494 | -0.9265 | -0.4843 | -0.2348 | -0.0819 | -0.0055 |      0.0699 |         0.2074 |          0.3585 |           3.4891 |
 | deposit_balance_change_pct_90d  | 19,890.0000 |      -0.0127 |         0.2168 | -0.9755 | -0.6354 | -0.3659 | -0.1320 | -0.0105 |      0.1094 |         0.3282 |          0.5243 |           1.8394 |
 | deposit_balance_change_pct_180d | 19,587.0000 |       0.0066 |         0.2756 | -0.9440 | -0.5785 | -0.3970 | -0.1753 | -0.0154 |      0.1640 |         0.4742 |          0.8026 |           2.6592 |
@@ -124,15 +124,15 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 | row_0                    |   no_evento |   evento |   tasa_evento |     woe |     iv |
 |:-------------------------|------------:|---------:|--------------:|--------:|-------:|
 | 00 = 0                   |  9,088.0000 | 471.0000 |        0.0493 | -0.2182 | 0.0208 |
-| 01 [5.709e-05, 0.004419] |    786.0000 |  42.0000 |        0.0507 | -0.1774 | 0.0012 |
-| 02 [0.004419, 0.00703]   |    789.0000 |  38.0000 |        0.0459 | -0.2800 | 0.0029 |
-| 03 [0.007037, 0.009897]  |    777.0000 |  50.0000 |        0.0605 |  0.0066 | 0.0000 |
-| 04 [0.009898, 0.01354]   |    795.0000 |  32.0000 |        0.0387 | -0.4570 | 0.0071 |
+| 01 [5.739e-05, 0.004419] |    786.0000 |  42.0000 |        0.0507 | -0.1774 | 0.0012 |
+| 02 [0.00442, 0.007045]   |    788.0000 |  39.0000 |        0.0472 | -0.2531 | 0.0024 |
+| 03 [0.007051, 0.009895]  |    778.0000 |  49.0000 |        0.0593 | -0.0147 | 0.0000 |
+| 04 [0.009907, 0.01354]   |    795.0000 |  32.0000 |        0.0387 | -0.4570 | 0.0071 |
 | 05 [0.01354, 0.01863]    |    778.0000 |  49.0000 |        0.0593 | -0.0147 | 0.0000 |
-| 06 [0.01864, 0.02676]    |    793.0000 |  34.0000 |        0.0411 | -0.3948 | 0.0055 |
-| 07 [0.02677, 0.04824]    |    775.0000 |  52.0000 |        0.0629 |  0.0480 | 0.0001 |
-| 08 [0.04829, 0.2814]     |    752.0000 |  75.0000 |        0.0907 |  0.4414 | 0.0099 |
-| 09 [0.2824, 7.641]       |    625.0000 | 202.0000 |        0.2443 |  1.6129 | 0.2169 |
+| 06 [0.01863, 0.02677]    |    793.0000 |  34.0000 |        0.0411 | -0.3948 | 0.0055 |
+| 07 [0.02678, 0.04833]    |    774.0000 |  53.0000 |        0.0641 |  0.0682 | 0.0002 |
+| 08 [0.04834, 0.2812]     |    753.0000 |  74.0000 |        0.0895 |  0.4268 | 0.0092 |
+| 09 [0.2827, 7.684]       |    625.0000 | 202.0000 |        0.2443 |  1.6129 | 0.2169 |
 | NULL                     |  2,719.0000 | 155.0000 |        0.0539 | -0.1209 | 0.0020 |
 
 ## WoE · deposit_balance_change_pct_90d
@@ -160,8 +160,8 @@ AUC combinado de las 4 variables (logística): **0.631**; techo con la probabili
 | 02 [-0.01846, -0.01015]   |  1,608.0000 |  82.0000 |        0.0485 | -0.2296 | 0.0041 |
 | 03 [-0.01014, -0.005442]  |  1,608.0000 |  82.0000 |        0.0485 | -0.2296 | 0.0041 |
 | 04 [-0.005442, -0.001826] |  1,620.0000 |  70.0000 |        0.0414 | -0.3942 | 0.0111 |
-| 05 [-0.001826, 0]         |  1,624.0000 |  65.0000 |        0.0385 | -0.4702 | 0.0153 |
-| 06 [0, 0.00343]           |  1,607.0000 |  83.0000 |        0.0491 | -0.2169 | 0.0036 |
+| 05 [-0.001826, 0]         |  1,619.0000 |  70.0000 |        0.0414 | -0.3936 | 0.0111 |
+| 06 [0, 0.00343]           |  1,612.0000 |  78.0000 |        0.0462 | -0.2817 | 0.0060 |
 | 07 [0.003437, 0.01124]    |  1,610.0000 |  80.0000 |        0.0473 | -0.2553 | 0.0050 |
 | 08 [0.01126, 0.02464]     |  1,610.0000 |  80.0000 |        0.0473 | -0.2553 | 0.0050 |
 | 09 [0.02464, 0.3508]      |  1,602.0000 |  88.0000 |        0.0521 | -0.1556 | 0.0019 |

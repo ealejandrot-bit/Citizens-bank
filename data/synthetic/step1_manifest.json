@@ -2,7 +2,7 @@
   "step": 1,
   "master_seed": 20260928,
   "currency": "USD",
-  "params_sha256": "727d8cc187ee4a44a6c5e0668766ecf5758a8b7d5ca041d34ed1911883844261",
+  "params_sha256": "bdc9b388ec7dba1ef2eefe9b04d0092c887e647b260aae9e0fa62e8c77a14b37",
   "streams": [
     "exit.acats_lag",
     "exit.aum_share",
@@ -42,6 +42,7 @@
     "s1.episode_len",
     "s1.equity_share",
     "s1.idio_return",
+    "s1.manager_skill",
     "s1.market",
     "s1.shock",
     "s1.shock_aum",
@@ -59,11 +60,11 @@
   "outputs": {
     "step1_balances.csv": {
       "rows": 20000,
-      "sha256": "c96eac4ec2dfb3693e1e47a55f43eca89aca7d82772b0a6d678f94d456379572"
+      "sha256": "ceec05b4620c78ec50a17fa999c2789ac1a559e56f28176ef0cc106780ff7327"
     },
     "step1_series.csv": {
       "rows": 480000,
-      "sha256": "d6efd62f2362b8d851d2222d27e07bfc9c5bd1a25dd46d76a64e017fe9249cc3"
+      "sha256": "ace30663856c220103a7b680e34708db7c1396e0f6a85c8c0d33ec59264bd784"
     },
     "step1_truth.csv": {
       "rows": 20000,

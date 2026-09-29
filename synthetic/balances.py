@@ -76,7 +76,11 @@ def simulate_series(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict, seeds: S
     lo_e, hi_e = s1["equity_share_range"]
     beta = seeds.rng("s1.equity_share").uniform(lo_e, hi_e, n)
     idio = s1["idio_return_sigma"] * seeds.rng("s1.idio_return").standard_normal((n, M))
-    ret = beta[:, None] * mkt[None, :] + (1 - beta[:, None]) * s1["non_equity_return_monthly"] + idio
+    # Alpha neto de comisiones (D-19): parte del factor S es valor percibido / rendimiento.
+    fee = np.where(base["has_advisory"].to_numpy(), s1["advisory_fee_annual"], s1["fund_expense_annual"])
+    skill = s1["manager_skill_sigma_annual"] * seeds.rng("s1.manager_skill").standard_normal(n)
+    alpha = -fee + skill - s1["alpha_service_loading_annual"] * truth["z_service"].to_numpy()
+    ret = beta[:, None] * mkt[None, :] + (1 - beta[:, None]) * s1["non_equity_return_monthly"] + idio + alpha[:, None] / 12
     ret[:, 0] = 0.0
 
     def hurdle(name, p, median):
@@ -110,6 +114,7 @@ def simulate_series(base: pd.DataFrame, truth: pd.DataFrame, cfg: dict, seeds: S
     return {"deposit": deposit, "aum": aum, "contrib": contrib_usd, "withdraw": withdraw_usd,
             "twr": twr, "avail": avail, "inv": inv,
             "episode_k_dep": k_dep, "episode_k_aum": k_aum, "shock_aum": shock_aum,
+            "returns": ret, "market": mkt, "alpha": alpha,
             "truth": pd.DataFrame({"household_id": base["household_id"], "s1_p_episode": p_ep,
                                    "s1_episode": episode, "s1_episode_len": np.where(episode, ep_len, 0),
                                    "s1_episode_delta": np.where(episode, delta, np.nan),

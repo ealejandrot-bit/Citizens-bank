@@ -1,8 +1,8 @@
 {
-  "step": 3,
+  "step": 4,
   "master_seed": 20260928,
   "currency": "USD",
-  "params_sha256": "bdc9b388ec7dba1ef2eefe9b04d0092c887e647b260aae9e0fa62e8c77a14b37",
+  "params_sha256": "315551763d73cb874948e78715e0be39c2b450aa824d60779fe4344fa77e48e7",
   "streams": [
     "exit.acats_lag",
     "exit.aum_share",
@@ -135,19 +135,43 @@
     "s3.one_off",
     "s3.payees",
     "s3.shock",
+    "s4.benchmark_tilt",
+    "s4.cash_noise",
+    "s4.client_full_sale",
+    "s4.client_full_sale_day",
+    "s4.client_full_sale_share",
+    "s4.derisk",
+    "s4.derisk_day",
+    "s4.derisk_pp",
+    "s4.has_proprietary",
+    "s4.liquidation",
+    "s4.liquidation_day",
+    "s4.liquidation_full",
+    "s4.liquidation_share",
+    "s4.maturity",
+    "s4.maturity_day",
+    "s4.maturity_share",
+    "s4.proprietary_lead",
+    "s4.proprietary_share",
+    "s4.rebalance",
+    "s4.rebalance_share",
+    "s4.reinvest",
+    "s4.reinvest_lag",
+    "s4.reinvest_partial",
     "target.exclusion",
     "target.hard",
     "target.soft",
     "target.soft_loss"
   ],
   "outputs": {
-    "step3_transfers.csv": {
-      "rows": 20000,
-      "sha256": "ebef22c79120f12b730d8affd9cc8b0c4672c9e4e5a1b3f6b68f792cbba9a57e"
+    "step4_investments.csv": {
+      "sha256": "daa7f4774a184e72fb6a51ed8675643cba997552020d6525db68b90e131ac1ba"
     },
-    "step3_transactions.csv": {
-      "rows": 3205229,
-      "sha256": "3fdc0b1710672bcc0cf3e940591c69cf49f83b574d2ddee752a3567fa76d96b7"
+    "step4_cash_monthly.csv": {
+      "sha256": "6d76b1b1b890668db4506bcde5ffd4fc31cbd096e5c00e3c20d153fbd65735b3"
+    },
+    "step4_events.csv": {
+      "sha256": "761bbdf92d4b2d2053c278b1e14afac24c7dd0ef35769b247e671c9c4f828cbf"
     }
   },
   "checks_passed": true

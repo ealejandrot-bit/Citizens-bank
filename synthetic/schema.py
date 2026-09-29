@@ -88,3 +88,14 @@ STEP3_COLUMNS: dict[str, tuple[str, str]] = {
     "external_outflow_pct_90d": ("fracción", "#24 · salidas 90d ÷ saldo (condición de alerta: > 10%)"),
     "outflow_vs_baseline_pct": ("fracción", "#25 · salidas último mes ÷ promedio mensual meses −7..−1 (piso $10k) − 1"),
 }
+
+# Paso 4 · Investments (variables 9, 26, 27, 28, 34 del Excel)
+STEP4_COLUMNS: dict[str, tuple[str, str]] = {
+    "household_id": ("id", "Identificador del hogar"),
+    "investment_redemption_pct": ("fracción", "#9 · max(0, ventas y redenciones del cliente − compras) 90d ÷ AUM promedio (alerta > 20%)"),
+    "fixed_income_maturity_not_reinvested": ("fracción", "#26 · principal vencido no reinvertido en 30d ÷ principal vencido; NULL sin vencimientos"),
+    "fixed_income_not_reinvested_amount": (USD, "#26 · monto no reinvertido"),
+    "cash_pct_of_portfolio_chg": ("fracción", "#27 · cash % en t − promedio meses −6..−1 (0.10 = 10 pp)"),
+    "return_vs_benchmark": ("fracción", "#28 · TWR neto 12m − benchmark por perfil (−0.03 = −3 pp); NULL sin advisory"),
+    "positions_liquidated_pct": ("fracción", "#34 · posiciones vendidas completas sin reemplazo 90d ÷ valor hace 90d (alerta > 15%)"),
+}

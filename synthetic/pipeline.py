@@ -11,6 +11,7 @@ from .population import build_population
 from .recurring import build_step2
 from .seeds import SeedManager
 from .transfers import build_step3
+from .investments import build_step4
 
 
 def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
@@ -24,4 +25,6 @@ def build(cfg: dict, seed: int | None = None, upto: int = 2) -> dict:
         out["f2"], out["sim2"] = build_step2(out["base"], out["truth"], out["sim1"], cfg, seeds, out["exit"])
     if upto >= 3:
         out["f3"], out["sim3"] = build_step3(out["base"], out["truth"], cfg, seeds, out["exit"], out["sim1"], out["sim2"])
+    if upto >= 4:
+        out["f4"], out["sim4"] = build_step4(out["base"], out["truth"], cfg, seeds, out["exit"], out["sim1"], out["sim3"])
     return out

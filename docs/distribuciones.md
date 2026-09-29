@@ -1,6 +1,6 @@
 # Distribuciones por variable
 
-Estado: **Pasos 0 a 3 construidos y validados** (variables 1–8, 17–25). El resto es una
+Estado: **Pasos 0 a 4 construidos y validados** (variables 1–9, 17–28, 34). El resto es una
 **propuesta para revisión**, todavía no generada. Ajustes D-13 aplicados; ν = 6.
 
 ## Cómo se genera cada variable (patrón común)
@@ -103,7 +103,7 @@ hogares elegibles que cruza el umbral del Excel.
 | 24 | external_destination_concentration | HHI de cuotas ~ Dirichlet(α); α baja (más concentrado) con O; nº de instituciones 1 + Poisson | O | > 0.7 con salidas > 10%: ≈ 5% | sin salidas |
 | 25 | outflow_vs_baseline_pct | Derivada de la serie: último mes ÷ promedio de 6m − 1, con piso de $1k | O | > +100%: ≈ 8% | — |
 
-### Paso 4 · Investments
+### Paso 4 · Investments — CONSTRUIDO (ver decisiones D-19 y docs/reports/step4_report.md; lo de abajo era la propuesta original)
 
 | # | Variable | Distribución | Latente | Alerta objetivo | NULL si |
 |---|---|---|---|---|---|

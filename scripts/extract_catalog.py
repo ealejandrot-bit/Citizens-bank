@@ -50,7 +50,8 @@ BUILT = {"aum_outflow", "deposit_balance_change_pct", "aum_vs_baseline_pct", "de
          "net_deposit_flow", "pension_deposit_stopped_flag", "business_payroll_stopped_flag",
          "external_transfer_pct_of_balance", "new_external_destinations", "transfer_to_competitor_bank_amount",
          "external_transfer_acceleration", "net_external_flow", "external_destination_concentration",
-         "outflow_vs_baseline_pct"}
+         "outflow_vs_baseline_pct", "investment_redemption_pct", "fixed_income_maturity_not_reinvested",
+         "cash_pct_of_portfolio_chg", "return_vs_benchmark", "positions_liquidated_pct"}
 
 COLS = {
     "#": "id", "Priority": "priority", "Group": "group", "Variable": "variable",

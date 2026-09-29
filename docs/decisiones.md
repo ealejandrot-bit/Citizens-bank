@@ -297,6 +297,43 @@ Ajustes que este paso obligó a hacer en pasos previos (todos revalidados):
 
 El AUC combinado de las 17 variables de los Pasos 1–3 es 0.656; el techo sigue en 0.851.
 
+## Paso 4 · Investments (variables 9, 26, 27, 28, 34)
+
+**Criterio general desde aquí:** las variables deben *tener sentido* (dirección, magnitud,
+plausibilidad y coherencia con los pasos previos), sin perseguir cada banda de IV al decimal.
+Tolerancia de ±0.03 a las bandas expertas del Excel.
+
+**D-19 · Rendimiento vs benchmark ligado al factor S sin tocar el target.**
+El factor S del Paso 0 se interpreta como "servicio y valor percibido". El Paso 1 ahora agrega un
+alpha anual al portafolio: −comisión (1% advisory, 0.2% resto) + habilidad N(0, 1.5%) − 2% · z_service.
+El rendimiento de #28 es exactamente el índice TWR del Paso 1 (verificado), y el benchmark es el
+del perfil (beta objetivo = beta real + desvío). El AUM ex-mercado (#17) no cambia, porque divide
+por ese mismo índice. Pasos 1–3 reconstruidos y revalidados. La regresión de #28 sobre z_service
+recupera −κ, y ε no entra.
+
+**Composición del portafolio sin mover dólares del AUM:**
+- **Señal factor:** venta a cash (z_outflow, 15–60% del AUM, últimos 150 días).
+- **Señal propensión:** el 50% de quienes hacen ACATS liquida fondos propietarios (5–25% del AUM)
+  0–30 días antes, porque el custodio nuevo no los acepta.
+- **Ruido:** de-risking del asesor (5%), que sube el cash sin contar como venta del cliente;
+  rebalanceos del asesor (excluidos); ventas completas ocasionales; RMD de diciembre para ≥ 73
+  (excluida de #9); vencimientos de renta fija (30% en 90 días), con reinversión normal completa
+  en el 65% de los casos. Quien se muda o liquida no reinvierte en el 85% (media no reinvertida
+  0.95 vs 0.34).
+- El cash % mensual parte del cash de inversión que usa el Paso 3 en el denominador de #7.
+
+| Variable | Alerta | IV (semilla / mediana) | Lift |
+|---|---|---|---|
+| investment_redemption_pct | 6.2% | 0.18 | 2.9× |
+| fixed_income_maturity_not_reinvested | 36.8% de quienes tuvieron vencimiento | 0.21 | 2.1× |
+| cash_pct_of_portfolio_chg | 7.9% | 0.14 | 2.7× |
+| return_vs_benchmark | 31.6% (≤ −3 pp) | 0.12 / 0.10 | 1.6× |
+| positions_liquidated_pct | 1.6% | 0.19 | 3.7× |
+
+- `return_vs_benchmark` es el driver más débil (mediana 0.096), como en la realidad: el mal
+  rendimiento explica el "porqué", pero no anticipa la salida tanto como mover dinero.
+- El AUC combinado de 22 variables es 0.683; el techo sigue en 0.851.
+
 ## Plan de pasos (catálogo: `data/catalog/variables_catalog.csv`)
 
 | Paso | Grupo | Variables |
