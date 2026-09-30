@@ -1,0 +1,17 @@
+{
+ "EBM monótono (champion)": {
+  "method": "isotonic",
+  "a": 0.2226556676865766,
+  "b": 1.0907643170163455
+ },
+ "NAM monótono (challenger)": {
+  "method": "platt",
+  "a": -0.3475146449367438,
+  "b": 0.8434118942107859
+ },
+ "A-lite (congelado)": {
+  "method": "platt",
+  "a": 0.06322889434329222,
+  "b": 0.986611240719541
+ }
+}

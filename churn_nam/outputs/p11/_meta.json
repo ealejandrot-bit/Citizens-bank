@@ -1,0 +1,1 @@
+{"title": "Fase 11 · Calibración (target A)", "order": ["calibration.csv", "calibrators.json", "calibration_test.png"], "notes": {"calibration.csv": "ECE de selección fuera de muestra (CV 5 folds dentro de validación); evaluación en test. A-lite en su subconjunto justo."}}

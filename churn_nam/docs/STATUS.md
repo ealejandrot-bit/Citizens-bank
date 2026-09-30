@@ -1,9 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **12 · fase 10 (gate)** terminada. Test abierto una vez (2026-09-30 00:27 UTC): el NAM no reemplaza a
-  A-lite (falla IC de Δlift@5% > 0); queda como challenger. Siguiente: PASO 13 = fase 11 (calibración).
-- Tests: 71 passed.
+- Paso actual: **13 · fase 11 (calibración)** terminada. Siguiente: PASO 14 = fase 12 (scorecard), bloqueada hasta llenar
+  scorecard.score_min y scorecard.score_max.
+- Tests: 72 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
