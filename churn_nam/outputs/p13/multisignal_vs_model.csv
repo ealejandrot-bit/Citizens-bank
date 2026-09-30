@@ -1,0 +1,5 @@
+subconjunto,segmento,k,hogares marcados,churners regla,precisión regla %,churners EBM (champion) (mismo volumen),precisión EBM (champion) %,churners NAM (challenger) (mismo volumen),precisión NAM (challenger) %,churners A-lite (congelado) (mismo volumen),precisión A-lite (congelado) %
+test completo,pooled,2,393,97,24.681933842239186,104,26.463104325699742,101,25.699745547073793,,
+test completo,UHNW,2,20,7,35.0,8,40.0,8,40.0,,
+test ∩ holdout A-lite,pooled,2,120,26,21.666666666666668,32,26.666666666666668,31,25.833333333333336,31.0,25.833333333333336
+test ∩ holdout A-lite,UHNW,2,7,1,14.285714285714285,1,14.285714285714285,1,14.285714285714285,1.0,14.285714285714285

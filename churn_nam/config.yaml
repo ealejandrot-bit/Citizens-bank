@@ -79,4 +79,5 @@ scorecard:                     # misma escala que M1 y A-lite (usuario 2026-09-2
 
 ews:
   alerts_per_month: null       # capacidad de alertas
-  horizon_months: 6            # horizonte del target (hard 6M)
+  horizon_months: 6            # horizonte del target (hard 6M); alertas/mes = marcados ÷ 6 (usuario 2026-09-30)
+  multisignal_rule: sum_visible_flags_ge_k   # k por F1 en validación (usuario 2026-09-30); sin buró (G1-3)

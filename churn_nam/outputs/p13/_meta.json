@@ -1,0 +1,1 @@
+{"title": "Fase 13 · EWS (target A)", "order": ["summary.json", "ews_curve.png", "ews_curve.csv", "multisignal_vs_model.csv", "multisignal_k_selection.csv"], "notes": {"ews_curve.csv": "Alertas por mes = marcados ÷ 6 (supuesto: un solo snapshot). Equivalente cartera = escala del test a los 19,473 hogares."}}

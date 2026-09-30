@@ -1,9 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **14 · fase 12 (scorecard)** terminada (EBM y NAM, escala 600 @ 20:1, PDO 40, recorte 250–750). Siguiente:
-  PASO 15 = fase 13 (EWS y paquete MRM); el umbral requiere ews.alerts_per_month.
-- Tests: 74 passed.
+- Paso actual: **15 · fase 13 (EWS y paquete MRM)** terminada: `reports/MRM_package.md`. Plan de 15 pasos completo; umbral
+  de EWS pendiente de ews.alerts_per_month.
+- Tests: 76 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -22,6 +22,7 @@
 | 2026-09-29 | Gate: ΔPR-AUC ≥ 0.03 y Δlift@5% ≥ 0.25 (NAM − A-lite, target A); validación = 20% del dev |
 | 2026-09-30 | NAM sin convergencia completa: ir al gate con el NAM actual (opción c) |
 | 2026-09-30 | Scorecard: rango 250–750; EBM y NAM; probabilidad del EBM sin calibrar (tras ver el test en la fase 11) |
+| 2026-09-30 | EWS: alertas/mes = marcados ÷ 6; regla multi-señal = Σ 9 flags visibles ≥ k (k = 2 por F1 en validación) |
 | 2026-09-30 | NAM: hidden 16, 300 épocas, lr 0.003, wd 1e-4, dropout 0.1, 5 miembros; gate: UHNW solo reportado (enmienda antes del test); resto del gate sin cambios |
 
 ## Parámetros en null (config.yaml) y fase que bloquean

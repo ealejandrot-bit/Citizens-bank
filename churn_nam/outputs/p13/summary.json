@@ -1,0 +1,17 @@
+{
+ "horizonte (meses)": 6,
+ "ews.alerts_per_month": null,
+ "umbral": "no definido: ews.alerts_per_month en null (se pregunta al usuario)",
+ "regla multi-señal": "Σ de 9 flags visibles ≥ 2 (k por F1 en validación)",
+ "flags": [
+  "salary_deposit_stopped_flag",
+  "recurring_deposit_stopped_flag",
+  "banker_change_6m_flag",
+  "complaint_escalated_flag",
+  "pension_deposit_stopped_flag",
+  "business_payroll_stopped_flag",
+  "trustee_change_flag",
+  "repeat_complaint_flag",
+  "relationship_dissatisfaction_flag"
+ ]
+}
