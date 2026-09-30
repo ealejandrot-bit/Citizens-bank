@@ -1,0 +1,35 @@
+{
+ "subconjunto": "test ∩ holdout de A-lite",
+ "hogares": 1764,
+ "capacidad": 0.1,
+ "hogares marcados por modelo": 176,
+ "eventos B": 238,
+ "target de cada modelo": {
+  "A-lite": "A",
+  "Scorecard M1": "B",
+  "EBM M2": "B",
+  "LightGBM": "A",
+  "XGBoost": "A",
+  "EBM M3": "A",
+  "Red neuronal NAM": "A"
+ },
+ "M1 derivadas": [
+  "outflow_x_contact_gap",
+  "streams_stopped_count",
+  "contact_gap_ratio_peer"
+ ],
+ "M3 indicadores de missing": [
+  "miss_fixed_income_maturity_not_reinvested",
+  "miss_relationship_dissatisfaction_flag",
+  "miss_meetings_cancelled_by_client",
+  "miss_client_reply_rate",
+  "miss_recurring_deposit_change_pct",
+  "miss_recurring_deposit_stopped_flag"
+ ],
+ "n variables": {
+  "A-lite": 5,
+  "M1": 8,
+  "M2 EBM": 12,
+  "M3": 58
+ }
+}

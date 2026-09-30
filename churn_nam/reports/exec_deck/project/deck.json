@@ -1,0 +1,25 @@
+{
+ "v": 4,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-09-30T01:00:00Z"
+ },
+ "lists": "css",
+ "title": "Client Pulse · Reporte ejecutivo",
+ "order": [
+  "base",
+  "variables",
+  "modelos",
+  "arquetipos"
+ ],
+ "sections": {
+  "start": "base"
+ },
+ "faces": {
+  "inter": {
+   "family": "Inter",
+   "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+  }
+ },
+ "designSystems": []
+}
