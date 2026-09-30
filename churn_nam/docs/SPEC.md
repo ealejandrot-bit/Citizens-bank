@@ -82,8 +82,8 @@ libres; `app_*` no entran como features (duplicados exactos de `has_*`), solo co
 
 El NAM reemplaza al champion solo si, en test y pooled: ΔPR-AUC (NAM − champion) ≥ `gate.delta_pr_auc` y
 Δlift@5% ≥ `gate.delta_lift_at_5`, con el límite inferior del IC bootstrap pareado 95% (`gate.bootstrap_reps`) > 0 en
-ambas; violación de monotonía = 0; y en UHNW sin deterioro (Δ con IC que incluye o supera 0). Si no, el NAM queda
-documentado como challenger.
+ambas; violación de monotonía = 0. UHNW se reporta con su IC pero no decide (enmienda del 2026-09-30, antes de abrir el
+test: 7 eventos A en UHNW del subconjunto justo). Si no, el NAM queda documentado como challenger.
 
 ## 7. Dependencias
 

@@ -59,8 +59,10 @@ EPV = pd.DataFrame([{"segmento": s, "variables candidatas": n_feat, "eventos A t
 g_block = {"reference": get("gate.reference"), **gate, "bootstrap_reps": get("gate.bootstrap_reps"), "target principal": get("target.primary"),
            "subconjunto A-lite": "test ∩ holdout de A-lite" if get("comparison.alite_fair_subset") else "test completo"}
 GATE = {"gate pre-registrado": g_block, "regla": "NAM reemplaza a A-lite solo si ΔPR-AUC ≥ delta_pr_auc y Δlift@5% ≥ delta_lift_at_5, con límite inferior del IC bootstrap pareado 95% > 0 en ambas, "
-        "violación de monotonía = 0 y UHNW sin deterioro (SPEC §6)", "sha256 del bloque gate de config.yaml": hashlib.sha256(yaml.safe_dump(CFG["gate"], sort_keys=True).encode()).hexdigest(),
-        "fecha de pre-registro (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"), "test abierto": False}
+        "violación de monotonía = 0; UHNW solo reportado (enmienda del 2026-09-30)", "sha256 del bloque gate de config.yaml": hashlib.sha256(yaml.safe_dump(CFG["gate"], sort_keys=True).encode()).hexdigest(),
+        "fecha de pre-registro (UTC)": "2026-09-29 23:52", "test abierto": False,
+        "enmiendas": [{"fecha (UTC)": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"), "cambio": "criterio UHNW pasa a solo reportado (gate.uhnw_criterion = report_only)",
+                       "motivo": "7 eventos A en UHNW del subconjunto justo: el criterio no tiene potencia", "decisión": "usuario", "test abierto al enmendar": False}]}
 out = P.out(6)
 SZ.to_csv(out / "split_sizes.csv", index=False)
 EPV.to_csv(out / "epv.csv", index=False)
