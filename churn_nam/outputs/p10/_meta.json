@@ -1,0 +1,1 @@
+{"title": "Fase 10 · Gate (única apertura del test)", "order": ["decision.json", "gate_bootstrap.csv", "test_metrics_all.csv"], "notes": {"test_metrics_all.csv": "Todos los modelos entrenados solo con train (M1/M2: dev heredado); A-lite solo en test ∩ holdout de A-lite."}}

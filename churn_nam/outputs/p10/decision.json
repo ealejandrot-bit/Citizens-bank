@@ -1,0 +1,33 @@
+{
+ "test abierto (UTC)": "2026-09-30 00:27",
+ "gate": "NAM vs A-lite · target A · test ∩ holdout A-lite",
+ "hogares": 1764,
+ "eventos A": 106,
+ "ΔPR-AUC": 0.04348205088306184,
+ "ΔPR-AUC IC95": [
+  0.003077538820395653,
+  0.0895664044582207
+ ],
+ "Δlift@5%": 0.5673241852487143,
+ "Δlift@5% IC95": [
+  -0.6738441086342607,
+  1.6364566115702477
+ ],
+ "criterios": {
+  "ΔPR-AUC ≥ 0.03": true,
+  "IC95 ΔPR-AUC inf > 0": true,
+  "Δlift@5% ≥ 0.25": true,
+  "IC95 Δlift@5% inf > 0": false,
+  "violaciones de monotonía = 0": true
+ },
+ "UHNW (solo reportado)": {
+  "eventos": 7,
+  "ΔPR-AUC": -0.026724087932527868,
+  "IC95": [
+   -0.3134257947609951,
+   0.1726923867292358
+  ]
+ },
+ "decisión": "NAM no reemplaza a A-lite: queda documentado como challenger",
+ "nota": "NAM sin convergencia completa (8 de 10 miembros en epochs_max); decisión del usuario (c): ir al gate con el NAM actual"
+}
