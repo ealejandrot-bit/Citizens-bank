@@ -1,0 +1,3 @@
+modelo,base,filas lookup,filas lookup compacto,score mín (sin recorte),score máx (sin recorte),% recortados,recortados,residual completeness: media |r|,residual: p95 |r|,residual: máx |r|,"corr(score exacto, lookup)"
+EBM,605,27062,491,303,701,0.0,0,1.4852756309398853,3.621173479662547,7.768622835766337,0.9992915892664811
+NAM,583,634,445,335,824,0.015405946695424435,3,2.454492622269427,6.039809291645133,30.960738147577388,0.9974198738387132

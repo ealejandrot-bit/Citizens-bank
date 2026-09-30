@@ -72,8 +72,10 @@ scorecard:                     # misma escala que M1 y A-lite (usuario 2026-09-2
   s0: 600
   o0: 20
   odds_convention: "good:bad"
-  score_min: null
-  score_max: null
+  score_min: 250              # usuario 2026-09-30
+  score_max: 750              # usuario 2026-09-30
+  models: [EBM, NAM]          # usuario 2026-09-30
+  ebm_probability: uncalibrated  # usuario 2026-09-30, tras ver en test que la isotónica empeoraba el ECE (0.56 → 1.18 pp)
 
 ews:
   alerts_per_month: null       # capacidad de alertas

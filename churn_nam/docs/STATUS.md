@@ -1,9 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **13 · fase 11 (calibración)** terminada. Siguiente: PASO 14 = fase 12 (scorecard), bloqueada hasta llenar
-  scorecard.score_min y scorecard.score_max.
-- Tests: 72 passed.
+- Paso actual: **14 · fase 12 (scorecard)** terminada (EBM y NAM, escala 600 @ 20:1, PDO 40, recorte 250–750). Siguiente:
+  PASO 15 = fase 13 (EWS y paquete MRM); el umbral requiere ews.alerts_per_month.
+- Tests: 74 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -21,12 +21,12 @@
 | 2026-09-29 | Signos (fase 4): 27 duros +, 12 duros −, 19 libres (7 has_* pasan a libres); app_* solo como máscara del NAM; 58 features |
 | 2026-09-29 | Gate: ΔPR-AUC ≥ 0.03 y Δlift@5% ≥ 0.25 (NAM − A-lite, target A); validación = 20% del dev |
 | 2026-09-30 | NAM sin convergencia completa: ir al gate con el NAM actual (opción c) |
+| 2026-09-30 | Scorecard: rango 250–750; EBM y NAM; probabilidad del EBM sin calibrar (tras ver el test en la fase 11) |
 | 2026-09-30 | NAM: hidden 16, 300 épocas, lr 0.003, wd 1e-4, dropout 0.1, 5 miembros; gate: UHNW solo reportado (enmienda antes del test); resto del gate sin cambios |
 
 ## Parámetros en null (config.yaml) y fase que bloquean
 | parámetro | fase |
 |---|---|
-| scorecard.score_min, score_max | 12 |
 | ews.alerts_per_month | 13 (umbral) |
 
 ## Decisiones de la fase 2 (aceptadas por el usuario el 2026-09-29; se aplican al construir features en la fase 4)

@@ -1,0 +1,21 @@
+{
+ "escala": {
+  "S0": 600,
+  "O0": 20,
+  "PDO": 40,
+  "Factor": 57.70780163555854,
+  "Offset": 427.1228762045055,
+  "odds": "good:bad",
+  "recorte": [
+   250,
+   750
+  ]
+ },
+ "calibración": {
+  "EBM": "sin calibrar (decisión del usuario tras ver el test en la fase 11)",
+  "NAM": {
+   "Platt a": -0.3475146449367438,
+   "Platt b": 0.8434118942107859
+  }
+ }
+}
