@@ -1,0 +1,56 @@
+<title>Comparativo Client Pulse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una columna de lectura (memo de riesgo de modelos), tabla y gráfico como anexos anchos con scroll propio */
+:root {
+  --bg: #f6f7f5; --surface: #ffffff; --fg: #1d2421; --muted: #5b6661; --line: #d9dfdb; --accent: #1f6f5c; --ref: #b5651d; --bar: #9fb3aa;
+  --display: "Fraunces", Georgia, serif; --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #121715; --surface: #1a211e; --fg: #e6ece9; --muted: #9aa8a1; --line: #2c3632; --accent: #5cc0a4; --ref: #e59a55; --bar: #4f6660; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #121715; --surface: #1a211e; --fg: #e6ece9; --muted: #9aa8a1; --line: #2c3632; --accent: #5cc0a4; --ref: #e59a55; --bar: #4f6660; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.55 var(--body); padding-inline: 20px; padding-block: 32px 56px; }
+main { max-width: 860px; margin: 0 auto; display: grid; gap: 34px; }
+.note { font: 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .02em; }
+h1 { font: 650 clamp(28px, 5vw, 40px)/1.1 var(--display); margin: 6px 0 10px; text-wrap: balance; }
+h2 { font: 600 21px/1.25 var(--display); margin: 0 0 12px; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); max-width: 68ch; }
+ol.key { margin: 0; padding-left: 22px; display: grid; gap: 10px; max-width: 72ch; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 72ch; }
+.wide { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { font: 500 11px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+tr.refrow td { color: var(--ref); font-weight: 600; }
+.chart { padding: 14px 12px 4px; }
+svg { width: 100%; min-width: 520px; height: auto; display: block; }
+svg .lab { font: 13px var(--body); fill: var(--fg); } svg .lab.ref { fill: var(--ref); font-weight: 600; }
+svg .val { font: 12px var(--mono); fill: var(--muted); } svg .bar { fill: var(--bar); } svg .refbar { fill: var(--ref); } svg .axis { stroke: var(--line); stroke-width: 1; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; }
+.cols > div { min-width: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+<main>
+<header>
+  <div class="note">Dataset sintético, corte transversal: valida pipeline y metodología, no conclusiones sobre clientes reales.</div>
+  <h1>Comparativo final de modelos de churn</h1>
+  <p class="lede">Client Pulse, banca privada HNW/UHNW. Nueve métodos de tres proyectos medidos en los mismos 1,764 hogares de prueba que ningún modelo vio al entrenarse: 106 eventos de hard churn (target A) y 238 del target B. A-lite es la referencia.</p>
+</header>
+<section><h2>Qué encontramos</h2><ol class="key"><li>Todos los modelos completos quedan en un rango estrecho de PR-AUC en hard churn (0.191 a 0.209) en los mismos 1,764 hogares (106 eventos): la complejidad casi no agrega.</li><li>A-lite, con 5 variables, encuentra menos churners (PR-AUC 0.153; -0.056 frente al mejor, EBM M2) y también tiene el menor lift en el 5% más riesgoso (4.16 frente a 4.73–5.30); su ventaja es ser el más simple de explicar.</li><li>La red neuronal (NAM) no reemplaza a A-lite: mejora la PR-AUC en +0.043 (IC95 +0.003 a +0.090) pero el IC del lift@5% (-0.67 a +1.64) incluye 0.</li><li>El EBM del Modelo 2 cumplió 6 de 8 criterios para reemplazar al scorecard y quedó como challenger: la ganancia no alcanzó los umbrales.</li><li>Con 5% de hogares en alerta, por cada 100 alertas: EBM 31.8 churners, red neuronal 28.4, A-lite 25.0.</li><li>Una regla simple de 2 o más señales visibles captura 97 churners en 393 hogares; el EBM, al mismo volumen, 104: el modelo le gana por poco.</li></ol></section>
+<section><h2>Capacidad de encontrar churners (PR-AUC, hard churn)</h2>
+  <div class="wide chart"><svg viewBox="0 0 640 310" role="img" aria-label="PR-AUC en hard churn por modelo"><line x1="170" y1="12" x2="170" y2="294" class="axis"/><text x="160" y="35" text-anchor="end" class="lab">EBM M2</text><rect x="170" y="24" width="357.1" height="16" rx="3" class="bar"/><text x="533.1" y="36" class="val">0.209</text><text x="160" y="65" text-anchor="end" class="lab">LightGBM</text><rect x="170" y="54" width="355.7" height="16" rx="3" class="bar"/><text x="531.7" y="66" class="val">0.208</text><text x="160" y="95" text-anchor="end" class="lab">EBM M3</text><rect x="170" y="84" width="340.1" height="16" rx="3" class="bar"/><text x="516.1" y="96" class="val">0.199</text><text x="160" y="125" text-anchor="end" class="lab">XGBoost</text><rect x="170" y="114" width="339.0" height="16" rx="3" class="bar"/><text x="515.0" y="126" class="val">0.199</text><text x="160" y="155" text-anchor="end" class="lab">Logística L2</text><rect x="170" y="144" width="337.3" height="16" rx="3" class="bar"/><text x="513.3" y="156" class="val">0.197</text><text x="160" y="185" text-anchor="end" class="lab">Red neuronal NAM</text><rect x="170" y="174" width="336.2" height="16" rx="3" class="bar"/><text x="512.2" y="186" class="val">0.197</text><text x="160" y="215" text-anchor="end" class="lab">LightGBM monótono</text><rect x="170" y="204" width="331.1" height="16" rx="3" class="bar"/><text x="507.1" y="216" class="val">0.194</text><text x="160" y="245" text-anchor="end" class="lab">Scorecard M1</text><rect x="170" y="234" width="325.5" height="16" rx="3" class="bar"/><text x="501.5" y="246" class="val">0.191</text><text x="160" y="275" text-anchor="end" class="lab ref">A-lite</text><rect x="170" y="264" width="261.9" height="16" rx="3" class="bar refbar"/><text x="437.9" y="276" class="val">0.153</text></svg></div>
+  <p class="note" style="margin-top:8px">Más alto es mejor. En naranja la referencia A-lite. Tasa base de hard churn ≈ 6%.</p>
+</section>
+<section><h2>Todos los métodos</h2>
+  <div class="wide"><table><thead><tr><th>Modelo</th><th>Proyecto</th><th>Variables</th><th>Forma</th><th>PR-AUC A</th><th>Lift top 5% A</th><th>PR-AUC B</th><th>Rol</th></tr></thead><tbody><tr class=""><td>EBM M2</td><td>Modelo 2</td><td class="num">12</td><td>aditivo por bins (EBM)</td><td class="num">0.209</td><td class="num">5.30</td><td class="num">0.305</td><td>challenger en monitoreo (M2)</td></tr><tr class=""><td>LightGBM</td><td>Modelo 3 · benchmark</td><td class="num">58</td><td>árboles (caja negra)</td><td class="num">0.208</td><td class="num">4.73</td><td class="num">0.297</td><td>benchmark</td></tr><tr class=""><td>EBM M3</td><td>Modelo 3</td><td class="num">58</td><td>aditivo por bins (EBM)</td><td class="num">0.199</td><td class="num">5.30</td><td class="num">0.312</td><td>champion interpretable (M3)</td></tr><tr class=""><td>XGBoost</td><td>Modelo 3 · benchmark</td><td class="num">58</td><td>árboles (caja negra)</td><td class="num">0.199</td><td class="num">5.11</td><td class="num">0.287</td><td>benchmark</td></tr><tr class=""><td>Logística L2</td><td>Modelo 3 · benchmark</td><td class="num">58</td><td>lineal</td><td class="num">0.197</td><td class="num">5.11</td><td class="num">0.313</td><td>benchmark</td></tr><tr class=""><td>Red neuronal NAM</td><td>Modelo 3</td><td class="num">58</td><td>red neuronal aditiva monótona</td><td class="num">0.197</td><td class="num">4.73</td><td class="num">0.319</td><td>challenger (no pasó el gate)</td></tr><tr class=""><td>LightGBM monótono</td><td>Modelo 3</td><td class="num">58</td><td>árboles monótonos</td><td class="num">0.194</td><td class="num">4.73</td><td class="num">0.304</td><td>challenger interpretable</td></tr><tr class=""><td>Scorecard M1</td><td>Modelo 1</td><td class="num">8</td><td>scorecard de puntos (logística WoE)</td><td class="num">0.191</td><td class="num">4.73</td><td class="num">0.304</td><td>operativo (M1)</td></tr><tr class="refrow"><td>A-lite</td><td>Modelo 1 previo</td><td class="num">5</td><td>scorecard de puntos (logística WoE)</td><td class="num">0.153</td><td class="num">4.16</td><td class="num">0.262</td><td>referencia ejecutiva</td></tr></tbody></table></div>
+</section>
+<section class="cols">
+  <div><h2>Alertas tempranas</h2><p class="lede" style="margin-bottom:10px">Con el 5% de hogares en alerta (88 hogares; alertas por mes = marcados ÷ 6).</p>
+    <div class="wide"><table style="min-width:0"><thead><tr><th>Modelo</th><th>Churners por 100 alertas</th><th>Churners capturados</th><th>RV capturado</th></tr></thead><tbody><tr><td>EBM (champion)</td><td class="num">31.8</td><td class="num">26.4%</td><td class="num">22.3%</td></tr><tr><td>NAM (challenger)</td><td class="num">28.4</td><td class="num">23.6%</td><td class="num">21.6%</td></tr><tr><td>A-lite (congelado)</td><td class="num">25.0</td><td class="num">20.8%</td><td class="num">18.4%</td></tr></tbody></table></div></div>
+  <div><h2>Recomendación</h2><ul><li>Operar con el scorecard (M1) o el EBM: aditivos, auditables y en el tope de desempeño.</li><li>Usar A-lite para explicar el modelo a la alta dirección (5 variables), sabiendo que detecta menos churners que los modelos completos.</li><li>No llevar la red neuronal ni los árboles de caja negra a producción: no mejoran lo suficiente para justificar su complejidad.</li><li>Medir el efecto de las acciones con el grupo de control del 12.5% antes de invertir en más modelado.</li></ul></div>
+</section>
+<section><h2>Límites de este análisis</h2><ul><li>Dataset sintético y un solo corte (sin OOT): valida el método, no resultados de clientes reales.</li><li>La comparación contra A-lite se hace en 1,764 hogares con 106 eventos de hard churn: intervalos amplios.</li><li>UHNW tiene muy pocos eventos: sus resultados solo se reportan.</li><li>La red neuronal fue al gate sin terminar de converger (decisión del usuario).</li></ul></section>
+<footer class="note">Cifras generadas por src/final_report.py desde churn_nam/outputs (fases 10–13), churn_ml, churn_scorecard y scorecard.</footer>
+</main>
