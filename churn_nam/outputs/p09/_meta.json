@@ -1,0 +1,1 @@
+{"title": "Fase 9 · NAM monótono (validación)", "order": ["summary.json", "nam_validation.csv", "alite_fair_validation.csv", "training_curve.png", "shape_functions_A.png", "monotonicity_violations.csv"], "notes": {"monotonicity_violations.csv": "Monotonía por construcción (pesos ≥ 0 + tanh); se verifica igual en funciones de forma e ICE."}}

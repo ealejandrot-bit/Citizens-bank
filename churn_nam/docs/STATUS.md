@@ -1,9 +1,10 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **10 · fase 8 (challenger interpretable)** terminada: champion provisional = EBM monótono. Siguiente: PASO 11 =
-  fase 9 (NAM), bloqueada hasta llenar nam.* en config.yaml.
-- Tests: 25 passed.
+- Paso actual: **11 · fase 9 (NAM monótono)** terminada con monotonía = 0 violaciones, pero sin convergencia completa
+  (8 de 10 miembros llegaron a epochs_max = 300 con la pérdida de early-stop aún bajando). Siguiente: decisión del
+  usuario (re-entrenar más épocas o seguir) y PASO 12 = fase 10 (gate, única apertura del test).
+- Tests: 67 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |
@@ -20,11 +21,11 @@
 | 2026-09-29 | Aceptadas: decisiones de la fase 2; gate final NAM vs A-lite; escala 600 @ 20:1, PDO 40, odds buenos:malos |
 | 2026-09-29 | Signos (fase 4): 27 duros +, 12 duros −, 19 libres (7 has_* pasan a libres); app_* solo como máscara del NAM; 58 features |
 | 2026-09-29 | Gate: ΔPR-AUC ≥ 0.03 y Δlift@5% ≥ 0.25 (NAM − A-lite, target A); validación = 20% del dev |
+| 2026-09-30 | NAM: hidden 16, 300 épocas, lr 0.003, wd 1e-4, dropout 0.1, 5 miembros; gate: UHNW solo reportado (enmienda antes del test); resto del gate sin cambios |
 
 ## Parámetros en null (config.yaml) y fase que bloquean
 | parámetro | fase |
 |---|---|
-| nam.hidden_units, epochs_max, learning_rate, weight_decay, dropout, ensemble_members | 9 |
 | scorecard.score_min, score_max | 12 |
 | ews.alerts_per_month | 13 (umbral) |
 
@@ -41,9 +42,11 @@
 - 6 clusters de redundancia (|ρ| ≥ 0.70): la redundancia se resuelve en la selección de cada método (fases 7–9), no aquí.
 
 ## Preguntas abiertas al usuario
-- Potencia del gate: con ≈ 106 eventos A en test ∩ holdout de A-lite, el IC de lift@5% tiene ancho ≈ ±1.3 (en validación
+- NAM sin convergencia completa: ¿re-entrenar con más épocas (p. ej. epochs_max 1000) y/o learning_rate mayor antes del
+  gate, o seguir con el NAM actual?
+- Potencia del gate (decidido: se mantiene tal cual): con ≈ 106 eventos A en test ∩ holdout de A-lite, el IC de lift@5% tiene ancho ≈ ±1.3 (en validación
   con 164 eventos fue [4.2, 6.8]); exigir Δlift@5% ≥ 0.25 con IC > 0 es prácticamente inalcanzable. ¿Se mantiene?
-- Criterio UHNW del gate ("sin deterioro"): en test ∩ holdout de A-lite hay 7 eventos A en UHNW; el criterio es de
+- Criterio UHNW del gate (decidido: solo reportado) ("sin deterioro"): en test ∩ holdout de A-lite hay 7 eventos A en UHNW; el criterio es de
   potencia casi nula. ¿Se mantiene como criterio del gate o pasa a solo reportado? `tabulate` (lo pide pandas.to_markdown) no se instaló: report.py tiene su propio renderizador markdown.
 
 ## Preguntas abiertas al dueño del dato
