@@ -1,8 +1,9 @@
 # STATUS · Modelo 3 (NAM)
 
 ## Estado
-- Paso actual: **9 · fase 7 (benchmarks)** terminada (solo validación). Siguiente: PASO 10 = fase 8 (challenger interpretable).
-- Tests: 24 passed.
+- Paso actual: **10 · fase 8 (challenger interpretable)** terminada: champion provisional = EBM monótono. Siguiente: PASO 11 =
+  fase 9 (NAM), bloqueada hasta llenar nam.* en config.yaml.
+- Tests: 25 passed.
 
 ## Decisiones del usuario
 | fecha | decisión |

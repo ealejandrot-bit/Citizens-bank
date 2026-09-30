@@ -1,0 +1,16 @@
+{
+ "regla (D8.1)": "mayor PR-AUC (A, validación); si |Δ| < 1 sd bootstrap pareada ⟹ EBM (aditivo)",
+ "ΔPR-AUC LightGBM − EBM": -0.008354766622512055,
+ "sd bootstrap": 0.013745358294595392,
+ "IC95 ΔPR-AUC": [
+  -0.03537281514913917,
+  0.018469706331997418
+ ],
+ "Δlift@5% LightGBM − EBM": -0.12226506456241104,
+ "IC95 Δlift@5%": [
+  -0.6227164778955059,
+  0.7078036511332696
+ ],
+ "champion provisional": "EBM monótono",
+ "test abierto": false
+}
