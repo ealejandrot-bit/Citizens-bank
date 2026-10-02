@@ -1,0 +1,5 @@
+data/*.sqlite
+data/*.sqlite-journal
+data/raw/*
+!data/raw/.gitkeep
+.ipynb_checkpoints/

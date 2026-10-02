@@ -1,0 +1,4 @@
+nba_api>=1.11
+pandas>=2.2
+requests>=2.31
+pytest>=8.0
