@@ -1,0 +1,62 @@
+# Bot GLD — configuración (v0). Ver SPEC.md.
+# Parámetros y fechas fijados ANTES de ver resultados (regla 5). No optimizar sobre out-of-sample.
+
+simbolo: GLD
+moneda: USD
+
+# Capital inicial en USD (tope actual 500 MXN ≈ 27 USD; actualizar al depositar más).
+capital_inicial: 27.0
+
+# false = solo acciones enteras. Si el capital no alcanza 1 acción → "no operable" (no se simula).
+fracciones: false
+# Decimales permitidos para acciones fraccionarias (solo aplica si fracciones: true).
+decimales_fraccion: 4
+
+# Verificar contra la tabla vigente de IBKR antes de confiar en resultados.
+costos:
+  comision_por_accion: 0.005   # IBKR Pro fija, USD/acción
+  comision_minima: 1.00        # USD por orden
+  comision_maxima_pct: 0.01    # 1% del valor de la operación (tope)
+  slippage_diario: 0.01        # USD por acción por lado
+  slippage_intradia: 0.02      # USD por acción por lado
+  conversion_mxn_usd: 0.0      # costo fijo único al inicio, USD (se aplica a estrategia y benchmark)
+  datos_mensual: 0.0           # USD/mes restado del capital cada mes (solo estrategia)
+
+# Fechas de corte por estrategia (definidas aquí, nunca en código).
+# inicio/fin: periodo total del backtest. Los datos previos a `inicio` solo se usan para calentar indicadores.
+fechas:
+  trend_daily:
+    inicio: "2006-01-01"
+    in_sample_end: "2018-12-31"
+    out_sample_start: "2019-01-01"
+    fin: null                  # null = último dato disponible
+  vwap_intraday:
+    inicio: "2023-01-01"
+    in_sample_end: "2024-12-31"
+    out_sample_start: "2025-01-01"
+    fin: null
+
+estrategias:
+  trend_daily:
+    sma: 200                   # fijo
+    control_rapida: 50         # variante de control 50/200 (no optimización)
+    control_lenta: 200
+  vwap_intraday:
+    inicio_rth: "09:30"
+    sin_operar_hasta: "10:00"  # primeros 30 min sin operaciones
+    cierre_forzado: "15:55"    # sale en la apertura de la barra de 15:55 ET
+    max_operaciones_dia: 2
+
+ibkr:
+  exchange: SMART
+  primary_exchange: ARCA
+  what_to_show: TRADES
+  diario_duracion: "20 Y"
+  intradia_inicio: "2023-01-01" # desde cuándo descargar barras de 5 min
+  intradia_bloque: "10 D"       # tamaño de cada petición de 5 min
+  pausa_entre_peticiones_s: 11  # respetar límites de pacing de IBKR
+
+rutas:
+  datos: data
+  reportes: reports
+  logs: logs
