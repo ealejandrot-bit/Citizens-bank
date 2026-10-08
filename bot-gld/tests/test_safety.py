@@ -23,4 +23,4 @@ def test_conexiones_readonly():
 
 def test_env_ignorado():
     gi = (ROOT / ".gitignore").read_text()
-    assert ".env" in gi.split() and "data/" in gi.split()
+    assert ".env" in gi.split() and "/data/" in gi.split()
