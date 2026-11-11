@@ -108,20 +108,25 @@ for c, w in zip('ABCDEFGH', [34, 17, 17, 20, 15, 13, 3, 70]): H.column_dimension
 
 # ---------------- Unidades ----------------
 SCN = ['Optimista', 'Base ★', 'Conservador']
-def unidad(name, rev_r, ni_r, mrow):
+def unidad(name, rev_r, ni_r, mrow, recent=False):
     ws = wb.create_sheet(f'Valuación {name}')
     title(ws, f'Dos Chingones — Valuación {name}', 'Proyección 5 años: ingresos × margen neto. DCF (Ke) + múltiplo P/U. MXN.')
     section(ws, 5, '1. Supuestos de la unidad')
     row(ws, 6, 'Ingresos LTM (oct-2025 – sep-2026)', f'=Histórico!D{rev_r}', note='Base de proyección.')
     row(ws, 7, 'Utilidad neta LTM', f'=Histórico!D{ni_r}')
-    row(ws, 8, 'Crecimiento nominal de ingresos año 1 (CAGR 2 años)', f'=Histórico!F{rev_r}', PCT, note='Tendencia real de la unidad; converge a la inflación en el año 3.')
+    if recent: row(ws, 8, 'Crecimiento nominal de ingresos año 1 (variación del último año)', f'=Histórico!E{rev_r}', PCT, note='Datos recientes: se usa la caída del último año; converge a la inflación en el año 3.')
+    else: row(ws, 8, 'Crecimiento nominal de ingresos año 1 (CAGR 2 años)', f'=Histórico!F{rev_r}', PCT, note='Tendencia de 2 años de la unidad; converge a la inflación en el año 3.')
     row(ws, 9, 'Crecimiento nominal años 3–5 = inflación LP + g real', f'={R["g"]}', PCT)
     row(ws, 10, 'Múltiplo P/U (precio / utilidad neta)', 4.0, MULT, note='Negocios privados pequeños de hospitalidad en México: 3–5x; consistente con 6.6x EV/EBITDA de mercado −40% por tamaño.')
     st(ws['B10'], fill=YEL)
     hdr(ws, 12, ['Margen neto por escenario', 'Optimista', 'Base ★', 'Conservador', '', '', '', 'Razón'])
     st(ws['A13'], 'Margen neto aplicado')
-    st(ws['B13'], f'=Histórico!B{mrow}', PCT); st(ws['C13'], f'=Histórico!D{mrow}', PCT); st(ws['D13'], f'=Histórico!E{mrow}', PCT)
-    st(ws['H13'], 'Optimista = regresa al promedio histórico · Base = se mantiene el LTM · Conservador = se queda en el de los últimos 6 meses.', italic=True, color=GREY)
+    if recent:
+        st(ws['B13'], f'=Histórico!D{mrow}', PCT); st(ws['C13'], f'=Histórico!E{mrow}', PCT); st(ws['D13'], f'=Histórico!F{mrow}', PCT)
+        st(ws['H13'], 'Datos recientes: Optimista = margen LTM · Base = margen últimos 6 meses · Conservador = margen últimos 3 meses.', italic=True, color=GREY)
+    else:
+        st(ws['B13'], f'=Histórico!B{mrow}', PCT); st(ws['C13'], f'=Histórico!D{mrow}', PCT); st(ws['D13'], f'=Histórico!E{mrow}', PCT)
+        st(ws['H13'], 'Optimista = regresa al promedio histórico · Base = se mantiene el LTM · Conservador = se queda en el de los últimos 6 meses.', italic=True, color=GREY)
     section(ws, 15, '2. Proyección de ingresos y utilidad neta')
     hdr(ws, 16, ['Concepto', 'LTM (año 0)', 'Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5', 'Nota'])
     st(ws['A17'], 'Crecimiento de ingresos')
@@ -161,7 +166,7 @@ def unidad(name, rev_r, ni_r, mrow):
     for col, w in zip('ABCDEFGH', [52, 16, 16, 16, 16, 16, 16, 70]): ws.column_dimensions[col].width = w
     ws.freeze_panes = 'B4'
     return ws
-unidad('Garden', 6, 7, 13)
+unidad('Garden', 6, 7, 13, recent=True)
 unidad('Presa', 8, 9, 14)
 
 # ---------------- Total ----------------
@@ -190,7 +195,7 @@ section(T, 23, '3. Qué cambió vs. v1 y lectura', 7)
 notes = ['="• v1: utilidad LTM × 4% de crecimiento, Ke 21.5% genérico. v2: ingresos con tendencia real de cada unidad (CAGR 2 años) que converge a inflación 4.0%, × margen neto por escenario; Ke con build-up (Damodaran/M-Bono) = "&TEXT(Supuestos!B26,"0.0%")&"."',
          '="• Garden: CAGR de ventas "&TEXT(Histórico!F6,"0.0%")&"; margen LTM "&TEXT(Histórico!D13,"0.0%")&" vs histórico "&TEXT(Histórico!B13,"0.0%")&" y últimos 6 meses "&TEXT(Histórico!E13,"0.0%")&"."',
          '="• Presa: CAGR de ventas "&TEXT(Histórico!F8,"0.0%")&" (año 1 sigue cayendo); margen LTM "&TEXT(Histórico!D14,"0.0%")&", últimos 6 meses "&TEXT(Histórico!E14,"0.0%")&"."',
-         '="• Rango = escenarios de margen (no de método). El mínimo supone que el deterioro de los últimos 6 meses se vuelve permanente."',
+         '="• Garden usa datos recientes (ventas del último año, margen de 6 meses en base, 3 meses en mínimo, LTM en máximo). Presa usa tendencia de 2 años y margen LTM (decisión de los socios)."',
          '• Utilidad neta = flujo para los socios (sin deuda conocida, CapEx ≈ depreciación). Sin estados financieros no se puede separar EBITDA, D&A ni renta.']
 for i, tx in enumerate(notes): st(T.cell(24 + i, 1), tx)
 for col, w in zip('ABCDEFG', [30, 20, 20, 20, 18, 18, 24]): T.column_dimensions[col].width = w
