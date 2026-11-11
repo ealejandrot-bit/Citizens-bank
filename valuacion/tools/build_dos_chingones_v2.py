@@ -46,7 +46,7 @@ inp(7, 'loc', 'Ubicación', 'Guanajuato, Gto.', None, '')
 inp(8, 'shares', 'Acciones totales (1 acción = 1%)', 100, '#,##0', 'Supuesto: no hay número de acciones en el archivo; % de socios de la hoja Original.', True)
 section(S, 10, 'B. Inflación y crecimiento', 3)
 inp(11, 'inf', 'Inflación de largo plazo México', 0.04, PCT, 'Instrucción del usuario (4.0%). Ref.: meta Banxico 3% ±1; INPC oct-2026 3.75%.', True)
-inp(12, 'g_real', 'Crecimiento real a perpetuidad', 0.0, PCT, 'Restaurantes maduros: sin crecimiento real perpetuo defendible.')
+inp(12, 'g_real', 'Crecimiento real a perpetuidad', 0.005, PCT, 'Instrucción del usuario: crecimiento real de largo plazo 0.5%–1.0% sobre inflación.')
 st(S['A13'], 'g terminal nominal = (1+inflación)·(1+g real) − 1'); st(S['B13'], '=(1+B11)*(1+B12)-1', PCT, bold=True); R['g'] = 'Supuestos!$B$13'
 section(S, 15, 'C. Tasa de descuento (Ke) — mismo enfoque que el modelo IC', 3)
 items = [('mbono', 'M-Bono 10 años', 0.0925, PCT, 'Cetesdirecto, 09-nov-2026 (fuente secundaria; verificar en Banxico SIE).'),
