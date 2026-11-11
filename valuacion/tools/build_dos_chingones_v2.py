@@ -70,6 +70,12 @@ inp(29, 'w_dcf', 'Peso DCF (proyección de ingresos × margen)', 0.5, PCT, 'Capt
 st(S['A30'], 'Peso múltiplo P/U'); st(S['B30'], '=1-B29', PCT); R['w_mult'] = 'Supuestos!$B$30'
 inp(31, 'dlom', 'Descuento por falta de liquidez (DLOM)', 0.0, PCT, 'Precio de referencia entre socios = 0%. Si es venta a un tercero minoritario, usar 20–30% (estudios restricted stock).', True)
 
+for a_, f_, fmt_ in [('B8', '=Tablita!$D$12', '#,##0'), ('B11', '=Tablita!$D$13', PCT), ('B12', '=Tablita!$D$14', PCT), ('B29', '=Tablita!$D$16', PCT), ('B31', '=Tablita!$D$17', PCT)]:
+    st(S[a_], f_, fmt_, fill=None)
+st(S['B26'], '=B18+B22*B23+B24+B25+Tablita!$D$15', PCT, bold=True, fill=KEY)
+st(S['A26'], 'Ke = Rf local + βL × ERP + tamaño + CSRP + ajuste (Tablita)', bold=True)
+st(S['A32'], 'Los supuestos en verde se editan en la hoja Tablita.', italic=True, color=GREY)
+
 # ---------------- Histórico ----------------
 H = wb.create_sheet('Histórico')
 title(H, 'Dos Chingones — Análisis histórico (base de las proyecciones)', 'Ventanas de 12 meses que terminan en septiembre. Fuente: hoja Original (columnas P–S).')
@@ -106,27 +112,66 @@ for i, tx in enumerate(['="• Garden: ventas "&TEXT(E6,"0.0%")&" en el último 
     st(H.cell(17 + i, 1), tx)
 for c, w in zip('ABCDEFGH', [34, 17, 17, 20, 15, 13, 3, 70]): H.column_dimensions[c].width = w
 
+
+# ---------------- Tablita ----------------
+from openpyxl.worksheet.datavalidation import DataValidation
+TB = wb.create_sheet('Tablita')
+title(TB, 'Dos Chingones — Valor por acción (tablita de referencia)', 'Cambia los supuestos en azul y la tablita se recalcula. Guanajuato, Gto. MXN.')
+section(TB, 4, 'Valor por acción', 7)
+hdr(TB, 5, ['Unidad', 'Valor por acción (base)', 'Mínimo', 'Máximo', 'Valor total base', '', ''])
+for i_, (lab_, r_) in enumerate([('Garden', 7), ('Presa', 8), ('Total Dos Chingones', 9)]):
+    rr_ = 6 + i_; tot_ = i_ == 2
+    st(TB[f'A{rr_}'], lab_, bold=True, fill=KEY if tot_ else None)
+    for c_, src_ in zip('BCDE', 'BCDE'):
+        st(TB[f'{c_}{rr_}'], f"='Valuación Total'!{src_}{r_}", CUR, bold=c_ == 'B' or tot_, fill=YEL if (c_ == 'B' and tot_) else (KEY if tot_ else None))
+st(TB['A9'], '="Rango por acción = escenarios de margen. "&TEXT(D12,"0")&" acciones; Ke "&TEXT(Supuestos!B26,"0.0%")&"; crecimiento LP "&TEXT(Supuestos!B13,"0.00%")&"."', italic=True, color=GREY)
+section(TB, 10, 'Supuestos editables (azul)', 7)
+hdr(TB, 11, ['Supuesto', 'Garden', 'Presa', 'General', 'Usado Garden', 'Usado Presa', 'Nota'])
+gen = [(12, 'Acciones totales', 100, '#,##0', 'Si el capital social es distinto, cámbialo aquí.'),
+       (13, 'Inflación de largo plazo México', 0.04, PCT, 'Ref.: meta Banxico 3% ±1; INPC oct-2026 3.75%.'),
+       (14, 'Crecimiento real de largo plazo', 0.005, PCT, 'Rango sugerido 0%–1%.'),
+       (15, 'Ajuste a la tasa de descuento (pp)', 0.0, PCT, '="Ke resultante: "&TEXT(Supuestos!B26,"0.0%")&" (base 21.6%)."'),
+       (16, 'Peso del DCF (resto = múltiplo P/U)', 0.5, PCT, ''),
+       (17, 'Descuento por falta de liquidez (DLOM)', 0.0, PCT, '0% entre socios; 20–30% si se vende a un tercero minoritario.')]
+for r_, lab_, v_, fmt_, n_ in gen:
+    st(TB[f'A{r_}'], lab_); st(TB[f'D{r_}'], v_, fmt_, fill=YEL); st(TB[f'G{r_}'], n_, italic=True, color=GREY)
+unit = [(18, 'Regla (1 = datos recientes, 2 = tendencia / LTM)', 1, 2, '0', 'Ver nota de margen en cada hoja de unidad.'),
+        (19, 'Crecimiento de ventas año 1 (vacío = según la regla)', None, None, PCT, 'Captura un % para forzarlo.'),
+        (20, 'Ajuste al margen neto (pp, a todos los escenarios)', 0.0, 0.0, PCT, 'Ej. +1% si esperas recuperar margen.'),
+        (21, 'Múltiplo P/U', 4.0, 4.0, MULT, 'Rango típico 3x–5x.')]
+for r_, lab_, g_, p_, fmt_, n_ in unit:
+    st(TB[f'A{r_}'], lab_)
+    for c_, v_ in (('B', g_), ('C', p_)):
+        cc_ = TB[f'{c_}{r_}']
+        if v_ is not None: st(cc_, v_, fmt_, fill=YEL)
+        else: cc_.fill = YEL; cc_.number_format = fmt_; cc_.font = Font(name=F, color=BLUE)
+    st(TB[f'G{r_}'], n_, italic=True, color=GREY)
+st(TB['E19'], "='Valuación Garden'!B8", PCT); st(TB['F19'], "='Valuación Presa'!B8", PCT)
+st(TB['E20'], "='Valuación Garden'!C13", PCT); st(TB['F20'], "='Valuación Presa'!C13", PCT)
+st(TB['G20'].offset(0, 0), 'Usado = margen base resultante. Ej. +1% si esperas recuperar margen.', italic=True, color=GREY)
+dv_ = DataValidation(type='whole', operator='between', formula1='1', formula2='2', showErrorMessage=True); TB.add_data_validation(dv_); dv_.add('B18:C18')
+st(TB['A23'], 'Las demás hojas (Supuestos, Valuación Garden / Presa, Histórico) muestran el detalle; no hace falta editarlas.', italic=True, color=GREY)
+for c_, w_ in zip('ABCDEFG', [50, 20, 16, 16, 18, 16, 60]): TB.column_dimensions[c_].width = w_
+
 # ---------------- Unidades ----------------
 SCN = ['Optimista', 'Base ★', 'Conservador']
-def unidad(name, rev_r, ni_r, mrow, recent=False):
+def unidad(name, rev_r, ni_r, mrow, tc):
+    T_ = lambda r: f'Tablita!${tc}${r}'
     ws = wb.create_sheet(f'Valuación {name}')
-    title(ws, f'Dos Chingones — Valuación {name}', 'Proyección 5 años: ingresos × margen neto. DCF (Ke) + múltiplo P/U. MXN.')
+    title(ws, f'Dos Chingones — Valuación {name}', 'Proyección 5 años: ingresos × margen neto. DCF (Ke) + múltiplo P/U. MXN. Supuestos editables en la hoja Tablita.')
     section(ws, 5, '1. Supuestos de la unidad')
     row(ws, 6, 'Ingresos LTM (oct-2025 – sep-2026)', f'=Histórico!D{rev_r}', note='Base de proyección.')
-    row(ws, 7, 'Utilidad neta LTM', f'=Histórico!D{ni_r}')
-    if recent: row(ws, 8, 'Crecimiento nominal de ingresos año 1 (variación del último año)', f'=Histórico!E{rev_r}', PCT, note='Datos recientes: se usa la caída del último año; converge a la inflación en el año 3.')
-    else: row(ws, 8, 'Crecimiento nominal de ingresos año 1 (CAGR 2 años)', f'=Histórico!F{rev_r}', PCT, note='Tendencia de 2 años de la unidad; converge a la inflación en el año 3.')
+    row(ws, 7, 'Utilidad neta LTM (repartos a socios)', f'=Histórico!D{ni_r}')
+    row(ws, 8, 'Crecimiento nominal de ingresos año 1', f'=IF(ISBLANK({T_(19)}),CHOOSE({T_(18)},Histórico!E{rev_r},Histórico!F{rev_r}),{T_(19)})', PCT,
+        note='Regla 1 = variación del último año · Regla 2 = CAGR 2 años · o el valor capturado en Tablita. Converge a la inflación en el año 3.')
     row(ws, 9, 'Crecimiento nominal años 3–5 = inflación LP + g real', f'={R["g"]}', PCT)
-    row(ws, 10, 'Múltiplo P/U (precio / utilidad neta)', 4.0, MULT, note='Negocios privados pequeños de hospitalidad en México: 3–5x; consistente con 6.6x EV/EBITDA de mercado −40% por tamaño.')
-    st(ws['B10'], fill=YEL)
+    row(ws, 10, 'Múltiplo P/U (precio / utilidad neta)', f'={T_(21)}', MULT, note='Negocios privados pequeños de hospitalidad en México: 3–5x; consistente con 6.6x EV/EBITDA de mercado −40% por tamaño.')
     hdr(ws, 12, ['Margen neto por escenario', 'Optimista', 'Base ★', 'Conservador', '', '', '', 'Razón'])
-    st(ws['A13'], 'Margen neto aplicado')
-    if recent:
-        st(ws['B13'], f'=Histórico!D{mrow}', PCT); st(ws['C13'], f'=Histórico!E{mrow}', PCT); st(ws['D13'], f'=Histórico!F{mrow}', PCT)
-        st(ws['H13'], 'Datos recientes: Optimista = margen LTM · Base = margen últimos 6 meses · Conservador = margen últimos 3 meses.', italic=True, color=GREY)
-    else:
-        st(ws['B13'], f'=Histórico!B{mrow}', PCT); st(ws['C13'], f'=Histórico!D{mrow}', PCT); st(ws['D13'], f'=Histórico!E{mrow}', PCT)
-        st(ws['H13'], 'Optimista = regresa al promedio histórico · Base = se mantiene el LTM · Conservador = se queda en el de los últimos 6 meses.', italic=True, color=GREY)
+    st(ws['A13'], 'Margen neto aplicado (incluye ajuste de Tablita)')
+    st(ws['B13'], f'=CHOOSE({T_(18)},Histórico!D{mrow},Histórico!B{mrow})+{T_(20)}', PCT)
+    st(ws['C13'], f'=CHOOSE({T_(18)},Histórico!E{mrow},Histórico!D{mrow})+{T_(20)}', PCT)
+    st(ws['D13'], f'=CHOOSE({T_(18)},Histórico!F{mrow},Histórico!E{mrow})+{T_(20)}', PCT)
+    st(ws['H13'], 'Regla 1 (datos recientes): Opt = LTM · Base = 6 meses · Cons = 3 meses. Regla 2 (tendencia): Opt = promedio histórico · Base = LTM · Cons = 6 meses.', italic=True, color=GREY)
     section(ws, 15, '2. Proyección de ingresos y utilidad neta')
     hdr(ws, 16, ['Concepto', 'LTM (año 0)', 'Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5', 'Nota'])
     st(ws['A17'], 'Crecimiento de ingresos')
@@ -166,8 +211,8 @@ def unidad(name, rev_r, ni_r, mrow, recent=False):
     for col, w in zip('ABCDEFGH', [52, 16, 16, 16, 16, 16, 16, 70]): ws.column_dimensions[col].width = w
     ws.freeze_panes = 'B4'
     return ws
-unidad('Garden', 6, 7, 13, recent=True)
-unidad('Presa', 8, 9, 14)
+unidad('Garden', 6, 7, 13, 'B')
+unidad('Presa', 8, 9, 14, 'C')
 
 # ---------------- Total ----------------
 T = wb.create_sheet('Valuación Total')
@@ -214,7 +259,7 @@ for i, (lab, f) in enumerate(chk):
 st(C.cell(12, 1), 'TODOS', bold=True); st(C.cell(12, 2), '=AND(B5:B10)', bold=True, fill=KEY)
 C.column_dimensions['A'].width = 50
 
-order = ['Valuación Total', 'Valuación Garden', 'Valuación Presa', 'Histórico', 'Supuestos', 'Checks', 'Original', 'Sheet1']
+order = ['Tablita', 'Valuación Total', 'Valuación Garden', 'Valuación Presa', 'Histórico', 'Supuestos', 'Checks', 'Original', 'Sheet1']
 wb._sheets = [wb[n] for n in order]; wb.active = 0
-for ws in wb: ws.sheet_view.tabSelected = ws.title == 'Valuación Total'
+for ws in wb: ws.sheet_view.tabSelected = ws.title == 'Tablita'
 wb.save(out)
