@@ -259,7 +259,73 @@ for i, (lab, f) in enumerate(chk):
 st(C.cell(12, 1), 'TODOS', bold=True); st(C.cell(12, 2), '=AND(B5:B10)', bold=True, fill=KEY)
 C.column_dimensions['A'].width = 50
 
-order = ['Tablita', 'Valuación Total', 'Valuación Garden', 'Valuación Presa', 'Histórico', 'Supuestos', 'Checks', 'Original', 'Sheet1']
+# ---------------- Calculadora de venta ----------------
+CV = wb.create_sheet('Calculadora venta')
+ORG = PatternFill('solid', fgColor='FCE4D6')
+title(CV, 'Dos Chingones — Calculadora de venta de acciones', 'Captura en azul (fondo naranja = dato pendiente). Los valores de Garden y Presa vienen vivos del modelo (hoja Tablita).')
+section(CV, 4, 'A. Valor de cada unidad al 100% (del modelo)', 8)
+hdr(CV, 5, ['Unidad', 'Mínimo', 'Base ★', 'Máximo', 'Utilidad anual año 1 (base)', 'Valor por cada 1% (base)', '', ''])
+st(CV['A6'], 'Garden'); st(CV['A7'], 'Presa')
+for r_, u_ in ((6, 'Garden'), (7, 'Presa')):
+    q_ = f"'Valuación {u_}'"
+    st(CV[f'B{r_}'], f'={q_}!D40', CUR); st(CV[f'C{r_}'], f'={q_}!C40', CUR, bold=True); st(CV[f'D{r_}'], f'={q_}!B40', CUR)
+    st(CV[f'E{r_}'], f'={q_}!C25', CUR); st(CV[f'F{r_}'], f'=C{r_}/100', CUR)
+st(CV['A8'], 'Dos Chingones', bold=True, fill=KEY)
+for c_ in 'BCDEF': st(CV[f'{c_}8'], f'=SUM({c_}6:{c_}7)', CUR, bold=True, fill=KEY)
+section(CV, 10, 'B. Datos de la operación', 8)
+hdr(CV, 11, ['Concepto', 'Luis Ortega', 'Irene', '', '', '', '', 'Nota'])
+inputs = [(12, '% de participación en Garden', 0.0, PCT, True, 'Por capturar: % que vende en Garden (ej. 2% = 2%).'),
+          (13, '% de participación en Presa', 0.0, PCT, True, 'Por capturar: puede ser distinto al de Garden.'),
+          (14, 'Escenario de valuación (1 = Mínimo, 2 = Base, 3 = Máximo)', 2, '0', False, 'Base = valor de referencia.'),
+          (15, 'Descuento (falta de liquidez / negociación)', 0.0, PCT, False, '0% entre socios; 20–30% si compra un tercero minoritario.'),
+          (16, 'Ajuste adicional acordado (+ premio / − descuento)', 0.0, PCT, False, 'Ej. +5% si el comprador gana control; −5% por pronto pago.'),
+          (17, 'Enganche (% del precio)', 1.0, PCT, False, '100% = pago de contado.'),
+          (18, 'Plazo para el saldo (meses)', 12, '0', False, 'Sólo aplica si el enganche es menor a 100%.'),
+          (19, 'Tasa de interés anual sobre el saldo', 0.12, PCT, False, 'Ref.: TIIE + spread; 0% si es sin intereses.')]
+for r_, lab_, v_, fmt_, pend_, n_ in inputs:
+    st(CV[f'A{r_}'], lab_)
+    for c_ in 'BC': st(CV[f'{c_}{r_}'], v_, fmt_, fill=ORG if pend_ else YEL)
+    st(CV[f'H{r_}'], n_, italic=True, color=GREY)
+dvs = DataValidation(type='whole', operator='between', formula1='1', formula2='3', showErrorMessage=True); CV.add_data_validation(dvs); dvs.add('B14:C14')
+section(CV, 21, 'C. Precio de las acciones', 8)
+hdr(CV, 22, ['Concepto', 'Luis Ortega', 'Irene', 'Total', '', '', '', 'Nota'])
+calc_rows = [
+ (23, 'Valor de su parte en Garden', lambda c: f'={c}12*CHOOSE({c}14,$B$6,$C$6,$D$6)', 'Valor de Garden al 100% × su %.'),
+ (24, 'Valor de su parte en Presa', lambda c: f'={c}13*CHOOSE({c}14,$B$7,$C$7,$D$7)', ''),
+ (25, 'Valor antes de descuentos', lambda c: f'={c}23+{c}24', ''),
+ (26, '(−) Descuento', lambda c: f'=-{c}25*{c}15', ''),
+ (27, '(±) Ajuste acordado', lambda c: f'={c}25*(1-{c}15)*{c}16', ''),
+ (28, 'PRECIO DE VENTA', lambda c: f'={c}25+{c}26+{c}27', 'Precio total a pagar al vendedor (valor presente).'),
+ (30, 'Enganche', lambda c: f'={c}28*{c}17', ''),
+ (31, 'Saldo a plazos', lambda c: f'={c}28-{c}30', ''),
+ (32, 'Mensualidad', lambda c: f'=IF({c}31<=0,0,IF({c}19=0,{c}31/{c}18,PMT({c}19/12,{c}18,-{c}31)))', 'Pago fijo mensual (capital + interés).'),
+ (33, 'Total pagado (enganche + mensualidades)', lambda c: f'={c}30+{c}32*{c}18*({c}31>0)', 'Incluye intereses del financiamiento.'),
+ (35, 'Repartos anuales que deja de recibir el vendedor', lambda c: f'={c}12*$E$6+{c}13*$E$7', 'Lo que gana el comprador con esa participación (año 1, base).'),
+ (36, 'Años para recuperar la inversión (comprador)', lambda c: f'=IF({c}35<=0,0,{c}28/{c}35)', 'Precio ÷ repartos anuales.'),
+ (37, 'Rendimiento anual para el comprador', lambda c: f'=IF({c}28<=0,0,{c}35/{c}28)', 'Repartos ÷ precio. Compáralo con Ke 21.6%.'),
+]
+for r_, lab_, fn_, n_ in calc_rows:
+    big_ = r_ == 28
+    st(CV[f'A{r_}'], lab_, bold=big_, fill=YEL if big_ else None)
+    fmt_ = '0.0' if r_ == 36 else (PCT if r_ == 37 else CUR)
+    for c_ in 'BC': st(CV[f'{c_}{r_}'], fn_(c_), fmt_, bold=big_, fill=YEL if big_ else None)
+    if r_ not in (36, 37): st(CV[f'D{r_}'], f'=B{r_}+C{r_}', fmt_, bold=big_, fill=YEL if big_ else None)
+    else: st(CV[f'D{r_}'], f'=IF(D35<=0,0,D28/D35)' if r_ == 36 else f'=IF(D28<=0,0,D35/D28)', fmt_)
+    if n_: st(CV[f'H{r_}'], n_, italic=True, color=GREY)
+section(CV, 39, 'D. Rango de negociación (con el descuento y ajuste capturados)', 8)
+hdr(CV, 40, ['Escenario', 'Luis Ortega', 'Irene', 'Total', '', '', '', ''])
+for i_, (lab_, k_) in enumerate([('Mínimo', 'B'), ('Base ★', 'C'), ('Máximo', 'D')]):
+    r_ = 41 + i_
+    st(CV[f'A{r_}'], lab_, bold=i_ == 1)
+    for c_ in 'BC':
+        st(CV[f'{c_}{r_}'], f'=({c_}$12*${k_}$6+{c_}$13*${k_}$7)*(1-{c_}$15)*(1+{c_}$16)', CUR, bold=i_ == 1)
+    st(CV[f'D{r_}'], f'=B{r_}+C{r_}', CUR, bold=i_ == 1)
+st(CV['A45'], '="Si los % están en cero, captura la participación de cada vendedor en las celdas naranjas (B12:C13). Valor por cada 1% en base: Garden "&TEXT(F6,"$#,##0")&" · Presa "&TEXT(F7,"$#,##0")&"."', italic=True, color=GREY)
+st(CV['A46'], 'Notas: el precio es valor presente; con pagos a plazos el total pagado incluye intereses. La calculadora no considera impuestos (ISR por enajenación de acciones): consultar con el contador.', italic=True, color=GREY)
+for c_, w_ in zip('ABCDEFGH', [52, 18, 18, 18, 22, 22, 3, 60]): CV.column_dimensions[c_].width = w_
+CV.freeze_panes = 'B4'
+
+order = ['Tablita', 'Calculadora venta', 'Valuación Total', 'Valuación Garden', 'Valuación Presa', 'Histórico', 'Supuestos', 'Checks', 'Original', 'Sheet1']
 wb._sheets = [wb[n] for n in order]; wb.active = 0
 for ws in wb: ws.sheet_view.tabSelected = ws.title == 'Tablita'
 wb.save(out)
