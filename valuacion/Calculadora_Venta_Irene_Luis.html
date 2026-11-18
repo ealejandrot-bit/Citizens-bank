@@ -58,6 +58,12 @@ tr.base td{font-weight:700}
 .notes{font-size:14px;color:var(--ink);margin-top:18px;padding-left:18px}
 .notes li{margin:4px 0}
 @media(max-width:600px){table{font-size:13px}th,td{padding:6px 4px}thead th{font-size:11px}}
+.buy input.num{width:72px}
+.buy input.pr{width:96px}
+.buy td,.buy th{text-align:center;white-space:nowrap}
+.buy td:first-child,.buy th:first-child{text-align:left;white-space:normal}
+.warn{color:#B42318;font-weight:700}
+.ok{color:#1B1B1B;font-weight:700}
 footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-top:2px solid var(--ink);margin-top:20px;padding-top:10px;font-size:13px;font-weight:700}
 </style>
 </head>
@@ -112,18 +118,50 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-
   </div>
 
   <section class="settings">
-    <h3>Punto dentro del rango de valuación</h3>
-    <input type="range" id="pos" min="0" max="100" step="1" aria-describedby="pos-txt">
-    <div class="pos-ticks"><span>Mínimo</span><span>Base ★</span><span>Máximo</span></div>
-    <p id="pos-txt" style="margin:8px 0 0;font-weight:600"></p>
+    <h3>Punto dentro del rango de valuación, por sucursal</h3>
+    <div class="ctl" style="margin-top:6px">
+      <label for="posG">Garden · valor por acción (1%) <span>$ <input class="num" style="width:104px" id="valG" type="number" step="100"></span></label>
+      <input type="range" id="posG" min="0" max="100" step="0.1" aria-describedby="txtG">
+      <div class="pos-ticks"><span>Mínimo</span><span>Base ★</span><span>Máximo</span></div>
+      <p id="txtG" style="margin:4px 0 0;font-weight:600;font-size:14px"></p>
+    </div>
+    <div class="ctl" style="margin-top:6px">
+      <label for="posP">Presa · valor por acción (1%) <span>$ <input class="num" style="width:104px" id="valP" type="number" step="100"></span></label>
+      <input type="range" id="posP" min="0" max="100" step="0.1" aria-describedby="txtP">
+      <div class="pos-ticks"><span>Mínimo</span><span>Base ★</span><span>Máximo</span></div>
+      <p id="txtP" style="margin:4px 0 0;font-weight:600;font-size:14px"></p>
+    </div>
     <div class="ctl" style="margin-top:14px">
       <label for="desc">Descuento negociado (liquidez / pronto pago) <span class="val" id="desc-v">0%</span></label>
       <input type="range" id="desc" min="0" max="30" step="1">
     </div>
   </section>
 
+  <section class="chartcard" id="buyers">
+    <h3>Reparto de la venta por comprador</h3>
+    <p style="margin:0 0 8px;color:var(--ink2);font-size:14px">Captura cuántas acciones (1 acción = 1%) le vende Irene y Luis Ortiz a cada comprador en cada sucursal, y el precio pactado por acción. Precio de Presa vacío = valor seleccionado arriba.</p>
+    <div class="tablewrap">
+      <table class="buy">
+        <thead>
+          <tr><th rowspan="2">Comprador</th><th colspan="2">Precio por acción</th><th colspan="2">Le vende Irene</th><th colspan="2">Le vende Luis Ortiz</th><th rowspan="2">Paga a Irene</th><th rowspan="2">Paga a Luis</th><th rowspan="2">Total</th></tr>
+          <tr><th>Garden</th><th>Presa</th><th>Garden</th><th>Presa</th><th>Garden</th><th>Presa</th></tr>
+        </thead>
+        <tbody id="buybody"></tbody>
+        <tfoot id="buyfoot"></tfoot>
+      </table>
+    </div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table aria-label="Resumen por vendedor">
+        <thead><tr><th>Vendedor</th><th>Vende Garden</th><th>Vende Presa</th><th>Conserva Garden</th><th>Conserva Presa</th><th>Recibe</th><th>Vs. valor del modelo</th></tr></thead>
+        <tbody id="sellbody"></tbody>
+      </table>
+    </div>
+    <p id="buymsg" style="margin:10px 0 0;font-size:14px"></p>
+  </section>
+
   <section class="chartcard">
-    <h3>Sensibilidad: precio de venta a lo largo del rango</h3>
+    <h3>Sensibilidad: precio de venta según el valor de Garden</h3>
+    <p style="margin:0 0 6px;color:var(--ink2);font-size:14px">El eje recorre el rango de Garden; Presa se queda en el valor que elegiste arriba.</p>
     <div class="legend"><span><i style="background:var(--irene)"></i>Irene</span><span><i style="background:var(--luis)"></i>Luis Ortiz</span><span><i style="background:var(--ink);height:2px"></i>Punto seleccionado</span></div>
     <div style="position:relative" id="chartbox">
       <svg id="chart" viewBox="0 0 960 360" role="img" aria-label="Precio de venta de Irene y Luis Ortiz desde el mínimo hasta el máximo del rango de valuación"></svg>
@@ -162,11 +200,13 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-
 
 <script>
 const R = { G:{min:51147, base:63457, max:69502}, P:{min:14739, base:20350, max:25273} };
-const S = { irene:{g:20,p:10}, luis:{g:19,p:40}, pos:50, desc:0, refs:[{n:'Vivanco',v:55000},{n:'Alma y su mamá',v:60000}] };
+const S = { irene:{g:20,p:10}, luis:{g:19,p:40}, posG:50, posP:50, desc:0, refs:[{n:'Vivanco',v:55000},{n:'Alma y su mamá',v:60000}] };
 const fmt = n => '$' + Math.round(n).toLocaleString('es-MX');
 const unitVal = (u, pos) => { const r=R[u]; return pos<=50 ? r.min+(r.base-r.min)*pos/50 : r.base+(r.max-r.base)*(pos-50)/50; };
-const price = (who, pos) => (S[who].g*unitVal('G',pos) + S[who].p*unitVal('P',pos)) * (1-S.desc/100);
-const posLabel = p => p===0?'Mínimo':p===50?'Base ★':p===100?'Máximo':(p<50?`${p}% del camino de mínimo a base`:`${p}% del camino (entre base y máximo)`);
+const price = (who, pG, pP) => (S[who].g*unitVal('G',pG) + S[who].p*unitVal('P',pP===undefined?S.posP:pP)) * (1-S.desc/100);
+const posOfU=(u,v)=>{const r=R[u]; return v<=r.base ? (v-r.min)/(r.base-r.min)*50 : 50+(v-r.base)/(r.max-r.base)*50;};
+S.posG=posOfU('G',55000);
+const posLabel = p => {p=Math.round(p*10)/10; return p===0?'Mínimo':p===50?'Base ★':p===100?'Máximo':`${p}% del rango`;};
 
 function bind(who, k){
   const r=document.getElementById(`${who}-${k}`), n=document.getElementById(`${who}-${k}-n`);
@@ -175,26 +215,32 @@ function bind(who, k){
   r.addEventListener('input',e=>set(e.target.value)); n.addEventListener('input',e=>set(e.target.value));
 }
 ['irene','luis'].forEach(w=>{bind(w,'g');bind(w,'p');});
-const pos=document.getElementById('pos'); pos.value=S.pos; pos.addEventListener('input',e=>{S.pos=+e.target.value;update();});
+['G','P'].forEach(u=>{const k='pos'+u, sl=document.getElementById(k), vi=document.getElementById('val'+u);
+  sl.value=S[k]; vi.value=Math.round(unitVal(u,S[k]));
+  sl.addEventListener('input',e=>{S[k]=+e.target.value; vi.value=Math.round(unitVal(u,S[k])); update();});
+  vi.addEventListener('change',e=>{let v=parseFloat(e.target.value)||R[u].base; v=Math.max(R[u].min,Math.min(R[u].max,v)); S[k]=posOfU(u,v); sl.value=S[k]; vi.value=Math.round(v); update();});
+});
 const desc=document.getElementById('desc'); desc.value=S.desc; desc.addEventListener('input',e=>{S.desc=+e.target.value;update();});
 
 function update(){
   const d=1-S.desc/100;
   ['irene','luis'].forEach(w=>{
-    document.getElementById(`${w}-price`).textContent=fmt(price(w,S.pos));
-    document.getElementById(`${w}-range`).textContent=`Rango ${fmt(price(w,0))} – ${fmt(price(w,100))} · base ${fmt(price(w,50))}`;
-    document.getElementById(`${w}-gv`).textContent=fmt(S[w].g*unitVal('G',S.pos)*d);
-    document.getElementById(`${w}-pv`).textContent=fmt(S[w].p*unitVal('P',S.pos)*d);
+    document.getElementById(`${w}-price`).textContent=fmt(price(w,S.posG,S.posP));
+    document.getElementById(`${w}-range`).textContent=`Rango ${fmt(price(w,0,0))} – ${fmt(price(w,100,100))} · base ${fmt(price(w,50,50))}`;
+    document.getElementById(`${w}-gv`).textContent=fmt(S[w].g*unitVal('G',S.posG)*d);
+    document.getElementById(`${w}-pv`).textContent=fmt(S[w].p*unitVal('P',S.posP)*d);
   });
-  const t=p=>price('irene',p)+price('luis',p);
-  document.getElementById('tot-price').textContent=fmt(t(S.pos));
-  document.getElementById('tot-range').textContent=`Rango ${fmt(t(0))} – ${fmt(t(100))} · base ${fmt(t(50))}`;
-  document.getElementById('pos-txt').textContent=`Seleccionado: ${posLabel(S.pos)} · valor por acción Garden ${fmt(unitVal('G',S.pos))}, Presa ${fmt(unitVal('P',S.pos))}`;
+  const t=(a,b)=>price('irene',a,b)+price('luis',a,b);
+  document.getElementById('tot-price').textContent=fmt(t(S.posG,S.posP));
+  document.getElementById('tot-range').textContent=`Rango ${fmt(t(0,0))} – ${fmt(t(100,100))} · base ${fmt(t(50,50))}`;
+  document.getElementById('txtG').textContent=`Garden: ${fmt(unitVal('G',S.posG))} por acción · ${posLabel(S.posG)} (rango ${fmt(R.G.min)} – ${fmt(R.G.max)})`;
+  document.getElementById('txtP').textContent=`Presa: ${fmt(unitVal('P',S.posP))} por acción · ${posLabel(S.posP)} (rango ${fmt(R.P.min)} – ${fmt(R.P.max)})`;
   document.getElementById('desc-v').textContent=S.desc+'%';
-  const rows=[['Mínimo',0],['Base ★',50],['Máximo',100],['Seleccionado',S.pos]];
-  document.getElementById('tbody').innerHTML=rows.map(([l,p])=>`<tr class="${p===50&&l!=='Seleccionado'?'base':''}"><td>${l}</td><td>${fmt(price('irene',p))}</td><td>${fmt(price('luis',p))}</td><td>${fmt(t(p))}</td></tr>`).join('');
+  const rows=[['Mínimo (ambas)',0,0],['Base ★ (ambas)',50,50],['Máximo (ambas)',100,100],[`Seleccionado (Garden ${fmt(unitVal('G',S.posG))}, Presa ${fmt(unitVal('P',S.posP))})`,S.posG,S.posP]];
+  document.getElementById('tbody').innerHTML=rows.map(([l,a,b])=>`<tr class="${l.startsWith('Base')?'base':''}"><td>${l}</td><td>${fmt(price('irene',a,b))}</td><td>${fmt(price('luis',a,b))}</td><td>${fmt(t(a,b))}</td></tr>`).join('');
   draw();
   if(typeof updateRefs==='function') updateRefs();
+  if(typeof updateBuy==='function') updateBuy();
 }
 
 const svg=document.getElementById('chart'); let W=960, H=360, M={l:84,r:120,t:20,b:44};
@@ -220,9 +266,9 @@ function draw(){
   for(let i=1;i<ends.length;i++){ if(ends[i].y-ends[i-1].y<18) ends[i].y=ends[i-1].y+18; }
   series.forEach(([w,c])=>{ g+=`<path d="${pts(w)}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`; });
   ends.forEach(e=>{ g+=`<text x="${W-M.r+10}" y="${e.y+4}" font-size="14" font-weight="700" fill="#1B1B1B">${e.n}</text>`; });
-  const x=xs(S.pos);
+  const x=xs(S.posG);
   g+=`<line x1="${x}" x2="${x}" y1="${M.t}" y2="${H-M.b}" stroke="#1B1B1B" stroke-width="2"/>`;
-  series.forEach(([w,c])=>{ g+=`<circle cx="${x}" cy="${ys(price(w,S.pos))}" r="6" fill="${c}" stroke="#FBF6EC" stroke-width="2"/>`; });
+  series.forEach(([w,c])=>{ g+=`<circle cx="${x}" cy="${ys(price(w,S.posG))}" r="6" fill="${c}" stroke="#FBF6EC" stroke-width="2"/>`; });
   g+=`<g id="hover"></g><rect id="hit" x="${M.l}" y="${M.t}" width="${W-M.l-M.r}" height="${H-M.t-M.b}" fill="transparent"/>`;
   svg.innerHTML=g;
   const hit=svg.querySelector('#hit'), hov=svg.querySelector('#hover'), tip=document.getElementById('tip'), box=document.getElementById('chartbox');
@@ -231,7 +277,7 @@ function draw(){
     const p=Math.round(Math.max(0,Math.min(100,(sx-M.l)/(W-M.l-M.r)*100)));
     const hx=xs(p);
     hov.innerHTML=`<line x1="${hx}" x2="${hx}" y1="${M.t}" y2="${H-M.b}" stroke="#7A7872" stroke-width="1"/>`+series.map(([w,c])=>`<circle cx="${hx}" cy="${ys(price(w,p))}" r="5" fill="${c}" stroke="#FBF6EC" stroke-width="2"/>`).join('');
-    tip.innerHTML=`<b>${posLabel(p)}</b><br>Irene: ${fmt(price('irene',p))}<br>Luis Ortiz: ${fmt(price('luis',p))}<br>Total: ${fmt(price('irene',p)+price('luis',p))}`;
+    tip.innerHTML=`<b>Garden ${fmt(unitVal('G',p))} (${posLabel(p)})</b><br>Irene: ${fmt(price('irene',p))}<br>Luis Ortiz: ${fmt(price('luis',p))}<br>Total: ${fmt(price('irene',p)+price('luis',p))}`;
     const bx=box.getBoundingClientRect(); let left=ev.clientX-bx.left+14; if(left>bx.width-200) left=ev.clientX-bx.left-214;
     tip.style.left=left+'px'; tip.style.top=(ev.clientY-bx.top-20)+'px'; tip.style.opacity=1;
   };
@@ -245,7 +291,7 @@ const posOf=v=>{const r=R.G; if(v<=r.base) return (v-r.min)/(r.base-r.min)*50; r
 const posTxt=v=>{const p=posOf(v); return p<0?'Debajo del mínimo':p>100?'Arriba del máximo':`${Math.round(p)}% del rango`;};
 function updateRefs(){
   const d=1-S.desc/100;
-  const rows=[...S.refs.map(r=>[r.n,r.v,false]),['Modelo — seleccionado',unitVal('G',S.pos),true],['Modelo — base ★',R.G.base,true]];
+  const rows=[...S.refs.map(r=>[r.n,r.v,false]),['Modelo — seleccionado',unitVal('G',S.posG),true],['Modelo — base ★',R.G.base,true]];
   document.getElementById('refbody').innerHTML=rows.map(([n,v,m])=>`<tr class="${n.includes('base')?'base':''}"><td>${n}</td><td>${fmt(v)}</td><td>${m&&n.includes('base')?'Base ★':posTxt(v)}</td><td>${fmt(S.irene.g*v*d)}</td><td>${fmt(S.luis.g*v*d)}</td></tr>`).join('');
   drawRef();
 }
@@ -264,8 +310,34 @@ function drawRef(){
   let labs=S.refs.map(r=>({n:r.n,v:r.v,y:y(r.v)})).sort((a,b)=>a.y-b.y); for(let i=1;i<labs.length;i++) if(labs[i].y-labs[i-1].y<16) labs[i].y=labs[i-1].y+16;
   S.refs.forEach(r=>{g+=`<line x1="${m.l}" x2="${W2-m.r}" y1="${y(r.v)}" y2="${y(r.v)}" stroke="#4A4A48" stroke-width="1.5" stroke-dasharray="6 4"/>`;});
   labs.forEach(l=>{g+=`<text x="${W2-m.r+10}" y="${l.y+4}" font-size="${sm?12:13}" fill="#4A4A48">${sm?l.n.split(' ')[0]:l.n+' '+fmt(l.v)}</text>`;});
-  g+=`<circle cx="${x(S.pos)}" cy="${y(unitVal('G',S.pos))}" r="6" fill="#1B1B1B" stroke="#FBF6EC" stroke-width="2"><title>Seleccionado: ${fmt(unitVal('G',S.pos))}</title></circle>`;
+  g+=`<circle cx="${x(S.posG)}" cy="${y(unitVal('G',S.posG))}" r="6" fill="#1B1B1B" stroke="#FBF6EC" stroke-width="2"><title>Seleccionado: ${fmt(unitVal('G',S.posG))}</title></circle>`;
   rsvg.innerHTML=g;
+}
+
+const BUY=[{n:'Vivanco',pg:55000,pp:null,ig:0,ip:0,lg:0,lp:0},{n:'Mamá de Vivanco',pg:60000,pp:null,ig:0,ip:0,lg:0,lp:0},{n:'Alma',pg:60000,pp:null,ig:0,ip:0,lg:0,lp:0}];
+const F=['ig','ip','lg','lp'];
+document.getElementById('buybody').innerHTML=BUY.map((b,i)=>`<tr><td><b>${b.n}</b></td>
+ <td><input class="num pr" data-i="${i}" data-k="pg" type="number" min="0" step="500" value="${b.pg}"></td>
+ <td><input class="num pr" data-i="${i}" data-k="pp" type="number" min="0" step="500" placeholder="modelo"></td>
+ ${F.map(k=>`<td><input class="num" data-i="${i}" data-k="${k}" type="number" min="0" max="50" step="0.5" value="0"></td>`).join('')}
+ <td id="pi${i}"></td><td id="pl${i}"></td><td id="pt${i}"></td></tr>`).join('');
+document.querySelectorAll('#buybody input').forEach(el=>el.addEventListener('input',e=>{const b=BUY[+el.dataset.i],k=el.dataset.k; const v=parseFloat(el.value); b[k]=(k==='pp'&&el.value==='')?null:Math.max(0,isNaN(v)?0:v); updateBuy();}));
+function updateBuy(){
+  const pP=unitVal('P',S.posP), pG=unitVal('G',S.posG);
+  let ti=0,tl=0,sum={ig:0,ip:0,lg:0,lp:0};
+  BUY.forEach((b,i)=>{const pp=b.pp===null?pP:b.pp; const ai=b.ig*b.pg+b.ip*pp, al=b.lg*b.pg+b.lp*pp; ti+=ai; tl+=al; F.forEach(k=>sum[k]+=b[k]);
+    document.getElementById('pi'+i).textContent=fmt(ai); document.getElementById('pl'+i).textContent=fmt(al); document.getElementById('pt'+i).innerHTML=`<b>${fmt(ai+al)}</b>`;
+    const ppEl=document.querySelector(`#buybody input[data-i="${i}"][data-k="pp"]`); ppEl.placeholder=Math.round(pP);});
+  document.getElementById('buyfoot').innerHTML=`<tr><td><b>Total</b></td><td></td><td></td><td><b>${sum.ig}</b></td><td><b>${sum.ip}</b></td><td><b>${sum.lg}</b></td><td><b>${sum.lp}</b></td><td><b>${fmt(ti)}</b></td><td><b>${fmt(tl)}</b></td><td><b>${fmt(ti+tl)}</b></td></tr>`;
+  const sellers=[['Irene','irene','ig','ip',ti],['Luis Ortiz','luis','lg','lp',tl]];
+  let bad=[];
+  document.getElementById('sellbody').innerHTML=sellers.map(([n,w,kg,kp,amt])=>{const cg=S[w].g-sum[kg], cp=S[w].p-sum[kp]; if(cg<0||cp<0) bad.push(n);
+    const model=(sum[kg]*pG+sum[kp]*pP); const diff=amt-model;
+    return `<tr><td>${n}</td><td>${sum[kg]} de ${S[w].g}</td><td>${sum[kp]} de ${S[w].p}</td><td class="${cg<0?'warn':''}">${cg}</td><td class="${cp<0?'warn':''}">${cp}</td><td><b>${fmt(amt)}</b></td><td>${model?(diff>=0?'+':'−')+fmt(Math.abs(diff)):'—'}</td></tr>`;}).join('');
+  const msg=document.getElementById('buymsg');
+  if(bad.length){msg.className='warn'; msg.textContent=`⚠ ${bad.join(' y ')} vende más acciones de las que tiene en alguna sucursal.`;}
+  else if(sum.ig+sum.ip+sum.lg+sum.lp===0){msg.className=''; msg.textContent='Captura las acciones que vende cada uno para ver el reparto.';}
+  else {msg.className='ok'; msg.textContent=`Total de la operación: ${fmt(ti+tl)}. "Vs. valor del modelo" compara lo pactado contra el valor seleccionado arriba (Garden ${fmt(pG)}, Presa ${fmt(pP)} por acción).`;}
 }
 
 update();
