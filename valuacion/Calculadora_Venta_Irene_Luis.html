@@ -65,18 +65,18 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-
 <div class="wrap">
   <div class="eyebrow">Dos Chingones · Confidencial</div>
   <h1>Calculadora de venta de acciones</h1>
-  <p class="sub">Mueve el porcentaje de Irene y de Luis Ortega en cada sucursal y el punto dentro del rango de valuación. Rangos por acción (1 acción = 1%) al corte de sep-2026.</p>
+  <p class="sub">Mueve el porcentaje de Irene y de Luis Ortiz en cada sucursal y el punto dentro del rango de valuación. Rangos por acción (1 acción = 1%) al corte de sep-2026. Valores iniciales: participación declarada en el consejo extraordinario del 9-jul-2026.</p>
 
   <div class="grid two">
     <section class="card" id="card-irene">
       <h2><span class="dot" style="background:var(--irene)"></span>Irene</h2>
       <div class="ctl">
-        <label for="irene-g">% en Garden <span><input class="num" id="irene-g-n" type="number" min="0" max="20" step="0.1"> %</span></label>
-        <input type="range" id="irene-g" min="0" max="20" step="0.1">
+        <label for="irene-g">% en Garden <span><input class="num" id="irene-g-n" type="number" min="0" max="50" step="0.5"> %</span></label>
+        <input type="range" id="irene-g" min="0" max="50" step="0.5">
       </div>
       <div class="ctl">
-        <label for="irene-p">% en Presa <span><input class="num" id="irene-p-n" type="number" min="0" max="20" step="0.1"> %</span></label>
-        <input type="range" id="irene-p" min="0" max="20" step="0.1">
+        <label for="irene-p">% en Presa <span><input class="num" id="irene-p-n" type="number" min="0" max="50" step="0.5"> %</span></label>
+        <input type="range" id="irene-p" min="0" max="50" step="0.5">
       </div>
       <div class="price">
         <div class="lbl">Precio de venta</div>
@@ -87,14 +87,14 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-
     </section>
 
     <section class="card" id="card-luis">
-      <h2><span class="dot" style="background:var(--luis)"></span>Luis Ortega</h2>
+      <h2><span class="dot" style="background:var(--luis)"></span>Luis Ortiz</h2>
       <div class="ctl">
-        <label for="luis-g">% en Garden <span><input class="num" id="luis-g-n" type="number" min="0" max="20" step="0.1"> %</span></label>
-        <input type="range" id="luis-g" min="0" max="20" step="0.1">
+        <label for="luis-g">% en Garden <span><input class="num" id="luis-g-n" type="number" min="0" max="50" step="0.5"> %</span></label>
+        <input type="range" id="luis-g" min="0" max="50" step="0.5">
       </div>
       <div class="ctl">
-        <label for="luis-p">% en Presa <span><input class="num" id="luis-p-n" type="number" min="0" max="20" step="0.1"> %</span></label>
-        <input type="range" id="luis-p" min="0" max="20" step="0.1">
+        <label for="luis-p">% en Presa <span><input class="num" id="luis-p-n" type="number" min="0" max="50" step="0.5"> %</span></label>
+        <input type="range" id="luis-p" min="0" max="50" step="0.5">
       </div>
       <div class="price">
         <div class="lbl">Precio de venta</div>
@@ -124,15 +124,30 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-
 
   <section class="chartcard">
     <h3>Sensibilidad: precio de venta a lo largo del rango</h3>
-    <div class="legend"><span><i style="background:var(--irene)"></i>Irene</span><span><i style="background:var(--luis)"></i>Luis Ortega</span><span><i style="background:var(--ink);height:2px"></i>Punto seleccionado</span></div>
+    <div class="legend"><span><i style="background:var(--irene)"></i>Irene</span><span><i style="background:var(--luis)"></i>Luis Ortiz</span><span><i style="background:var(--ink);height:2px"></i>Punto seleccionado</span></div>
     <div style="position:relative" id="chartbox">
-      <svg id="chart" viewBox="0 0 960 360" role="img" aria-label="Precio de venta de Irene y Luis Ortega desde el mínimo hasta el máximo del rango de valuación"></svg>
+      <svg id="chart" viewBox="0 0 960 360" role="img" aria-label="Precio de venta de Irene y Luis Ortiz desde el mínimo hasta el máximo del rango de valuación"></svg>
       <div class="tip" id="tip"></div>
     </div>
     <div class="tablewrap">
       <table aria-label="Precio por escenario">
-        <thead><tr><th>Escenario</th><th>Irene</th><th>Luis Ortega</th><th>Total</th></tr></thead>
+        <thead><tr><th>Escenario</th><th>Irene</th><th>Luis Ortiz</th><th>Total</th></tr></thead>
         <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="chartcard">
+    <h3>Referencias: precios pactados antes en Garden (por 1%)</h3>
+    <p style="margin:0 0 10px;color:var(--ink2)">Dónde caen las operaciones previas dentro del rango de valuación de Garden (0% = mínimo, 50% = base, 100% = máximo). Puedes editar los precios.</p>
+    <div class="grid two" id="refinputs"></div>
+    <div style="position:relative;margin-top:10px" id="refbox">
+      <svg id="refchart" viewBox="0 0 960 300" role="img" aria-label="Valor por acción de Garden a lo largo del rango y precios pactados de referencia"></svg>
+    </div>
+    <div class="tablewrap">
+      <table aria-label="Precio de Garden con referencias">
+        <thead><tr><th>Precio de Garden por 1%</th><th>Por 1%</th><th>Posición en el rango</th><th>Garden de Irene</th><th>Garden de Luis Ortiz</th></tr></thead>
+        <tbody id="refbody"></tbody>
       </table>
     </div>
   </section>
@@ -140,14 +155,14 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-
   <ul class="notes">
     <li><b>Rangos por acción:</b> Garden $51,147 – $69,502 (base $63,457) · Presa $14,739 – $25,273 (base $20,350). Fuente: Dos_Chingones_Valuacion_v2.xlsx, hoja Tablita.</li>
     <li><b>Método:</b> 50% flujo descontado + 50% múltiplo 4x sobre los repartos a socios. Mínimo / máximo = escenarios de margen.</li>
-    <li>Los porcentajes de Irene y Luis son de ejemplo hasta capturar los reales. Precio de contado, sin impuestos (ISR por venta de acciones: consultar con el contador).</li>
+    <li><b>Participación:</b> Irene 20% Garden / 10% Presa; Luis Ortiz 19% Garden / 40% Presa (consejo extraordinario 9-jul-2026). El 20% de Irene en Garden es inferido (19+19+24+20 = 82% fundadores + 18% capitalistas); Vivanco escribió en jul-2026 que los fundadores tienen 20% cada uno: confirmar.</li><li><b>Referencias:</b> Vivanco $55,000 y Alma y su mamá $60,000 por acción, tratados como precio por 1% de Garden: confirmar unidad.</li><li>Precio de contado, sin impuestos (ISR por venta de acciones: consultar con el contador).</li>
   </ul>
   <footer><span>Confidencial — preparado para los socios de Dos Chingones</span><span>MXN · Guanajuato, Gto.</span></footer>
 </div>
 
 <script>
 const R = { G:{min:51147, base:63457, max:69502}, P:{min:14739, base:20350, max:25273} };
-const S = { irene:{g:1.0,p:1.0}, luis:{g:1.0,p:1.0}, pos:50, desc:0 };
+const S = { irene:{g:20,p:10}, luis:{g:19,p:40}, pos:50, desc:0, refs:[{n:'Vivanco',v:55000},{n:'Alma y su mamá',v:60000}] };
 const fmt = n => '$' + Math.round(n).toLocaleString('es-MX');
 const unitVal = (u, pos) => { const r=R[u]; return pos<=50 ? r.min+(r.base-r.min)*pos/50 : r.base+(r.max-r.base)*(pos-50)/50; };
 const price = (who, pos) => (S[who].g*unitVal('G',pos) + S[who].p*unitVal('P',pos)) * (1-S.desc/100);
@@ -156,7 +171,7 @@ const posLabel = p => p===0?'Mínimo':p===50?'Base ★':p===100?'Máximo':(p<50?
 function bind(who, k){
   const r=document.getElementById(`${who}-${k}`), n=document.getElementById(`${who}-${k}-n`);
   r.value=n.value=S[who][k];
-  const set=v=>{v=Math.max(0,Math.min(20,parseFloat(v)||0)); S[who][k]=v; r.value=v; n.value=v; update();};
+  const set=v=>{v=Math.max(0,Math.min(50,parseFloat(v)||0)); S[who][k]=v; r.value=v; n.value=v; update();};
   r.addEventListener('input',e=>set(e.target.value)); n.addEventListener('input',e=>set(e.target.value));
 }
 ['irene','luis'].forEach(w=>{bind(w,'g');bind(w,'p');});
@@ -179,6 +194,7 @@ function update(){
   const rows=[['Mínimo',0],['Base ★',50],['Máximo',100],['Seleccionado',S.pos]];
   document.getElementById('tbody').innerHTML=rows.map(([l,p])=>`<tr class="${p===50&&l!=='Seleccionado'?'base':''}"><td>${l}</td><td>${fmt(price('irene',p))}</td><td>${fmt(price('luis',p))}</td><td>${fmt(t(p))}</td></tr>`).join('');
   draw();
+  if(typeof updateRefs==='function') updateRefs();
 }
 
 const svg=document.getElementById('chart'); let W=960, H=360, M={l:84,r:120,t:20,b:44};
@@ -198,7 +214,7 @@ function draw(){
     g+=`<line x1="${xs(p)}" x2="${xs(p)}" y1="${M.t}" y2="${H-M.b}" stroke="#D9D2C3" stroke-dasharray="${p===50?'':'3 4'}" stroke-width="1"/>`;
     g+=`<text x="${xs(p)}" y="${H-M.b+24}" text-anchor="middle" font-size="13" font-weight="700" fill="#4A4A48">${l}</text>`; });
   const pts=w=>{let s='';for(let p=0;p<=100;p+=2){s+=`${p?'L':'M'}${xs(p).toFixed(1)},${ys(price(w,p)).toFixed(1)}`;}return s;};
-  const series=[['irene','#c2571a','Irene'],['luis','#2a78d6','Luis Ortega']];
+  const series=[['irene','#c2571a','Irene'],['luis','#2a78d6','Luis Ortiz']];
   // direct labels at line end, de-collided
   let ends=series.map(([w,c,n])=>({w,c,n,y:ys(price(w,100))})).sort((a,b)=>a.y-b.y);
   for(let i=1;i<ends.length;i++){ if(ends[i].y-ends[i-1].y<18) ends[i].y=ends[i-1].y+18; }
@@ -215,15 +231,45 @@ function draw(){
     const p=Math.round(Math.max(0,Math.min(100,(sx-M.l)/(W-M.l-M.r)*100)));
     const hx=xs(p);
     hov.innerHTML=`<line x1="${hx}" x2="${hx}" y1="${M.t}" y2="${H-M.b}" stroke="#7A7872" stroke-width="1"/>`+series.map(([w,c])=>`<circle cx="${hx}" cy="${ys(price(w,p))}" r="5" fill="${c}" stroke="#FBF6EC" stroke-width="2"/>`).join('');
-    tip.innerHTML=`<b>${posLabel(p)}</b><br>Irene: ${fmt(price('irene',p))}<br>Luis Ortega: ${fmt(price('luis',p))}<br>Total: ${fmt(price('irene',p)+price('luis',p))}`;
+    tip.innerHTML=`<b>${posLabel(p)}</b><br>Irene: ${fmt(price('irene',p))}<br>Luis Ortiz: ${fmt(price('luis',p))}<br>Total: ${fmt(price('irene',p)+price('luis',p))}`;
     const bx=box.getBoundingClientRect(); let left=ev.clientX-bx.left+14; if(left>bx.width-200) left=ev.clientX-bx.left-214;
     tip.style.left=left+'px'; tip.style.top=(ev.clientY-bx.top-20)+'px'; tip.style.opacity=1;
   };
   hit.addEventListener('pointermove',move); hit.addEventListener('pointerdown',move);
   hit.addEventListener('pointerleave',()=>{hov.innerHTML='';tip.style.opacity=0;});
 }
+const refin=document.getElementById('refinputs');
+refin.innerHTML=S.refs.map((r,i)=>`<div class="ctl" style="margin:0"><label for="ref${i}">${r.n} <span><input class="num" style="width:110px" id="ref${i}" type="number" min="0" step="500" value="${r.v}"></span></label></div>`).join('');
+S.refs.forEach((r,i)=>document.getElementById('ref'+i).addEventListener('input',e=>{r.v=Math.max(0,parseFloat(e.target.value)||0);update();}));
+const posOf=v=>{const r=R.G; if(v<=r.base) return (v-r.min)/(r.base-r.min)*50; return 50+(v-r.base)/(r.max-r.base)*50;};
+const posTxt=v=>{const p=posOf(v); return p<0?'Debajo del mínimo':p>100?'Arriba del máximo':`${Math.round(p)}% del rango`;};
+function updateRefs(){
+  const d=1-S.desc/100;
+  const rows=[...S.refs.map(r=>[r.n,r.v,false]),['Modelo — seleccionado',unitVal('G',S.pos),true],['Modelo — base ★',R.G.base,true]];
+  document.getElementById('refbody').innerHTML=rows.map(([n,v,m])=>`<tr class="${n.includes('base')?'base':''}"><td>${n}</td><td>${fmt(v)}</td><td>${m&&n.includes('base')?'Base ★':posTxt(v)}</td><td>${fmt(S.irene.g*v*d)}</td><td>${fmt(S.luis.g*v*d)}</td></tr>`).join('');
+  drawRef();
+}
+const rsvg=document.getElementById('refchart');
+function drawRef(){
+  const cw=document.getElementById('refbox').clientWidth||960, W2=Math.max(300,Math.round(cw)), sm=W2<600, H2=sm?240:300, m={l:sm?62:84,r:sm?110:150,t:16,b:44};
+  rsvg.setAttribute('viewBox',`0 0 ${W2} ${H2}`);
+  const st=5000, lo=Math.floor(Math.min(R.G.min,...S.refs.map(r=>r.v))*0.98/st)*st, hi=Math.ceil(Math.max(R.G.max,...S.refs.map(r=>r.v))*1.02/st)*st, nt=Math.round((hi-lo)/st), stp=nt>6?2:1;
+  const x=p=>m.l+(W2-m.l-m.r)*p/100, y=v=>H2-m.b-(H2-m.t-m.b)*(v-lo)/(hi-lo);
+  let g='';
+  for(let i=0;i<=nt;i+=stp){const v=lo+st*i; g+=`<line x1="${m.l}" x2="${W2-m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#E5DED0"/><text x="${m.l-10}" y="${y(v)+4}" text-anchor="end" font-size="13" fill="#4A4A48">${fmt(v)}</text>`;}
+  [['Mínimo',0],['Base ★',50],['Máximo',100]].forEach(([l,p])=>{g+=`<line x1="${x(p)}" x2="${x(p)}" y1="${m.t}" y2="${H2-m.b}" stroke="#D9D2C3" stroke-dasharray="${p===50?'':'3 4'}"/><text x="${x(p)}" y="${H2-m.b+24}" text-anchor="middle" font-size="13" font-weight="700" fill="#4A4A48">${l}</text>`;});
+  let path=''; for(let p=0;p<=100;p+=2) path+=`${p?'L':'M'}${x(p).toFixed(1)},${y(unitVal('G',p)).toFixed(1)}`;
+  g+=`<path d="${path}" fill="none" stroke="#1B1B1B" stroke-width="2"/>`;
+  g+=`<text x="${W2-m.r+10}" y="${y(R.G.max)+4}" font-size="${sm?12:13}" font-weight="700" fill="#1B1B1B">${sm?'Modelo':'Valuación Garden'}</text>`;
+  let labs=S.refs.map(r=>({n:r.n,v:r.v,y:y(r.v)})).sort((a,b)=>a.y-b.y); for(let i=1;i<labs.length;i++) if(labs[i].y-labs[i-1].y<16) labs[i].y=labs[i-1].y+16;
+  S.refs.forEach(r=>{g+=`<line x1="${m.l}" x2="${W2-m.r}" y1="${y(r.v)}" y2="${y(r.v)}" stroke="#4A4A48" stroke-width="1.5" stroke-dasharray="6 4"/>`;});
+  labs.forEach(l=>{g+=`<text x="${W2-m.r+10}" y="${l.y+4}" font-size="${sm?12:13}" fill="#4A4A48">${sm?l.n.split(' ')[0]:l.n+' '+fmt(l.v)}</text>`;});
+  g+=`<circle cx="${x(S.pos)}" cy="${y(unitVal('G',S.pos))}" r="6" fill="#1B1B1B" stroke="#FBF6EC" stroke-width="2"><title>Seleccionado: ${fmt(unitVal('G',S.pos))}</title></circle>`;
+  rsvg.innerHTML=g;
+}
+
 update();
-window.addEventListener('resize',draw);
+window.addEventListener('resize',()=>{draw();drawRef();});
 </script>
 </body>
 </html>
